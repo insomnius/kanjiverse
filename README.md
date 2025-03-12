@@ -21,17 +21,3 @@ A modern, interactive web application for learning Japanese kanji, vocabulary, a
 ![2nd screenshots](.misc/2.png)
 
 ![3rd screenshots](.misc/3.png)
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18.0.0 or later
-- npm or yarn
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/japanese-learning-app.git
-   cd japanese-learning-app
