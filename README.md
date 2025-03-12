@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kanjiverse (漢字バース) - Japanese Learning App
 
-## Getting Started
+![Japanese Learning App Banner](https://kanjiverse.insomnius.dev/kv.png)
 
-First, run the development server:
+A modern, interactive web application for learning Japanese kanji, vocabulary, and kana. Built with Next.js and TypeScript, this application provides an engaging way to study Japanese through quizzes, reference materials, and spaced repetition learning.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Comprehensive Kanji Database**: Complete JLPT N5-N1 kanji with meanings, readings, and example words
+- **Interactive Quizzes**: Test your knowledge of kanji, vocabulary, and kana
+- **Detailed References**: Look up kanji and vocabulary with detailed information
+- **Spaced Repetition**: Learning algorithm that prioritizes items you need to review
+- **Mobile-Friendly**: Responsive design that works on all devices
+- **Offline Support**: Study even without an internet connection
+- **Dark Mode**: Easy on the eyes for late-night study sessions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🖼️ Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![1st screenshots](.misc/1.png)
 
-## Learn More
+![2nd screenshots](.misc/2.png)
 
-To learn more about Next.js, take a look at the following resources:
+![3rd screenshots](.misc/3.png)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
 
-## Deploy on Vercel
+- Node.js 18.0.0 or later
+- npm or yarn
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/japanese-learning-app.git
+   cd japanese-learning-app
