@@ -8,7 +8,7 @@ import VocabQuiz from "@/components/vocab-quiz"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Book, List, AlignJustify } from "lucide-react"
+import { Book, List, AlignJustify, Github } from "lucide-react"
 import { kanjiData } from "@/data/kanji-data"
 import { vocabularyData } from "@/data/vocabulary-data"
 import type { Kanji } from "@/data/kanji-data"
@@ -111,6 +111,12 @@ export default function JapaneseLearningApp() {
               <Button variant="outline" className="flex items-center gap-2">
                 <AlignJustify className="h-4 w-4" />
                 Kana Reference
+              </Button>
+            </Link>
+            <Link href="https://github.com/insomnius/kanjiverse" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="flex items-center gap-2">
+                <Github className="h-4 w-4" />
+                GitHub
               </Button>
             </Link>
           </div>

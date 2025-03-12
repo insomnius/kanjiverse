@@ -9,27 +9,38 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, ArrowLeft } from "lucide-react"
 
+type KanaChar = {
+  kana: string;
+  romaji: string;
+};
+
+// Define a type for a row of kana characters
+interface KanaRow {
+  row: string;
+  chars: KanaChar[];
+}
+
 export default function KanaReferencePage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   // Function to filter kana based on search term
-  const filterKana = (kanaArray: any[]) => {
+  const filterKana = (kanaArray: KanaRow[]) => {
     if (!searchTerm) return kanaArray
 
     return kanaArray.filter((row) =>
       row.chars.some(
-        (char: any) => char.kana.includes(searchTerm) || char.romaji.toLowerCase().includes(searchTerm.toLowerCase()),
+        (char) => char.kana.includes(searchTerm) || char.romaji.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     )
   }
 
   // Function to render a kana row
-  const renderKanaRow = (row: any, index: number) => {
+  const renderKanaRow = (row: KanaRow, index: number) => {
     // Skip rendering if all characters in the row are filtered out by search
     if (
       searchTerm &&
       !row.chars.some(
-        (char: any) => char.kana.includes(searchTerm) || char.romaji.toLowerCase().includes(searchTerm.toLowerCase()),
+        (char) => char.kana.includes(searchTerm) || char.romaji.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     ) {
       return null
@@ -112,12 +123,11 @@ export default function KanaReferencePage() {
           <div className="h-px flex-1 bg-border"></div>
         </div>
         <div className="grid grid-cols-5 gap-2">
-          {row.chars.map((char: any, charIndex: number) => (
+          {row.chars.map((char: KanaChar, charIndex: number) => (
             <div
               key={charIndex}
-              className={`flex flex-col items-center justify-center border rounded-lg p-3 transition-colors ${
-                char.kana ? "hover:bg-slate-100" : "border-transparent"
-              }`}
+              className={`flex flex-col items-center justify-center border rounded-lg p-3 transition-colors ${char.kana ? "hover:bg-slate-100" : "border-transparent"
+                }`}
             >
               {char.kana ? (
                 <>
@@ -135,7 +145,7 @@ export default function KanaReferencePage() {
   }
 
   // Function to render a kana section
-  const renderKanaSection = (title: string, description: string, kanaArray: any[]) => {
+  const renderKanaSection = (title: string, description: string, kanaArray: KanaRow[]) => {
     const filteredKana = filterKana(kanaArray)
 
     // Skip rendering if all rows in the section are filtered out by search

@@ -9,11 +9,17 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, ArrowLeft, AlignJustify } from "lucide-react"
 
+interface VocabItem {
+  word: string;
+  meaning: string;
+  romaji: string;
+}
+
 export default function VocabListPage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   // Function to filter vocabulary based on search term
-  const filterVocab = (level: string, vocab: any[]) => {
+  const filterVocab = (level: string, vocab: VocabItem[]) => {
     if (!searchTerm) return vocab
 
     return vocab.filter(
