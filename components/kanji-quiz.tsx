@@ -29,7 +29,7 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
     setIsChecking(true)
 
     // Simple check - case insensitive and trim whitespace
-    const isCorrect = userAnswer.trim().toLowerCase() === kanji.meaning.toLowerCase()
+    const isCorrect = kanji.meaning.some((m) => userAnswer.trim().toLowerCase().includes(m.toLowerCase()))
 
     setFeedback({
       isCorrect,

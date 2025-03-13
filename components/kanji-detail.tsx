@@ -29,7 +29,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-3xl flex items-center gap-3">
-              {kanji.kanji} <span className="text-xl font-normal">{kanji.meaning}</span>
+              {kanji.kanji} <span className="text-xl font-normal">{kanji.meaning.join(', ')}</span>
               <Badge>{kanji.jlptLevel || "N5"}</Badge>
             </CardTitle>
             <CardDescription>

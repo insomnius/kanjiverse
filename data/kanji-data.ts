@@ -8,7 +8,7 @@ export interface KanjiExample {
 
 export interface Kanji {
   kanji: string
-  meaning: string
+  meaning: string[]
   romaji: string
   onReading: string
   kunReading: string

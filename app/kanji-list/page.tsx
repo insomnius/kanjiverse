@@ -22,7 +22,7 @@ export default function KanjiListPage() {
     return kanji.filter(
       (k) =>
         k.kanji.includes(searchTerm) ||
-        k.meaning.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        k.meaning.some((m) => m.toLowerCase().includes(searchTerm.toLowerCase())) ||
         k.romaji.toLowerCase().includes(searchTerm.toLowerCase()) ||
         k.onReading.toLowerCase().includes(searchTerm.toLowerCase()) ||
         k.kunReading.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -87,7 +87,7 @@ export default function KanjiListPage() {
                       >
                         <div className="text-4xl font-bold mb-2 text-center">{kanji.kanji}</div>
                         <div className="text-sm text-center">
-                          <p className="font-medium">{kanji.meaning}</p>
+                          <p className="font-medium">{kanji.meaning.join(', ')}</p>
                           <div className="flex justify-center gap-2 mt-1">
                             <p className="text-xs text-muted-foreground">On: {kanji.onReading}</p>
                             <p className="text-xs text-muted-foreground">Kun: {kanji.kunReading}</p>
