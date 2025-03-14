@@ -4,6 +4,8 @@
 
 A modern, interactive web application for learning Japanese kanji, vocabulary, and kana. Built with Next.js and TypeScript, this application provides an engaging way to study Japanese through quizzes, reference materials, and spaced repetition learning.
 
+Visit the website: [kanjiverse.insomnius.dev](https://kanjiverse.insomnius.dev)
+
 ## ✨ Features
 
 - **Comprehensive Kanji Database**: Complete JLPT N5-N1 kanji with meanings, readings, and example words
