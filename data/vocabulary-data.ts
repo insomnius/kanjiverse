@@ -777,7 +777,7 @@ export const vocabularyData = {
     },
     {
       "word": "二十歳",
-      "meaning": "",
+      "meaning": "twenty years old",
       "romaji": "hatachi"
     },
     {
@@ -917,7 +917,7 @@ export const vocabularyData = {
     },
     {
       "word": "百",
-      "meaning": "",
+      "meaning": "hundred",
       "romaji": "hyaku"
     },
     {
@@ -1677,7 +1677,7 @@ export const vocabularyData = {
     },
     {
       "word": "万",
-      "meaning": "",
+      "meaning": "ten thousand",
       "romaji": "man"
     },
     {
@@ -2457,7 +2457,7 @@ export const vocabularyData = {
     },
     {
       "word": "千",
-      "meaning": "",
+      "meaning": "thousand",
       "romaji": "sen"
     },
     {
