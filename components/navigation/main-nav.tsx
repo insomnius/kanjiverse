@@ -29,11 +29,6 @@ const navGroups = {
         path: "/kana-quiz",
         icon: <AlignJustify className="h-4 w-4 mr-2" />,
       },
-      {
-        name: "Vocab Quiz",
-        path: "/vocab-quiz",
-        icon: <List className="h-4 w-4 mr-2" />,
-      },
     ],
   },
   kana: {

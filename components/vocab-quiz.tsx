@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 import { AlertCircle, CheckCircle, ArrowRight } from "lucide-react"
 
-// Update the interface to include romaji
 interface VocabQuizProps {
   word: string
   meaning: string
@@ -15,94 +16,95 @@ interface VocabQuizProps {
 
 export default function VocabQuiz({ word, meaning, romaji, options, onAnswer }: VocabQuizProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
-  // Update the feedback state to include romaji
-  const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string; showRomaji?: boolean } | null>(null)
-  const [isChecking, setIsChecking] = useState(false)
+  const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
 
-  const handleOptionSelect = (option: string) => {
-    if (isChecking) return
-    setSelectedOption(option)
-  }
+  // Add keyboard event listener for Enter key when feedback is shown
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && feedback) {
+        nextQuestion(feedback.isCorrect)
+      }
+    }
 
-  // Update the handleSubmit function to include romaji in the feedback
+    window.addEventListener('keydown', handleKeyDown)
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [feedback])
+
   const handleSubmit = () => {
-    if (!selectedOption || isChecking) return
-
-    setIsChecking(true)
+    if (!selectedOption) return
 
     const isCorrect = selectedOption === meaning
 
     setFeedback({
       isCorrect,
-      message: isCorrect ? "Correct!" : `Incorrect. The meaning is "${meaning}".`,
-      showRomaji: true,
+      message: isCorrect ? "Correct! (Press Enter for next)" : `Incorrect. The meaning is "${meaning}". (Press Enter for next)`,
     })
 
-    // Only auto-continue if the answer is correct
-    if (isCorrect) {
-      setTimeout(() => {
-        onAnswer(isCorrect)
-        setSelectedOption(null)
-        setFeedback(null)
-        setIsChecking(false)
-      }, 2500)
-    }
+    // No auto-continue timeout, allow the user to press Enter instead
   }
 
-  const handleNextQuestion = () => {
-    onAnswer(false)
+  const nextQuestion = (wasCorrect: boolean) => {
+    onAnswer(wasCorrect)
     setSelectedOption(null)
     setFeedback(null)
-    setIsChecking(false)
   }
 
   return (
     <div className="flex flex-col items-center">
       <div className="mb-8">
         <div className="text-4xl font-bold mb-2 text-center">{word}</div>
-        <p className="text-sm text-center text-muted-foreground">Select the correct meaning</p>
+        <p className="text-lg text-center text-muted-foreground mb-1">{romaji}</p>
+        <p className="text-sm text-center text-muted-foreground">Select the meaning of this word</p>
       </div>
 
-      <div className="w-full max-w-md space-y-3 mb-4">
-        {options.map((option, index) => (
-          <Button
-            key={index}
-            variant={selectedOption === option ? "default" : "outline"}
-            className="w-full justify-start text-left h-auto py-3 px-4"
-            onClick={() => handleOptionSelect(option)}
-            disabled={isChecking}
-          >
-            {option}
-          </Button>
-        ))}
-      </div>
-
-      <Button onClick={handleSubmit} className="w-full max-w-md" disabled={!selectedOption || isChecking}>
-        Check Answer
-      </Button>
-
-      {/* Add romaji display to the feedback section */}
-      {feedback && (
-        <div className="mt-4 flex flex-col items-center w-full max-w-md">
-          <div className={`flex items-center ${feedback.isCorrect ? "text-green-600" : "text-red-600"} mb-2`}>
-            {feedback.isCorrect ? <CheckCircle className="mr-2 h-5 w-5" /> : <AlertCircle className="mr-2 h-5 w-5" />}
-            <span>{feedback.message}</span>
-          </div>
-          {feedback.showRomaji && (
-            <div className="mt-2 text-center mb-4">
-              <p className="text-sm text-muted-foreground">How to pronounce:</p>
-              <p className="font-medium">{romaji}</p>
+      <div className="w-full max-w-md space-y-6">
+        <RadioGroup value={selectedOption || ""} onValueChange={setSelectedOption}>
+          {options.map((option, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <RadioGroupItem value={option} id={`option-${index}`} />
+              <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
+                {option}
+              </Label>
             </div>
-          )}
+          ))}
+        </RadioGroup>
 
-          {/* Add Next button for incorrect answers */}
-          {!feedback.isCorrect && (
-            <Button onClick={handleNextQuestion} className="w-full flex items-center justify-center mt-2">
+        <Button
+          onClick={handleSubmit}
+          className="w-full"
+          disabled={!selectedOption || feedback !== null}
+        >
+          Check Answer
+        </Button>
+
+        {feedback && (
+          <div className="mt-2">
+            <div
+              className={`flex items-center ${
+                feedback.isCorrect ? "text-green-600" : "text-red-600"
+              } mb-4 justify-center`}
+            >
+              {feedback.isCorrect ? (
+                <CheckCircle className="mr-2 h-5 w-5" />
+              ) : (
+                <AlertCircle className="mr-2 h-5 w-5" />
+              )}
+              <span>{feedback.message}</span>
+            </div>
+            
+            {/* Next button shown for both correct and incorrect answers */}
+            <Button
+              onClick={() => nextQuestion(feedback.isCorrect)}
+              className="w-full flex items-center justify-center"
+            >
               Next Question <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

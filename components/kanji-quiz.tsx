@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AlertCircle, CheckCircle, ArrowRight } from "lucide-react"
@@ -20,6 +20,38 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string; showDetails?: boolean } | null>(null)
   const [isChecking, setIsChecking] = useState(false)
   const [showAllExamples, setShowAllExamples] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Add keyboard event listener for Enter key when feedback is shown
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && feedback) {
+        if (feedback.isCorrect) {
+          // Go to next question when pressing Enter after a correct answer
+          onAnswer(true)
+          setUserAnswer("")
+          setFeedback(null)
+          setIsChecking(false)
+        } else {
+          // Go to next question when pressing Enter after an incorrect answer
+          handleNextQuestion()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [feedback])
+
+  // Focus the input when ready for a new question
+  useEffect(() => {
+    if (!feedback && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [feedback])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,19 +65,11 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
 
     setFeedback({
       isCorrect,
-      message: isCorrect ? "Correct!" : `Incorrect. The meaning is "${kanji.meaning}".`,
+      message: isCorrect ? "Correct! (Press Enter for next)" : `Incorrect. The meaning is "${kanji.meaning}". (Press Enter for next)`,
       showDetails: true,
     })
 
-    // Only auto-continue if the answer is correct
-    if (isCorrect) {
-      setTimeout(() => {
-        onAnswer(isCorrect)
-        setUserAnswer("")
-        setFeedback(null)
-        setIsChecking(false)
-      }, 3500)
-    }
+    // No auto-continue timeout, allow the user to press Enter instead
   }
 
   const handleNextQuestion = () => {
@@ -64,6 +88,7 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
 
       <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
         <Input
+          ref={inputRef}
           type="text"
           value={userAnswer}
           onChange={(e) => setUserAnswer(e.target.value)}
@@ -157,7 +182,7 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
                   </TabsContent>
                 </Tabs>
 
-                {/* Add Next button for incorrect answers */}
+                {/* Next button for incorrect answers */}
                 {!feedback.isCorrect && (
                   <div className="mt-4">
                     <Button onClick={handleNextQuestion} className="w-full flex items-center justify-center">

@@ -34,20 +34,7 @@ export default function KanjiListPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <h1 className="text-3xl font-bold">JLPT Kanji List</h1>
-          <div className="flex flex-wrap gap-2 justify-center">
-            <Link href="/kana-reference">
-              <Button variant="outline" className="flex items-center gap-2">
-                <AlignJustify className="h-4 w-4" />
-                Kana Reference
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button variant="outline" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Quiz
-              </Button>
-            </Link>
-          </div>
+
         </div>
 
         <div className="relative mb-8">

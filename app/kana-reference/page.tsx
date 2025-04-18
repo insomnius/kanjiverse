@@ -171,12 +171,7 @@ export default function KanaReferencePage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <h1 className="text-3xl font-bold">Hiragana & Katakana Reference</h1>
-          <Link href="/">
-            <Button variant="outline" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Quiz
-            </Button>
-          </Link>
+
         </div>
 
         <div className="relative mb-8">

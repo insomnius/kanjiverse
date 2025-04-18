@@ -93,20 +93,6 @@ export default function KanaQuizPage() {
           <h1 className="text-3xl font-bold">
             Kana Quiz
           </h1>
-          <div className="flex gap-2 px-2 flex-wrap">
-            <Link href="/kana-reference">
-              <Button variant="outline" className="flex items-center gap-2">
-                <AlignJustify className="h-4 w-4" />
-                Kana Reference
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button variant="outline" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
         </div>
 
         <div className="mb-8">
