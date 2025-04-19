@@ -40,7 +40,7 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }

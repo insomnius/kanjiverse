@@ -74,8 +74,8 @@ export function MainNav() {
     return pathname === path;
   };
 
-  const isGroupActive = (group: typeof navGroups.quiz) => {
-    if (group.path && pathname === group.path) return true;
+  const isGroupActive = (group: typeof navGroups[keyof typeof navGroups]) => {
+    if ('path' in group && group.path && pathname === group.path) return true;
     return group.items?.some(item => pathname === item.path);
   };
 
@@ -97,7 +97,10 @@ export function MainNav() {
             <div
               key={key}
               className="relative"
-              ref={el => (dropdownRefs.current[key] = el)}
+              ref={(el) => {
+                dropdownRefs.current[key] = el;
+                return undefined;
+              }}
             >
               {group.items && group.items.length > 0 ? (
                 /* Groups with dropdown */
@@ -154,10 +157,10 @@ export function MainNav() {
               ) : (
                 /* Direct links without dropdown */
                 <Link
-                  href={group.path || "#"}
+                  href={'path' in group && group.path ? group.path : "#"}
                   className={cn(
                     "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                    isActive(group.path || "")
+                    'path' in group && group.path && isActive(group.path)
                       ? "bg-slate-100 text-slate-900"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   )}
@@ -256,10 +259,10 @@ export function MainNav() {
                   </>
                 ) : (
                   <Link
-                    href={group.path || "#"}
+                    href={'path' in group && group.path ? group.path : "#"}
                     className={cn(
                       "flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                      isActive(group.path || "")
+                      'path' in group && group.path && isActive(group.path)
                         ? "bg-slate-100 text-slate-900"
                         : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                     )}

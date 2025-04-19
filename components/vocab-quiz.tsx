@@ -27,7 +27,7 @@ export default function VocabQuiz({ word, meaning, romaji, options, onAnswer }: 
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
@@ -83,9 +83,8 @@ export default function VocabQuiz({ word, meaning, romaji, options, onAnswer }: 
         {feedback && (
           <div className="mt-2">
             <div
-              className={`flex items-center ${
-                feedback.isCorrect ? "text-green-600" : "text-red-600"
-              } mb-4 justify-center`}
+              className={`flex items-center ${feedback.isCorrect ? "text-green-600" : "text-red-600"
+                } mb-4 justify-center`}
             >
               {feedback.isCorrect ? (
                 <CheckCircle className="mr-2 h-5 w-5" />
@@ -94,7 +93,7 @@ export default function VocabQuiz({ word, meaning, romaji, options, onAnswer }: 
               )}
               <span>{feedback.message}</span>
             </div>
-            
+
             {/* Next button shown for both correct and incorrect answers */}
             <Button
               onClick={() => nextQuestion(feedback.isCorrect)}
