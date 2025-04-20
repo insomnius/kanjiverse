@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { MainNav } from "@/components/navigation/main-nav"
+import GoogleAnalytics from "@/components/google-analytics"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -97,6 +98,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={inter.className}>
         <MainNav />
         <main className="min-h-screen bg-slate-50 pt-8 px-4 pb-16">

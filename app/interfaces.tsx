@@ -17,3 +17,18 @@ export interface Kanji {
   character?: string
 }
 
+// Google Analytics interface
+declare global {
+  interface Window {
+    gtag: (
+      command: string,
+      action: string,
+      params?: {
+        [key: string]: unknown;
+        page_path?: string;
+      }
+    ) => void;
+    dataLayer: unknown[];
+  }
+}
+
