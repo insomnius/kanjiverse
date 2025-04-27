@@ -102,100 +102,102 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
         </Button>
       </form>
 
-      {feedback && (
-        <div className="mt-6 w-full max-w-md">
-          <div
-            className={`flex items-center ${feedback.isCorrect ? "text-green-600" : "text-red-600"} mb-4 justify-center`}
-          >
-            {feedback.isCorrect ? <CheckCircle className="mr-2 h-5 w-5" /> : <AlertCircle className="mr-2 h-5 w-5" />}
-            <span>{feedback.message}</span>
-          </div>
+      {
+        feedback && (
+          <div className="mt-6 w-full max-w-md">
+            <div
+              className={`flex items-center ${feedback.isCorrect ? "text-green-600" : "text-red-600"} mb-4 justify-center`}
+            >
+              {feedback.isCorrect ? <CheckCircle className="mr-2 h-5 w-5" /> : <AlertCircle className="mr-2 h-5 w-5" />}
+              <span>{feedback.message}</span>
+            </div>
 
-          {feedback.showDetails && (
-            <Card>
-              <CardContent className="pt-4">
-                <Tabs defaultValue="readings">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="readings">Readings</TabsTrigger>
-                    <TabsTrigger value="examples">Examples</TabsTrigger>
-                  </TabsList>
+            {feedback.showDetails && (
+              <Card>
+                <CardContent className="pt-4">
+                  <Tabs defaultValue="readings">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="readings">Readings</TabsTrigger>
+                      <TabsTrigger value="examples">Examples</TabsTrigger>
+                    </TabsList>
 
-                  <TabsContent value="readings" className="mt-4 space-y-3">
-                    <div>
-                      <p className="text-sm font-medium">On Reading (音読み):</p>
-                      <p className="text-sm">
-                        {kanji.onReading} ({kanji.onReadingRomaji})
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">Kun Reading (訓読み):</p>
-                      <p className="text-sm">
-                        {kanji.kunReading} ({kanji.kunReadingRomaji})
-                      </p>
-                    </div>
-                  </TabsContent>
+                    <TabsContent value="readings" className="mt-4 space-y-3">
+                      <div>
+                        <p className="text-sm font-medium">On Reading (音読み):</p>
+                        <p className="text-sm">
+                          {kanji.onReading} ({kanji.onReadingRomaji})
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">Kun Reading (訓読み):</p>
+                        <p className="text-sm">
+                          {kanji.kunReading} ({kanji.kunReadingRomaji})
+                        </p>
+                      </div>
+                    </TabsContent>
 
-                  <TabsContent value="examples" className="mt-4">
-                    {kanji.examples && kanji.examples.length > 0 ? (
-                      <div className="space-y-2">
-                        {(showAllExamples ? [] : kanji.examples.slice(0, 2)).map((example, index) => (
-                          <div key={index} className="p-2 bg-slate-50 rounded">
-                            <p className="font-medium">{example.kana}</p>
-                            <p className="text-sm text-muted-foreground">{example.KanaRomaji}</p>
-                            <p className="text-sm">{example.translation}</p>
-                          </div>
-                        ))}
-                        {kanji.examples.length > 2 && !showAllExamples && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-xs w-full text-muted-foreground hover:text-foreground"
-                            onClick={() => setShowAllExamples(true)}
-                          >
-                            + {kanji.examples.length - 2} more examples
-                          </Button>
-                        )}
-
-                        {showAllExamples && (
-                          <>
-                            {kanji.examples.slice(2).map((example, index) => (
-                              <div key={`more-${index}`} className="p-2 bg-slate-50 rounded">
-                                <p className="font-medium">{example.kana}</p>
-                                <p className="text-sm text-muted-foreground">{example.KanaRomaji}</p>
-                                <p className="text-sm">{example.translation}</p>
-                              </div>
-                            ))}
+                    <TabsContent value="examples" className="mt-4">
+                      {kanji.examples && kanji.examples.length > 0 ? (
+                        <div className="space-y-2">
+                          {(showAllExamples ? [] : kanji.examples.slice(0, 2)).map((example, index) => (
+                            <div key={index} className="p-2 bg-slate-50 rounded">
+                              <p className="font-medium">{example.kana}</p>
+                              <p className="text-sm text-muted-foreground">{example.KanaRomaji}</p>
+                              <p className="text-sm">{example.translation}</p>
+                            </div>
+                          ))}
+                          {kanji.examples.length > 2 && !showAllExamples && (
                             <Button
                               variant="ghost"
                               size="sm"
                               className="text-xs w-full text-muted-foreground hover:text-foreground"
-                              onClick={() => setShowAllExamples(false)}
+                              onClick={() => setShowAllExamples(true)}
                             >
-                              Show fewer examples
+                              + {kanji.examples.length - 2} more examples
                             </Button>
-                          </>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-center text-muted-foreground py-4">No examples available</p>
-                    )}
-                  </TabsContent>
-                </Tabs>
+                          )}
 
-                {/* Next button for incorrect answers */}
-                {!feedback.isCorrect && (
-                  <div className="mt-4">
-                    <Button onClick={handleNextQuestion} className="w-full flex items-center justify-center">
-                      Next Question <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
-    </div>
+                          {showAllExamples && (
+                            <>
+                              {kanji.examples.slice(2).map((example, index) => (
+                                <div key={`more-${index}`} className="p-2 bg-slate-50 rounded">
+                                  <p className="font-medium">{example.kana}</p>
+                                  <p className="text-sm text-muted-foreground">{example.KanaRomaji}</p>
+                                  <p className="text-sm">{example.translation}</p>
+                                </div>
+                              ))}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs w-full text-muted-foreground hover:text-foreground"
+                                onClick={() => setShowAllExamples(false)}
+                              >
+                                Show fewer examples
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-center text-muted-foreground py-4">No examples available</p>
+                      )}
+                    </TabsContent>
+                  </Tabs>
+
+                  {/* Next button for incorrect answers */}
+                  {isChecking && (
+                    <div className="mt-4">
+                      <Button onClick={handleNextQuestion} className="w-full flex items-center justify-center">
+                        Next Question <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )
+      }
+    </div >
   )
 }
 
