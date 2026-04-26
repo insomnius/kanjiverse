@@ -1,5 +1,10 @@
 import { createRootRoute, HeadContent, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { MainNav } from '@/components/navigation/main-nav'
+// Vite resolves these to content-hashed URLs at build time. Importing as `?url` lets us preload
+// them with the right hash baked in — the alternative (declaring them in index.html) goes stale
+// every build.
+import newsreaderRomanUrl from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url'
+import newsreaderItalicUrl from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-italic.woff2?url'
 
 const SITE_NAME = 'Kanji by Insomnius'
 const SITE_URL = 'https://kanji.insomnius.dev'
@@ -45,6 +50,11 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <HeadContent />
+      {/* React 19 hoists these <link>s to <head>. They start the woff2 fetch in parallel with
+          the main bundle, so by the time globals.css declares the @font-face the bytes are
+          already on the wire. */}
+      <link rel="preload" as="font" type="font/woff2" href={newsreaderRomanUrl} crossOrigin="anonymous" />
+      <link rel="preload" as="font" type="font/woff2" href={newsreaderItalicUrl} crossOrigin="anonymous" />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:shadow focus:ring-2 focus:ring-vermilion"
