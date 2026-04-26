@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import type { DailyTotal } from "@/lib/progress/use-progress"
 
 interface ContributionCalendarProps {
@@ -51,7 +51,15 @@ const longDateFormatter = new Intl.DateTimeFormat(undefined, {
 
 const monthFormatter = new Intl.DateTimeFormat(undefined, { month: "short" })
 
+function describeCell(cell: Cell): string {
+  const dateLong = longDateFormatter.format(new Date(cell.date + "T00:00:00"))
+  if (cell.count === 0) return `No activity on ${dateLong}`
+  return `${cell.count} ${cell.count === 1 ? "answer" : "answers"} on ${dateLong}`
+}
+
 export function ContributionCalendar({ dailyTotals, daysBack = 364 }: ContributionCalendarProps) {
+  const [activeCell, setActiveCell] = useState<Cell | null>(null)
+
   const { cells, weekCount, monthLabels, summary } = useMemo(() => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -152,10 +160,11 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
               ))}
             </div>
 
-            {/* Calendar grid */}
+            {/* Screen-reader summary: a brief overview of the year, since each focusable
+                cell already announces its own date+count. axe-core forbids role="img" with
+                interactive children, so we surface the summary as visually-hidden text. */}
+            <span className="sr-only">{summary}</span>
             <div
-              role="img"
-              aria-label={summary}
               className="grid"
               style={{
                 gridTemplateColumns: `repeat(${weekCount}, 12px)`,
@@ -163,20 +172,23 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
                 gridAutoFlow: "column",
                 gap: "2px",
               }}
+              onMouseLeave={() => setActiveCell(null)}
             >
               {cells.map((cell) => {
-                const dateLong = longDateFormatter.format(new Date(cell.date + "T00:00:00"))
-                const tooltip =
-                  cell.count === 0
-                    ? `No activity on ${dateLong}`
-                    : `${cell.count} ${cell.count === 1 ? "answer" : "answers"} on ${dateLong}`
+                const label = describeCell(cell)
+                const isActive = activeCell?.date === cell.date
                 return (
-                  <div
+                  <button
                     key={cell.date}
-                    title={tooltip}
-                    className={`rounded-[2px] ${intensityClasses[cell.intensity]} ${
+                    type="button"
+                    title={label}
+                    aria-label={label}
+                    onMouseEnter={() => setActiveCell(cell)}
+                    onFocus={() => setActiveCell(cell)}
+                    onClick={() => setActiveCell(cell)}
+                    className={`rounded-[2px] cursor-pointer transition-shadow motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-1 focus-visible:ring-offset-cream ${intensityClasses[cell.intensity]} ${
                       cell.isToday ? "ring-1 ring-vermilion/60 ring-offset-[1px] ring-offset-cream" : ""
-                    }`}
+                    } ${isActive ? "shadow-[0_0_0_1px_rgba(168,124,47,0.5)]" : ""}`}
                   />
                 )
               })}
@@ -184,8 +196,21 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
           </div>
         </div>
 
+        {/* Status line — visible feedback for whichever cell is focused/hovered/tapped.
+            aria-live="polite" so screen-reader users hear the update without losing focus. */}
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="font-display italic text-xs text-sumi/70 mt-3 min-h-[1.5em]"
+        >
+          {activeCell
+            ? describeCell(activeCell)
+            : "Hover, focus, or tap any cell to see that day's count."}
+        </p>
+
         {/* Legend */}
-        <div className="flex items-center justify-end gap-1.5 mt-3 text-[10px] text-sumi/70 select-none">
+        <div className="flex items-center justify-end gap-1.5 mt-2 text-[10px] text-sumi/70 select-none">
           <span>Less</span>
           {([0, 1, 2, 3, 4] as const).map((level) => (
             <div

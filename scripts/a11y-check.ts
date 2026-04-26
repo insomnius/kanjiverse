@@ -31,6 +31,7 @@ const STATIC_ROUTES: RouteSpec[] = [
   { path: "/quiz", name: "Kanji + Vocab quiz", ready: "main h1" },
   { path: "/kana-quiz", name: "Kana quiz", ready: "main h1" },
   { path: "/draw", name: "Draw / stroke practice", ready: "main h1" },
+  { path: "/draw-search", name: "Find by drawing", ready: "main h1" },
   { path: "/kanji-list", name: "Kanji list", ready: "main h1" },
   { path: "/vocab-list", name: "Vocab list", ready: "main h1" },
   { path: "/kana-reference", name: "Kana reference", ready: "main h1" },

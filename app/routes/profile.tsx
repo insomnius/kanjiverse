@@ -348,7 +348,7 @@ function ProfilePage() {
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium">Activity</CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Every day you've answered a question, painted a little gold. Hover (or long-press) any cell for that day's count.
+              Every day you've answered a question, painted a little gold. Hover, focus, or tap any cell for that day's count.
             </CardDescription>
           </CardHeader>
           <CardContent>

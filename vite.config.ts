@@ -18,6 +18,7 @@ export default defineConfig({
         { loc: "/quiz", changefreq: "weekly", priority: 0.9 },
         { loc: "/kana-quiz", changefreq: "weekly", priority: 0.8 },
         { loc: "/draw", changefreq: "weekly", priority: 0.8 },
+        { loc: "/draw-search", changefreq: "weekly", priority: 0.8 },
         { loc: "/kanji-list", changefreq: "monthly", priority: 0.8 },
         { loc: "/vocab-list", changefreq: "monthly", priority: 0.8 },
         { loc: "/kana-reference", changefreq: "monthly", priority: 0.7 },
@@ -84,18 +85,10 @@ export default defineConfig({
         lang: "en",
         categories: ["education", "books", "productivity"],
         icons: [
-          {
-            src: "/kv.png",
-            sizes: "500x500",
-            type: "image/png",
-            purpose: "any",
-          },
-          {
-            src: "/kv.png",
-            sizes: "500x500",
-            type: "image/png",
-            purpose: "maskable",
-          },
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: "/icons/icon-maskable-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: "/icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {

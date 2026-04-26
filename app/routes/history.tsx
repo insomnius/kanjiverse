@@ -67,7 +67,7 @@ function HistoryPage() {
               Last 52 weeks
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Hover (or long-press) any cell to see that day's count.
+              Hover, focus, or tap any cell to see that day's count.
             </CardDescription>
           </CardHeader>
           <CardContent>

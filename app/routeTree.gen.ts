@@ -17,6 +17,7 @@ import { Route as KanjiListRouteImport } from './routes/kanji-list'
 import { Route as KanaReferenceRouteImport } from './routes/kana-reference'
 import { Route as KanaQuizRouteImport } from './routes/kana-quiz'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DrawSearchRouteImport } from './routes/draw-search'
 import { Route as DrawRouteImport } from './routes/draw'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VocabWordRouteImport } from './routes/vocab.$word'
@@ -63,6 +64,11 @@ const HistoryRoute = HistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DrawSearchRoute = DrawSearchRouteImport.update({
+  id: '/draw-search',
+  path: '/draw-search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DrawRoute = DrawRouteImport.update({
   id: '/draw',
   path: '/draw',
@@ -92,6 +98,7 @@ const KanaCharRoute = KanaCharRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/draw': typeof DrawRoute
+  '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/draw': typeof DrawRoute
+  '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/draw': typeof DrawRoute
+  '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/draw'
+    | '/draw-search'
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/draw'
+    | '/draw-search'
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/draw'
+    | '/draw-search'
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DrawRoute: typeof DrawRoute
+  DrawSearchRoute: typeof DrawSearchRoute
   HistoryRoute: typeof HistoryRoute
   KanaQuizRoute: typeof KanaQuizRoute
   KanaReferenceRoute: typeof KanaReferenceRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/draw-search': {
+      id: '/draw-search'
+      path: '/draw-search'
+      fullPath: '/draw-search'
+      preLoaderRoute: typeof DrawSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/draw': {
       id: '/draw'
       path: '/draw'
@@ -298,6 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DrawRoute: DrawRoute,
+  DrawSearchRoute: DrawSearchRoute,
   HistoryRoute: HistoryRoute,
   KanaQuizRoute: KanaQuizRoute,
   KanaReferenceRoute: KanaReferenceRoute,

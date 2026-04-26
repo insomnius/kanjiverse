@@ -65,6 +65,36 @@ export const Route = createRootRoute({
       <main id="main" className="min-h-screen pt-8 px-4 pb-16">
         <Outlet />
       </main>
+      <footer className="border-t border-sumi/10 bg-cream/60 mt-8" role="contentinfo">
+        <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <a
+            href="https://insomnius.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Built by Insomnius — visit insomnius.dev (opens in new tab)"
+            className="group inline-flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
+          >
+            <img
+              src="/insomnius-logo.webp"
+              alt=""
+              width={24}
+              height={24}
+              loading="lazy"
+              decoding="async"
+              className="h-6 w-6 rounded-sm"
+            />
+            <span className="font-display italic text-sm text-sumi/70 group-hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
+              Built by{" "}
+              <span className="not-italic font-medium text-sumi group-hover:text-vermilion-deep">
+                Insomnius
+              </span>
+            </span>
+          </a>
+          <p className="font-display italic text-xs text-sumi/70 text-center sm:text-right">
+            Free · No tracking · Lives in your browser
+          </p>
+        </div>
+      </footer>
       <ScrollRestoration />
     </>
   ),

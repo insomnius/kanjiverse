@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Book, List, AlignJustify, Github, Menu, X, BookOpen, BookText, ScrollText, Pencil, User } from "lucide-react";
+import { Book, List, AlignJustify, Github, Menu, X, BookOpen, BookText, ScrollText, Pencil, User, Search } from "lucide-react";
 import { StreakIndicator } from "@/components/streak-indicator";
 import { ProfileLink } from "@/components/profile-link";
 
@@ -39,9 +39,19 @@ const navGroups = {
   },
   draw: {
     name: "Draw",
-    path: "/draw",
     icon: <Pencil className="h-4 w-4 mr-2" />,
-    items: [],
+    items: [
+      {
+        name: "Practice",
+        path: "/draw",
+        icon: <Pencil className="h-4 w-4 mr-2" />,
+      },
+      {
+        name: "Find by drawing",
+        path: "/draw-search",
+        icon: <Search className="h-4 w-4 mr-2" />,
+      },
+    ],
   },
   reference: {
     name: "Reference",
