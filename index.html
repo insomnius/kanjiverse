@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Kanji by Insomnius — Interactive Japanese Kanji & Vocabulary Quiz</title>
+    <meta name="description" content="Practice Japanese with interactive JLPT-level quizzes (N1–N5). Drill kanji, vocabulary, hiragana, and katakana with quick-feedback questions and full reference tables." />
+    <meta name="theme-color" content="#1a1815" />
+    <meta name="color-scheme" content="light" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-title" content="Kanji" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/kv.png" />
+    <link rel="apple-touch-icon" href="/kv.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="canonical" href="https://kanji.insomnius.dev/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600&text=%E6%BC%A2%E5%AD%97&display=swap"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&display=swap"
+      />
+    </noscript>
+
+    <meta property="og:site_name" content="Kanji by Insomnius" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kanji by Insomnius — Interactive Japanese Kanji & Vocabulary Quiz" />
+    <meta property="og:description" content="Practice Japanese with interactive JLPT-level quizzes (N1–N5). Drill kanji, vocabulary, hiragana, and katakana." />
+    <meta property="og:image" content="https://kanji.insomnius.dev/kv.png" />
+    <meta property="og:image:width" content="500" />
+    <meta property="og:image:height" content="500" />
+    <meta property="og:image:alt" content="Kanji by Insomnius — the 漢字 mark" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://kanji.insomnius.dev/" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kanji by Insomnius — Interactive Japanese Kanji & Vocabulary Quiz" />
+    <meta name="twitter:description" content="Practice Japanese with interactive JLPT-level quizzes (N1–N5)." />
+    <meta name="twitter:image" content="https://kanji.insomnius.dev/kv.png" />
+    <meta name="twitter:image:alt" content="Kanji by Insomnius — the 漢字 mark" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Kanji by Insomnius",
+        "alternateName": "Kanji",
+        "url": "https://kanji.insomnius.dev/",
+        "description": "Practice Japanese with interactive JLPT-level quizzes (N1–N5). Drill kanji, vocabulary, hiragana, and katakana.",
+        "inLanguage": "en",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://kanji.insomnius.dev/kanji-list?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Kanji by Insomnius",
+        "url": "https://kanji.insomnius.dev/",
+        "logo": "https://kanji.insomnius.dev/kv.png",
+        "description": "A focused study companion for Japanese language learners. Quizzes, stroke-order practice, and JLPT N1–N5 references — all in your browser, free, and private.",
+        "knowsLanguage": ["ja", "en"],
+        "teaches": ["Japanese kanji", "Japanese vocabulary", "Hiragana", "Katakana", "JLPT N5", "JLPT N4", "JLPT N3", "JLPT N2", "JLPT N1"]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Kanji by Insomnius",
+        "url": "https://kanji.insomnius.dev/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and a modern browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/app/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "app/routes/__root.tsx",
+    "app/routes/*.tsx",
+    "vite-plugins/sitemap.ts",
+    "scripts/*.ts"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "lib/**/*.{ts,tsx}",
+    "data/**/*.{ts,tsx}",
+    "vite-plugins/**/*.{ts,tsx}",
+    "scripts/**/*.{ts,tsx}"
+  ],
+  "ignoreDependencies": [
+    "@tanstack/router-devtools",
+    "postcss-load-config"
+  ],
+  "ignoreExportsUsedInFile": true
+}
