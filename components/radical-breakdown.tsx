@@ -43,6 +43,18 @@ export function RadicalBreakdown({ char }: RadicalBreakdownProps) {
 
   if (parts === null) return null
 
+  // KRADFILE marks atomic radicals as "X : X" — the kanji IS a building block
+  // for other kanji, not decomposed itself. This is meaningful info, not a gap.
+  const isAtomic = parts.length === 1 && parts[0] === char
+  if (isAtomic) {
+    return (
+      <p className="text-sm text-sumi/80 italic" role="status">
+        <span lang="ja" className="not-italic font-semibold text-sumi">{char}</span>
+        {" "}is itself a radical — a building block other kanji are made from.
+      </p>
+    )
+  }
+
   if (parts.length === 0) {
     return (
       <p className="text-sm text-sumi/70 italic" role="status">

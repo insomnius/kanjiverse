@@ -53,7 +53,7 @@
     },
     {
       "id": "kradfile-radicals",
-      "description": "KRADFILE — kanji-to-radical-component decomposition (~6,355 entries; we trim to the 1,966 of our 2,034 N1–N5 kanji that have entries).",
+      "description": "KRADFILE — kanji-to-radical-component decomposition (~6,355 entries; we trim to our 2,034 N1–N5 kanji: 1,966 decomposed + 68 atomic radicals listed as themselves).",
       "license": "CC-BY-SA-4.0",
       "url": "https://www.edrdg.org/krad/kradinf.html",
       "redistributedAs": "data/kanji-radicals.json",

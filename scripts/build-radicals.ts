@@ -69,11 +69,22 @@ async function main() {
 
   const out: KradMap = {}
   let matched = 0
+  let atomic = 0
   for (const char of ourKanji) {
     const parts = all[char]
-    if (parts && parts.length > 0) {
-      // Drop the kanji from its own component list when it appears (atomic
-      // radicals like 一 list themselves; the UI doesn't need that loop).
+    if (!parts || parts.length === 0) continue
+    // KRADFILE entries like "水 : 水" mark atomic radicals — the kanji IS a
+    // building block, not decomposed from anything else. We preserve that
+    // signal by keeping `[char]` in the JSON, so the renderer can show a
+    // meaningful "this kanji is a radical" state instead of treating it as
+    // missing data. Decomposed kanji keep their full component list (we
+    // filter out the self-reference, which sometimes appears alongside real
+    // components).
+    const isAtomic = parts.length === 1 && parts[0] === char
+    if (isAtomic) {
+      out[char] = [char]
+      atomic += 1
+    } else {
       const filtered = parts.filter((p) => p !== char)
       if (filtered.length > 0) {
         out[char] = filtered
@@ -81,7 +92,7 @@ async function main() {
       }
     }
   }
-  console.log(`Matched ${matched} of ${ourKanji.size} kanji to KRADFILE entries.`)
+  console.log(`Matched ${matched} decomposed + ${atomic} atomic = ${matched + atomic} of ${ourKanji.size} kanji.`)
 
   writeFileSync(OUT, JSON.stringify(out))
   console.log(`Wrote ${OUT}.`)
