@@ -47,6 +47,7 @@
     "typescript": "^5",
     "vite": "^8.0.8",
     "vite-plugin-pwa": "^1.2.0",
+    "wanakana": "^5.3.1",
     "workbox-window": "^7.4.0"
   }
 }
