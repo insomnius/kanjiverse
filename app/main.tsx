@@ -6,6 +6,13 @@ import './globals.css'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
+// why-did-you-render: dev-only render-cause inspector. Tree-shaken from prod
+// because the import is gated behind import.meta.env.DEV — Vite replaces the
+// expression with `false` at build time, the whole branch is DCE'd.
+if (import.meta.env.DEV) {
+  void import('./wdyr')
+}
+
 // Create a new router instance
 const router = createRouter({ routeTree })
 

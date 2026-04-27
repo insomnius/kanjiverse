@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# perf-tooling artifacts (dist/stats.html already excluded via /dist)
+/.lighthouseci

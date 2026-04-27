@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -6,11 +6,31 @@ import path from "path"
 import sitemapPlugin from "./vite-plugins/sitemap"
 
 const SITE_URL = "https://kanji.insomnius.dev"
+// Set ANALYZE=1 (e.g. via `bun run check:bundle`) to emit dist/stats.html with a
+// treemap of every chunk. Off by default so normal/CI builds don't waste cycles.
+const ANALYZE = process.env.ANALYZE === "1"
 
-export default defineConfig({
+export default defineConfig(async () => {
+  // rollup-plugin-visualizer is ESM-only; importing it eagerly at the top of a
+  // CJS-loaded vite.config.ts breaks. Defer the import to the rare ANALYZE path.
+  const visualizerPlugin: PluginOption = ANALYZE
+    ? (await import("rollup-plugin-visualizer")).visualizer({
+        filename: "dist/stats.html",
+        template: "treemap",
+        gzipSize: true,
+        brotliSize: true,
+        sourcemap: false,
+        emitFile: false,
+        open: true,
+        title: "Kanjiverse — bundle composition",
+      })
+    : false
+
+  return {
   plugins: [
     TanStackRouterVite({ target: 'react', autoCodeSplitting: true, routesDirectory: './app/routes', generatedRouteTree: './app/routeTree.gen.ts' }),
     react(),
+    visualizerPlugin,
     sitemapPlugin({
       base: SITE_URL,
       staticRoutes: [
@@ -95,7 +115,8 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webmanifest,xml,txt,woff2}"],
         // Don't precache the heavy data chunks — runtime cache them instead so first visit isn't slowed down by ~1.6MB.
-        globIgnores: ["**/kanji-data-*.js", "**/kanji-stroke-features-*.js"],
+        // stats.html is the rollup-plugin-visualizer artefact emitted only under ANALYZE=1; never something we'd want shipped.
+        globIgnores: ["**/kanji-data-*.js", "**/kanji-stroke-features-*.js", "**/stats.html"],
         cleanupOutdatedCaches: true,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/, /^\/manifest\.webmanifest$/],
@@ -144,7 +165,7 @@ export default defineConfig({
     cssCodeSplit: true,
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id: string) {
           // Keep heavy data files in their own chunks for lazy loading.
           if (id.includes("raw-kanji-data.json")) return "kanji-data"
           if (id.includes("vocabulary-data")) return "vocabulary-data"
@@ -160,4 +181,5 @@ export default defineConfig({
       },
     },
   },
+  }
 })
