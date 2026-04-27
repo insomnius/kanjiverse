@@ -2,6 +2,21 @@
 
 Vite + React 19 + TanStack Router + Tailwind 3 + TypeScript (strict). Bun is the package manager.
 
+## Quick reference
+
+| Need | Command | Gate? |
+|---|---|---|
+| Run the app | `bun run dev` | — |
+| **Deploy gate** | `bun run build` | ✅ tsc + vite, blocks on type errors |
+| Accessibility (axe-core × 12 routes) | `bun run a11y` | ✅ before merging UI changes |
+| Unused files / deps / exports | `bun run check:unused` | ✅ after adding files or imports |
+| License audit (npm + data manifest) | `bun run check:licenses` | ✅ after `bun add`, after data changes |
+| Bundle treemap (visual) | `bun run check:bundle` | manual, before chunking changes |
+| Lighthouse perf + CWV | `bun run check:lighthouse` | manual, before deploy |
+| Render-cause inspector | `Component.whyDidYouRender = true` (dev only) | manual, while debugging re-renders |
+
+**Unbreakable rule** — adding a third-party data source means adding a row to `data/data-licenses.json` in the same commit. The `/credits` page is generated from the manifest; if the manifest is wrong, the credits are wrong, and we have a license problem. See [License hygiene SOP](#license-hygiene-sop).
+
 ## Commands
 
 - `bun install` — install deps. Authoritative lockfile is `bun.lock`. Do **not** regenerate `package-lock.json` or `yarn.lock`.
@@ -326,13 +341,33 @@ Two retention mechanics, deliberately editorial-restrained:
 
 ## License hygiene SOP
 
-The site is private (no source license declared) but redistributes a number of third-party assets — fonts, vocabulary lists, stroke-data lookups, the Insomnius brand mark. We keep an explicit audit trail so a clean "we're safe to ship" answer is always available without digging through `node_modules` by hand.
+The site is private (no source license declared) but redistributes a number of third-party assets — fonts, vocabulary lists, stroke-data lookups, radical decompositions, the Insomnius brand mark. We keep an explicit audit trail so a clean "we're safe to ship" answer is always available without digging through `node_modules` by hand.
+
+### 🚨 The unbreakable rule — always update credits
+
+**Any time you add, swap, remove, or materially change a third-party data source, you MUST update `data/data-licenses.json` in the same commit.** No exceptions. No "I'll add it later." No "it's just a small file." If the bytes came from outside this repo, the manifest gets a row.
+
+The `/credits` page (`app/routes/credits.tsx`) reads the manifest directly and renders one entry per source — license badge, attribution, upstream URL, audit note. **There is no separate "credits page" to update**: editing the manifest IS updating the credits. That asymmetry is deliberate — a single source of truth means the page can never drift from reality.
+
+Why this rule is non-negotiable:
+
+1. **CC BY / CC BY-SA / OFL all *require* visible attribution.** A missing manifest entry is a missing credit, which is a license violation.
+2. **`bun run check:licenses` enforces it.** The audit refuses to pass if a redistributed file isn't declared. If you're tempted to silence the audit instead of adding the entry, you're doing it wrong.
+3. **Future-you will not remember where a file came from.** A data file with no manifest row is forensic work in six months — sometimes impossible work, if the upstream URL has rotted.
+
+The workflow when adding a new source:
+
+1. Add the entry to `data/data-licenses.json` (`id`, `description`, `license`, `url`, `redistributedAs`, `attribution`, optional `note` / `manualOverride`).
+2. Run `bun run check:licenses` — must come back clean.
+3. Spot-check `/credits` in the browser to confirm the entry renders sensibly (license badge, attribution line, source link).
+4. Commit the manifest change with the data change. Never split them across commits.
 
 ### Rule of thumb
 
 - **npm dep**: must end up MIT / ISC / Apache-2.0 / BSD-* / MPL-2.0 / 0BSD / Unlicense / CC0 / OFL / BlueOak in the production tree (anything copyleft like GPL/LGPL/AGPL is denied if it ships to users; dev-only is OK). Allowlist + denylist live in `scripts/check-licenses.ts`.
 - **Bundled data** (anything we redistribute as a static asset): record in `data/data-licenses.json` with `id`, `description`, `license`, `url`, `redistributedAs`, `attribution`, and a `note` if anything's non-obvious. The audit refuses any data source not listed there.
 - **Runtime-fetched data** (e.g. hanzi-writer JSON from jsdelivr): also recorded in the manifest. We're not redistributing it ourselves, but the audit trail matters for facts like "we never ship the LGPL stroke paths into our bundle."
+- **Removing or replacing a source**: delete the manifest entry in the same commit that removes/replaces the data file. Stale entries on `/credits` are as bad as missing ones — they advertise an attribution we no longer owe (or, worse, a data source we no longer ship under that license).
 
 ### When to run `bun run check:licenses`
 
