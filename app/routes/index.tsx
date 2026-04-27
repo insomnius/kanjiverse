@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   ArrowRight, BookOpen, Pencil, Calendar, Target, Flame, Zap,
-  ShieldCheck, Library, Share2, Languages, Sparkles,
+  ShieldCheck, Library, Share2, Languages, Sparkles, PenLine,
 } from "lucide-react"
 
 // ---- Tiny live previews of real features (no screenshots — actual UI fragments) ----
@@ -119,6 +119,16 @@ function LandingPage() {
             Browse the kanji
           </Link>
         </div>
+        <p className="mt-6 font-display italic text-sm text-sumi/70">
+          Don't know the character?{" "}
+          <Link
+            to="/draw-search"
+            className="not-italic underline underline-offset-4 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+          >
+            Find it by drawing
+          </Link>
+          .
+        </p>
       </section>
 
       {/* ───────── What it is ───────── */}
@@ -137,7 +147,7 @@ function LandingPage() {
             What you get
           </p>
           <h2 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
-            Six tools, one quiet study room
+            One quiet study room, many tools
           </h2>
         </header>
 
@@ -145,7 +155,7 @@ function LandingPage() {
           <FeatureCard
             icon={<Zap aria-hidden="true" className="h-4 w-4" />}
             title="Three quiz formats"
-            body="Type meanings for kanji, pick from multiple choice for vocabulary, drill hiragana and katakana with hotkeys (1–4 + Enter)."
+            body="Kanji by typing meaning, vocabulary by multiple-choice, hiragana/katakana with hotkeys. The picker quietly biases away from items you just nailed."
           />
           <FeatureCard
             icon={<Pencil aria-hidden="true" className="h-4 w-4" />}
@@ -154,28 +164,32 @@ function LandingPage() {
             preview={<MiniKanjiCard />}
           />
           <FeatureCard
+            icon={<PenLine aria-hidden="true" className="h-4 w-4" />}
+            title="Find by drawing"
+            body="Sketch a character you spotted somewhere. We rank the closest matches by stroke shape — handy when you don't know the readings yet."
+          />
+          <FeatureCard
             icon={<Library aria-hidden="true" className="h-4 w-4" />}
             title="Searchable references"
-            body="Browse all 2,000+ kanji, the full vocabulary set, and complete hiragana/katakana tables — filterable by JLPT level."
+            body="Browse all 2,000+ kanji, the vocabulary set, and complete hiragana/katakana tables — filterable by JLPT level."
           />
           <FeatureCard
             icon={<Flame aria-hidden="true" className="h-4 w-4" />}
-            title="Streak + daily goal"
-            body="Set a daily target. Track consecutive days. The streak only counts correct answers, so it measures real practice."
+            title="Streak, goal, milestones"
+            body="Daily target counts only correct answers. A small chime celebrates 7-, 30-, 100-day streaks; everything else stays out of your way."
             preview={<MiniStreakPill />}
           />
           <FeatureCard
             icon={<Calendar aria-hidden="true" className="h-4 w-4" />}
-            title="Activity calendar"
-            body="GitHub-style heatmap of every day you've practiced. Hover any cell to see that day's count."
+            title="Calendar + per-character mastery"
+            body="GitHub-style heatmap of every day you've practiced, plus a small badge on each character showing your accuracy as you build it up."
             preview={<MiniCalendar />}
           />
-          <FeatureCard
-            icon={<Share2 aria-hidden="true" className="h-4 w-4" />}
-            title="Backup, import & share"
-            body="Download a gzipped backup anytime. Restore on another device. Share your progress card to Twitter, Facebook, Threads, or generate an Instagram image."
-          />
         </div>
+        <p className="text-center mt-8 font-display italic text-sm text-sumi/70 max-w-2xl mx-auto">
+          <Share2 aria-hidden="true" className="inline h-3.5 w-3.5 mr-1 -mt-0.5" />
+          Backup, import, and share your progress card any time — no account needed.
+        </p>
       </section>
 
       {/* ───────── Privacy moment ───────── */}

@@ -15,6 +15,8 @@ export function useProgress() {
 export {
   setDisplayName,
   setDailyGoal,
+  setSoundEnabled,
+  isSoundEnabled,
   recordAnswer,
   reset,
   getTotals,
@@ -30,6 +32,7 @@ export {
   STREAK_MILESTONES,
   ANSWERED_MILESTONES,
   DEFAULT_DAILY_GOAL,
+  DEFAULT_SOUND_ENABLED,
   MIN_DAILY_GOAL,
   MAX_DAILY_GOAL,
 } from "./store"

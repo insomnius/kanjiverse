@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { Flame, Sparkles, X } from "lucide-react"
-import { useProgress, dismissMilestone } from "@/lib/progress/use-progress"
+import { useProgress, dismissMilestone, isSoundEnabled } from "@/lib/progress/use-progress"
+import { playMilestone } from "@/lib/sounds"
 
 const AUTO_DISMISS_MS = 6000
 
@@ -44,13 +45,20 @@ function copyFor(kind: "streak" | "answered", value: number): ToastCopy {
  * is the reward.
  */
 export function MilestoneToast() {
-  const { pendingMilestone } = useProgress()
+  const { pendingMilestone, profile } = useProgress()
+  // Track which milestone we've already chimed for so React strict-mode double-render
+  // doesn't double-play the sound.
+  const lastChimedIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (!pendingMilestone) return
+    if (lastChimedIdRef.current !== pendingMilestone.id) {
+      lastChimedIdRef.current = pendingMilestone.id
+      if (isSoundEnabled(profile ?? null)) playMilestone()
+    }
     const t = setTimeout(() => dismissMilestone(), AUTO_DISMISS_MS)
     return () => clearTimeout(t)
-  }, [pendingMilestone])
+  }, [pendingMilestone, profile])
 
   if (!pendingMilestone) return null
 

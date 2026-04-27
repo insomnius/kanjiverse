@@ -4,11 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2 } from "lucide-react"
+import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2, Volume2, VolumeX } from "lucide-react"
+import { playCorrect } from "@/lib/sounds"
 import { ContributionCalendar } from "@/components/contribution-calendar"
 import { ShareButtons } from "@/components/share-buttons"
 import {
-  useProgress, setDisplayName, setDailyGoal, reset, getTotals, getDailyGoal,
+  useProgress, setDisplayName, setDailyGoal, setSoundEnabled, isSoundEnabled,
+  reset, getTotals, getDailyGoal,
   exportData, importData,
   DEFAULT_DAILY_GOAL, MIN_DAILY_GOAL, MAX_DAILY_GOAL,
 } from "@/lib/progress/use-progress"
@@ -340,6 +342,65 @@ function ProfilePage() {
                 {currentGoal !== DEFAULT_DAILY_GOAL && ` Default is ${DEFAULT_DAILY_GOAL}.`}
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* ---------- Sound effects ---------- */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="font-display text-xl text-sumi font-medium flex items-center gap-2">
+              {isSoundEnabled(profile ?? null) ? (
+                <Volume2 aria-hidden="true" className="h-4 w-4 text-vermilion-deep" />
+              ) : (
+                <VolumeX aria-hidden="true" className="h-4 w-4 text-sumi/55" />
+              )}
+              Quiz sounds
+            </CardTitle>
+            <CardDescription className="font-display italic text-sumi/70">
+              A soft chime on a correct answer, a low thud on an incorrect one, and a brighter tone for milestone celebrations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                variant={isSoundEnabled(profile ?? null) ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  const next = !isSoundEnabled(profile ?? null)
+                  void setSoundEnabled(next)
+                  if (next) playCorrect()
+                }}
+                aria-pressed={isSoundEnabled(profile ?? null)}
+                className="gap-2"
+              >
+                {isSoundEnabled(profile ?? null) ? (
+                  <>
+                    <Volume2 aria-hidden="true" className="h-4 w-4" />
+                    Sounds on
+                  </>
+                ) : (
+                  <>
+                    <VolumeX aria-hidden="true" className="h-4 w-4" />
+                    Sounds off
+                  </>
+                )}
+              </Button>
+              {isSoundEnabled(profile ?? null) && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => playCorrect()}
+                  className="text-sumi/70"
+                >
+                  Preview the correct chime
+                </Button>
+              )}
+            </div>
+            <p className="font-display italic text-xs text-sumi/70 mt-3">
+              Sounds also respect your system's reduced-motion preference — we won't play anything if you've asked the OS to keep things still.
+            </p>
           </CardContent>
         </Card>
 

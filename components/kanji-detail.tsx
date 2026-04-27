@@ -72,16 +72,26 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             </Button>
           )}
         </div>
-        {onClose && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          {onClose && (
+            <Link
+              to="/kanji/$char"
+              params={{ char: kanji.kanji }}
+              className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+            >
+              Open as full page
+              <ExternalLink aria-hidden="true" className="h-3 w-3" />
+            </Link>
+          )}
           <Link
-            to="/kanji/$char"
-            params={{ char: kanji.kanji }}
-            className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors w-fit"
+            to="/draw"
+            search={{ char: kanji.kanji }}
+            className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
           >
-            Open as full page
+            Practice writing this kanji
             <ExternalLink aria-hidden="true" className="h-3 w-3" />
           </Link>
-        )}
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="readings">

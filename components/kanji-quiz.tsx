@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input"
 import { AlertCircle, CheckCircle, ArrowRight } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent } from "@/components/ui/card"
-import { recordAnswer } from "@/lib/progress/use-progress"
+import { recordAnswer, isSoundEnabled } from "@/lib/progress/use-progress"
+import { useProgress } from "@/lib/progress/use-progress"
+import { playCorrect, playIncorrect } from "@/lib/sounds"
 import type { Kanji } from "@/data/kanji-data"
 
 interface KanjiQuizProps {
@@ -17,6 +19,7 @@ interface KanjiQuizProps {
 }
 
 export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
+  const { profile } = useProgress()
   const [userAnswer, setUserAnswer] = useState("")
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string; showDetails?: boolean } | null>(null)
   const [isChecking, setIsChecking] = useState(false)
@@ -65,6 +68,11 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
     const isCorrect = kanji.meaning.some((m) => userAnswer.trim().toLowerCase().includes(m.toLowerCase()))
 
     void recordAnswer("kanji", kanji.kanji, isCorrect, kanji.jlptLevel)
+
+    if (isSoundEnabled(profile ?? null)) {
+      if (isCorrect) playCorrect()
+      else playIncorrect()
+    }
 
     setFeedback({
       isCorrect,

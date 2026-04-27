@@ -112,11 +112,16 @@ function KanaQuizPage() {
   return (
     <div className="py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-2 gap-4">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
             Kana Quiz
           </h1>
         </div>
+        <nav aria-label="Related actions" className="mb-8 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+          <a href="/kana-reference" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
+            See the full kana table
+          </a>
+        </nav>
 
         <div className="mb-8">
           <Card>

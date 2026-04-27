@@ -17,6 +17,17 @@ export interface Profile {
    *  Additive field. Suppressing already-seen milestones across page reloads is the whole point —
    *  we don't want the user to be re-celebrated for a 7-day streak every time they revisit. */
   milestonesShown?: string[]
+  /** Whether quiz feedback sounds (correct / incorrect / milestone) play. Default ON when
+   *  undefined — the chimes are soft enough that they're a delightful default, but the user
+   *  can mute on their first visit via Profile if needed. Additive field. */
+  soundEnabled?: boolean
+}
+
+export const DEFAULT_SOUND_ENABLED = true
+
+export function isSoundEnabled(profile: Profile | null): boolean {
+  if (!profile) return DEFAULT_SOUND_ENABLED
+  return profile.soundEnabled ?? DEFAULT_SOUND_ENABLED
 }
 
 export const DEFAULT_DAILY_GOAL = 10
@@ -248,43 +259,67 @@ async function hydrate(): Promise<void> {
 
 // ---- Milestones ----
 
-function highestThresholdHit(thresholds: readonly number[], value: number): number | null {
-  let hit: number | null = null
-  for (const t of thresholds) {
-    if (value >= t) hit = t
-    else break
+/**
+ * Finds the highest threshold the user has reached but hasn't yet been celebrated for.
+ * If the user crosses a milestone on a wrong answer, this stays pending until the next
+ * correct answer fires the celebration — milestones aren't lost, just deferred.
+ */
+function highestPendingThreshold(
+  thresholds: readonly number[],
+  value: number,
+  shown: Set<string>,
+  prefix: string,
+): number | null {
+  for (let i = thresholds.length - 1; i >= 0; i--) {
+    const t = thresholds[i]
+    if (value >= t && !shown.has(`${prefix}-${t}`)) return t
   }
-  return hit
+  return null
 }
 
 function computeMilestone(
-  prevStreak: number,
   newStreak: number,
   totalAnswered: number,
   shown: Set<string>,
+  isCorrect: boolean,
 ): Milestone | null {
-  // Prefer streak milestones (higher emotional value) when both fire on the same answer.
-  if (newStreak > prevStreak) {
-    const t = STREAK_MILESTONES.find((v) => newStreak >= v && prevStreak < v)
-    if (t !== undefined && !shown.has(`streak-${t}`)) {
-      return { id: `streak-${t}`, kind: "streak", value: t, shownAt: Date.now() }
-    }
+  // Celebrations are reserved for correct answers — getting one right is the proof of
+  // progress; getting one wrong shouldn't pop a "100 answers" trophy in your face.
+  if (!isCorrect) return null
+
+  // Prefer streak milestones when both could fire — higher emotional weight.
+  const tStreak = highestPendingThreshold(STREAK_MILESTONES, newStreak, shown, "streak")
+  if (tStreak !== null) {
+    return { id: `streak-${tStreak}`, kind: "streak", value: tStreak, shownAt: Date.now() }
   }
-  // Answered: trigger only when crossing threshold "this answer" — i.e. previous total was below it.
-  // We can detect that by checking if `totalAnswered - 1 < t <= totalAnswered`.
-  const tAnswered = ANSWERED_MILESTONES.find(
-    (v) => totalAnswered >= v && totalAnswered - 1 < v,
-  )
-  if (tAnswered !== undefined && !shown.has(`answered-${tAnswered}`)) {
+
+  const tAnswered = highestPendingThreshold(ANSWERED_MILESTONES, totalAnswered, shown, "answered")
+  if (tAnswered !== null) {
     return { id: `answered-${tAnswered}`, kind: "answered", value: tAnswered, shownAt: Date.now() }
   }
-  // Defensive: if a backup imported a state where the user is well past a threshold but the
-  // milestone wasn't recorded as shown, surface the highest unshown one once.
-  const highest = highestThresholdHit(ANSWERED_MILESTONES, totalAnswered)
-  if (highest !== null && !shown.has(`answered-${highest}`) && totalAnswered === highest) {
-    return { id: `answered-${highest}`, kind: "answered", value: highest, shownAt: Date.now() }
-  }
+
   return null
+}
+
+/**
+ * When we celebrate a milestone, mark every lower-or-equal threshold of the same kind
+ * as already-shown too, so the user doesn't get "100 answers" then "50 answers" then "10
+ * answers" in three consecutive correct answers if they happened to cross all three on
+ * wrong answers earlier. The biggest one wins; the rest are silently absorbed.
+ */
+function dismissBelowAndIncluding(
+  thresholds: readonly number[],
+  ceiling: number,
+  shown: Set<string>,
+  prefix: string,
+): string[] {
+  const ids: string[] = []
+  for (const t of thresholds) {
+    if (t > ceiling) break
+    const id = `${prefix}-${t}`
+    if (!shown.has(id)) ids.push(id)
+  }
+  return ids
 }
 
 export function dismissMilestone(): void {
@@ -328,6 +363,18 @@ export async function setDailyGoal(goal: number): Promise<void> {
     ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
     id: "me",
     dailyGoal: clamped,
+  }
+  await db.put("profile", newProfile)
+  state = { ...state, profile: newProfile }
+  notify()
+  broadcast()
+}
+
+export async function setSoundEnabled(enabled: boolean): Promise<void> {
+  const newProfile: Profile = {
+    ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
+    id: "me",
+    soundEnabled: enabled,
   }
   await db.put("profile", newProfile)
   state = { ...state, profile: newProfile }
@@ -393,17 +440,22 @@ export async function recordAnswer(
   for (const t of Object.values(newDailyTotals)) totalAnswered += t.questionsAnswered
 
   const shown = new Set(state.profile?.milestonesShown ?? [])
-  const milestone = computeMilestone(state.streak, newStreak, totalAnswered, shown)
+  const milestone = computeMilestone(newStreak, totalAnswered, shown, isCorrect)
 
   let nextProfile = state.profile
   if (milestone) {
+    // Mark this milestone shown plus any lower thresholds of the same kind that the user
+    // also crossed but hasn't been celebrated for. Prevents "100 answers" then "50 then 10"
+    // on three consecutive correct answers after a string of wrong ones across thresholds.
+    const thresholds = milestone.kind === "streak" ? STREAK_MILESTONES : ANSWERED_MILESTONES
+    const newIds = dismissBelowAndIncluding(thresholds, milestone.value, shown, milestone.kind)
     const existingIds = state.profile?.milestonesShown ?? []
     nextProfile = {
       id: "me",
       displayName: state.profile?.displayName ?? null,
       createdAt: state.profile?.createdAt ?? now,
       ...(state.profile?.dailyGoal !== undefined && { dailyGoal: state.profile.dailyGoal }),
-      milestonesShown: [...existingIds, milestone.id],
+      milestonesShown: [...existingIds, ...newIds],
     }
     void db.put("profile", nextProfile)
   }

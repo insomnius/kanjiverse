@@ -5,7 +5,8 @@ import { vocabularyData } from "@/data/vocabulary-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, BookOpen, Book } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import VocabDetail from "@/components/vocab-detail"
 
 interface VocabItem {
@@ -54,6 +55,16 @@ function VocabListPage() {
           <p className="font-display italic text-sumi/70 text-base">
             Browse Japanese vocabulary by JLPT level — readings, meanings, and the kanji that compose them.
           </p>
+          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+            <Link to="/kanji-list" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
+              <Book aria-hidden="true" className="h-3.5 w-3.5" />
+              Browse kanji instead
+            </Link>
+            <Link to="/quiz" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
+              <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+              Quiz this vocabulary
+            </Link>
+          </nav>
         </header>
 
         <div className="relative mb-6">

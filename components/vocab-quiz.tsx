@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, CheckCircle, ArrowRight } from "lucide-react"
-import { recordAnswer } from "@/lib/progress/use-progress"
+import { recordAnswer, isSoundEnabled, useProgress } from "@/lib/progress/use-progress"
+import { playCorrect, playIncorrect } from "@/lib/sounds"
 
 interface VocabQuizProps {
   word: string
@@ -23,6 +24,7 @@ const Kbd = ({ children }: { children: React.ReactNode }) => (
 )
 
 export default function VocabQuiz({ word, meaning, romaji, options, level, onAnswer }: VocabQuizProps) {
+  const { profile } = useProgress()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
 
@@ -30,6 +32,10 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
     if (!selectedOption || feedback) return
     const isCorrect = selectedOption === meaning
     void recordAnswer("vocab", word, isCorrect, level)
+    if (isSoundEnabled(profile ?? null)) {
+      if (isCorrect) playCorrect()
+      else playIncorrect()
+    }
     setFeedback({
       isCorrect,
       message: isCorrect ? "Correct! (Press Enter for next)" : `Incorrect. The meaning is "${meaning}". (Press Enter for next)`,

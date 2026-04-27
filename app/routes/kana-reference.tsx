@@ -5,7 +5,8 @@ import { kanaData } from "@/data/kana-data"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { Search, BookOpen } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import KanaDetail from "@/components/kana-detail"
 
 type KanaChar = {
@@ -264,6 +265,12 @@ function KanaReferencePage() {
           <p className="font-display italic text-sumi/70 text-base">
             The two phonetic syllabaries — gojūon, dakuten, yōon, and the extended foreign-sound rows.
           </p>
+          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+            <Link to="/kana-quiz" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
+              <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+              Quiz me on these
+            </Link>
+          </nav>
         </header>
 
         <div className="relative mb-6">

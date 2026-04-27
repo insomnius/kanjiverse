@@ -1,12 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ExternalLink, Shuffle } from "lucide-react"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
 import { kanjiData } from "@/data/kanji-data"
 import {
@@ -25,12 +25,30 @@ const LEVELS = [
 
 type JLPTLevel = "N5" | "N4" | "N3" | "N2" | "N1"
 
+interface DrawSearch {
+  /** Optional deep-link target — when present we boot into "focused" mode locked to this kanji
+   *  (e.g. arriving from a /kanji/$char "Practice writing" button). */
+  char?: string
+}
+
+function findKanjiAcrossLevels(char: string): { level: JLPTLevel; index: number } | null {
+  for (const level of Object.keys(kanjiData) as JLPTLevel[]) {
+    const idx = kanjiData[level].findIndex((k) => k.kanji === char)
+    if (idx >= 0) return { level, index: idx }
+  }
+  return null
+}
+
 function DrawPage() {
-  const [level, setLevel] = useState<JLPTLevel>("N5")
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const search = Route.useSearch()
+  const focusChar = search.char ?? null
+  const focusLocation = useMemo(() => (focusChar ? findKanjiAcrossLevels(focusChar) : null), [focusChar])
+
+  const [level, setLevel] = useState<JLPTLevel>(focusLocation?.level ?? "N5")
+  const [currentIndex, setCurrentIndex] = useState(focusLocation?.index ?? 0)
   const [seen, setSeen] = useState(0)
-  // The Draw page doesn't record answers (it's practice, not a quiz), but it can still
-  // bias toward kanji the user has missed in the kanji quiz — same effect as SRS.
+  /** Focused mode locks the page to one kanji until user hits "Random" or changes level. */
+  const [focusLocked, setFocusLocked] = useState<boolean>(focusLocation !== null)
   const masteryRef = useRef<Map<string, ItemMastery>>(new Map())
 
   const levelKanji = kanjiData[level]
@@ -47,16 +65,19 @@ function DrawPage() {
   }, [])
 
   // Reset position when level changes — pick a starting kanji using the SRS picker
-  // so even the first card is biased correctly.
+  // so even the first card is biased correctly. Skipped while focus-locked so the
+  // ?char= deep-link sticks until the user explicitly hits "Random next".
   useEffect(() => {
+    if (focusLocked) return
     const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, null, {
       mastery: masteryRef.current,
     })
     setCurrentIndex(levelKanji.indexOf(next))
     setSeen(0)
-  }, [level, levelKanji])
+  }, [level, levelKanji, focusLocked])
 
   const handleNext = () => {
+    setFocusLocked(false)
     const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, current?.kanji ?? null, {
       mastery: masteryRef.current,
     })
@@ -90,7 +111,10 @@ function DrawPage() {
                 type="single"
                 value={level}
                 onValueChange={(value) => {
-                  if (value) setLevel(value as JLPTLevel)
+                  if (value) {
+                    setLevel(value as JLPTLevel)
+                    setFocusLocked(false)
+                  }
                 }}
                 aria-label="JLPT level"
                 className="flex justify-center flex-wrap gap-x-1 sm:gap-x-2"
@@ -151,16 +175,33 @@ function DrawPage() {
                     {" · "}
                     Kun: <span lang="ja" className="not-italic text-sumi">{current.kunReading}</span>
                   </CardDescription>
+                  <Link
+                    to="/kanji/$char"
+                    params={{ char: current.kanji }}
+                    className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+                  >
+                    Open full details
+                    <ExternalLink aria-hidden="true" className="h-3 w-3" />
+                  </Link>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <Separator />
               <KanjiStrokeOrder character={current.kanji} />
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-2 flex-wrap">
                 <Button onClick={handleNext} className="gap-2 min-w-[12rem]">
-                  Next kanji
-                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                  {focusLocked ? (
+                    <>
+                      <Shuffle aria-hidden="true" className="h-4 w-4" />
+                      Pick a random kanji
+                    </>
+                  ) : (
+                    <>
+                      Next kanji
+                      <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -176,6 +217,9 @@ const PAGE_DESCRIPTION =
   "Practice writing Japanese kanji by tracing each stroke. Pick a JLPT level (N1–N5) and learn proper stroke order at your own pace."
 
 export const Route = createFileRoute('/draw')({
+  validateSearch: (search: Record<string, unknown>): DrawSearch => ({
+    char: typeof search.char === "string" ? search.char.slice(0, 4) : undefined,
+  }),
   component: DrawPage,
   head: () => ({
     meta: [

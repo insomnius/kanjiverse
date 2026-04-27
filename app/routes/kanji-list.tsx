@@ -5,7 +5,8 @@ import { kanjiData } from "@/data/kanji-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import { Search, BookOpen } from "lucide-react"
+import { Search, BookOpen, Pencil, PenLine } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import KanjiDetail from "@/components/kanji-detail"
 import type { Kanji } from "@/data/kanji-data"
 
@@ -51,6 +52,29 @@ function KanjiListPage() {
           <p className="font-display italic text-sumi/70 text-base">
             Browse every kanji from N5 (beginner) to N1 (advanced).
           </p>
+          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+            <Link
+              to="/draw-search"
+              className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+            >
+              <PenLine aria-hidden="true" className="h-3.5 w-3.5" />
+              Don't know the character? Find by drawing
+            </Link>
+            <Link
+              to="/draw"
+              className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+            >
+              <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
+              Practice stroke order
+            </Link>
+            <Link
+              to="/quiz"
+              className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
+            >
+              <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+              Take a quiz
+            </Link>
+          </nav>
         </header>
 
         <div className="relative mb-6">

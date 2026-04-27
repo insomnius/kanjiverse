@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, CheckCircle } from "lucide-react"
-import { recordAnswer } from "@/lib/progress/use-progress"
+import { recordAnswer, isSoundEnabled, useProgress } from "@/lib/progress/use-progress"
+import { playCorrect, playIncorrect } from "@/lib/sounds"
 
 interface KanaQuizProps {
   kana: string
@@ -20,6 +21,7 @@ const Kbd = ({ children }: { children: React.ReactNode }) => (
 )
 
 export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: KanaQuizProps) {
+  const { profile } = useProgress()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
   const [isChecking, setIsChecking] = useState(false)
@@ -35,6 +37,10 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
     setIsChecking(true)
     const isCorrect = selectedOption === romaji
     void recordAnswer("kana", kana, isCorrect, kanaType)
+    if (isSoundEnabled(profile ?? null)) {
+      if (isCorrect) playCorrect()
+      else playIncorrect()
+    }
 
     setFeedback({
       isCorrect,
