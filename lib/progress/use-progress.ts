@@ -17,6 +17,8 @@ export {
   setDailyGoal,
   setSoundEnabled,
   isSoundEnabled,
+  setTtsEnabled,
+  isTtsEnabled,
   recordAnswer,
   reset,
   getTotals,
@@ -33,6 +35,7 @@ export {
   ANSWERED_MILESTONES,
   DEFAULT_DAILY_GOAL,
   DEFAULT_SOUND_ENABLED,
+  DEFAULT_TTS_ENABLED,
   MIN_DAILY_GOAL,
   MAX_DAILY_GOAL,
 } from "./store"

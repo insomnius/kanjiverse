@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { kanaData } from "@/data/kana-data"
 import { MasteryBadge } from "@/components/mastery-badge"
+import { SpeakButton } from "@/components/speak-button"
 
 interface KanaDetailProps {
   kana: string
@@ -58,8 +59,15 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col sm:flex-row sm:items-baseline gap-x-6 gap-y-3 flex-1">
-            <div lang="ja" className="text-7xl sm:text-8xl font-bold text-sumi leading-none">
-              {kana}
+            <div className="flex items-end gap-1">
+              <div lang="ja" className="text-7xl sm:text-8xl font-bold text-sumi leading-none">
+                {kana}
+              </div>
+              <SpeakButton
+                text={kana}
+                label={`Speak ${kana} in Japanese`}
+                className="-mb-1"
+              />
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">

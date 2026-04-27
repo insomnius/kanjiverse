@@ -93,8 +93,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webmanifest,xml,txt,woff2}"],
-        // Don't precache the heavy kanji-data chunk — runtime cache it instead so first visit isn't slowed down by 1.2MB.
-        globIgnores: ["**/kanji-data-*.js"],
+        // Don't precache the heavy data chunks — runtime cache them instead so first visit isn't slowed down by ~1.6MB.
+        globIgnores: ["**/kanji-data-*.js", "**/kanji-stroke-features-*.js"],
         cleanupOutdatedCaches: true,
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/robots\.txt$/, /^\/manifest\.webmanifest$/],
@@ -119,6 +119,16 @@ export default defineConfig({
               cacheableResponse: { statuses: [0, 200] },
             },
           },
+          {
+            // Lazy-loaded stroke-features chunk: cache once fetched.
+            urlPattern: /\/assets\/kanji-stroke-features-.*\.js$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "kanji-stroke-features",
+              expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
         ],
       },
     }),
@@ -138,6 +148,8 @@ export default defineConfig({
           if (id.includes("raw-kanji-data.json")) return "kanji-data"
           if (id.includes("vocabulary-data")) return "vocabulary-data"
           if (id.includes("kana-data")) return "kana-data"
+          if (id.includes("kanji-stroke-features.json")) return "kanji-stroke-features"
+          if (id.includes("kanji-stroke-counts.json")) return "kanji-stroke-counts"
           // Group React + router into a stable vendor chunk so it caches across deploys.
           if (id.includes("node_modules/react") || id.includes("node_modules/scheduler")) return "react-vendor"
           if (id.includes("@tanstack/react-router")) return "router-vendor"

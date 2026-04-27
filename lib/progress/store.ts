@@ -21,6 +21,11 @@ export interface Profile {
    *  undefined — the chimes are soft enough that they're a delightful default, but the user
    *  can mute on their first visit via Profile if needed. Additive field. */
   soundEnabled?: boolean
+  /** Whether the per-character "speak this" TTS buttons in detail panels are active.
+   *  Default ON when undefined. The button itself only renders when the user's OS
+   *  reports a Japanese voice, so this flag never matters on systems that wouldn't
+   *  speak anyway (Linux without a JP voice, etc.). Additive field. */
+  ttsEnabled?: boolean
 }
 
 export const DEFAULT_SOUND_ENABLED = true
@@ -28,6 +33,13 @@ export const DEFAULT_SOUND_ENABLED = true
 export function isSoundEnabled(profile: Profile | null): boolean {
   if (!profile) return DEFAULT_SOUND_ENABLED
   return profile.soundEnabled ?? DEFAULT_SOUND_ENABLED
+}
+
+export const DEFAULT_TTS_ENABLED = true
+
+export function isTtsEnabled(profile: Profile | null): boolean {
+  if (!profile) return DEFAULT_TTS_ENABLED
+  return profile.ttsEnabled ?? DEFAULT_TTS_ENABLED
 }
 
 export const DEFAULT_DAILY_GOAL = 10
@@ -375,6 +387,18 @@ export async function setSoundEnabled(enabled: boolean): Promise<void> {
     ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
     id: "me",
     soundEnabled: enabled,
+  }
+  await db.put("profile", newProfile)
+  state = { ...state, profile: newProfile }
+  notify()
+  broadcast()
+}
+
+export async function setTtsEnabled(enabled: boolean): Promise<void> {
+  const newProfile: Profile = {
+    ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
+    id: "me",
+    ttsEnabled: enabled,
   }
   await db.put("profile", newProfile)
   state = { ...state, profile: newProfile }

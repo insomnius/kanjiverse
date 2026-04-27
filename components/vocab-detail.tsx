@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { kanjiData } from "@/data/kanji-data"
 import { MasteryBadge } from "@/components/mastery-badge"
+import { SpeakButton } from "@/components/speak-button"
 import type { Kanji } from "@/data/kanji-data"
 
 interface VocabItem {
@@ -55,8 +56,15 @@ export default function VocabDetail({ vocab, level, onClose }: VocabDetailProps)
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col sm:flex-row sm:items-baseline gap-x-6 gap-y-3 flex-1">
-            <div lang="ja" className="text-5xl sm:text-6xl font-bold text-sumi leading-none">
-              {vocab.word}
+            <div className="flex items-end gap-1">
+              <div lang="ja" className="text-5xl sm:text-6xl font-bold text-sumi leading-none">
+                {vocab.word}
+              </div>
+              <SpeakButton
+                text={vocab.word}
+                label={`Speak ${vocab.word} in Japanese`}
+                className="-mb-1"
+              />
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">

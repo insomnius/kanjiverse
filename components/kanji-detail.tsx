@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
 import { MasteryBadge } from "@/components/mastery-badge"
+import { SpeakButton } from "@/components/speak-button"
+import { SimilarKanji } from "@/components/similar-kanji"
 import type { Kanji } from "@/data/kanji-data"
 
 interface KanjiDetailProps {
@@ -42,8 +44,15 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col sm:flex-row sm:items-baseline gap-x-6 gap-y-3 flex-1">
-            <div lang="ja" className="text-7xl sm:text-8xl font-bold text-sumi leading-none">
-              {kanji.kanji}
+            <div className="flex items-end gap-1">
+              <div lang="ja" className="text-7xl sm:text-8xl font-bold text-sumi leading-none">
+                {kanji.kanji}
+              </div>
+              <SpeakButton
+                text={kanji.kanji}
+                label={`Speak ${kanji.kanji} in Japanese`}
+                className="-mb-1"
+              />
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
@@ -95,18 +104,31 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="readings">
-          <TabsList className="grid w-full grid-cols-3" aria-label="Kanji details">
-            <TabsTrigger value="readings" className="font-display">Readings</TabsTrigger>
-            <TabsTrigger value="strokes" className="font-display">Strokes</TabsTrigger>
-            <TabsTrigger value="examples" className="font-display">Examples ({kanji.examples?.length || 0})</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto" aria-label="Kanji details">
+            <TabsTrigger value="readings" className="font-display min-h-[36px]">Readings</TabsTrigger>
+            <TabsTrigger value="strokes" className="font-display min-h-[36px]">Strokes</TabsTrigger>
+            <TabsTrigger value="examples" className="font-display min-h-[36px]">
+              Examples
+              <span className="ml-1.5 text-xs tabular-nums opacity-70">{kanji.examples?.length || 0}</span>
+            </TabsTrigger>
+            <TabsTrigger value="similar" className="font-display min-h-[36px]">Similar</TabsTrigger>
           </TabsList>
           <TabsContent value="readings" className="space-y-4 mt-4">
             <div>
               <h3 className="font-display text-base text-sumi font-semibold mb-2">On Reading (<span lang="ja">音読み</span>)</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3 bg-cream-deep rounded-md">
-                  <p lang="ja" className="text-lg">{kanji.onReading}</p>
-                  <p className="text-sm text-sumi/70">{kanji.onReadingRomaji}</p>
+                <div className="p-3 bg-cream-deep rounded-md flex items-start justify-between gap-2">
+                  <div>
+                    <p lang="ja" className="text-lg">{kanji.onReading}</p>
+                    <p className="text-sm text-sumi/70">{kanji.onReadingRomaji}</p>
+                  </div>
+                  {kanji.onReading && (
+                    <SpeakButton
+                      text={kanji.onReading}
+                      label={`Speak on reading ${kanji.onReading}`}
+                      className="-mt-1 -mr-1"
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -114,9 +136,18 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             <div>
               <h3 className="font-display text-base text-sumi font-semibold mb-2">Kun Reading (<span lang="ja">訓読み</span>)</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3 bg-cream-deep rounded-md">
-                  <p lang="ja" className="text-lg">{kanji.kunReading}</p>
-                  <p className="text-sm text-sumi/70">{kanji.kunReadingRomaji}</p>
+                <div className="p-3 bg-cream-deep rounded-md flex items-start justify-between gap-2">
+                  <div>
+                    <p lang="ja" className="text-lg">{kanji.kunReading}</p>
+                    <p className="text-sm text-sumi/70">{kanji.kunReadingRomaji}</p>
+                  </div>
+                  {kanji.kunReading && (
+                    <SpeakButton
+                      text={kanji.kunReading}
+                      label={`Speak kun reading ${kanji.kunReading}`}
+                      className="-mt-1 -mr-1"
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -131,7 +162,14 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
                   {displayExamples.map((example, index) => (
                     <Card key={index} className="overflow-hidden bg-cream-deep border-sumi/10">
                       <CardContent className="p-4">
-                        <p lang="ja" className="text-lg font-bold">{example.kana}</p>
+                        <div className="flex items-start justify-between gap-2">
+                          <p lang="ja" className="text-lg font-bold">{example.kana}</p>
+                          <SpeakButton
+                            text={example.kana}
+                            label={`Speak example: ${example.kana}`}
+                            className="-mt-1 -mr-1 shrink-0"
+                          />
+                        </div>
                         <p className="text-sm text-sumi/70 mb-2">{example.KanaRomaji}</p>
                         <p className="text-md">{example.translation}</p>
                       </CardContent>
@@ -156,6 +194,12 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             ) : (
               <p className="text-center text-sumi/70 py-8">No examples available</p>
             )}
+          </TabsContent>
+          <TabsContent value="similar" className="mt-4">
+            <p className="font-display italic text-sm text-sumi/70 mb-3">
+              Visually-similar kanji from the JLPT N1–N5 set, ranked by stroke shape.
+            </p>
+            <SimilarKanji char={kanji.kanji} />
           </TabsContent>
         </Tabs>
       </CardContent>

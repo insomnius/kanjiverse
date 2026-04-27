@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2, Volume2, VolumeX } from "lucide-react"
+import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2, Volume2, VolumeX, Mic, MicOff } from "lucide-react"
 import { playCorrect } from "@/lib/sounds"
+import { hasJapaneseVoice, isTtsSupported, speakJapanese, subscribeVoices } from "@/lib/tts"
 import { ContributionCalendar } from "@/components/contribution-calendar"
 import { ShareButtons } from "@/components/share-buttons"
 import {
   useProgress, setDisplayName, setDailyGoal, setSoundEnabled, isSoundEnabled,
+  setTtsEnabled, isTtsEnabled,
   reset, getTotals, getDailyGoal,
   exportData, importData,
   DEFAULT_DAILY_GOAL, MIN_DAILY_GOAL, MAX_DAILY_GOAL,
@@ -106,7 +108,13 @@ function ProfilePage() {
   const [pendingImportFile, setPendingImportFile] = useState<File | null>(null)
   const [progress, setProgress] = useState<{ kind: "backup" | "import"; phase: string; pct: number } | null>(null)
   const [lastBackupSize, setLastBackupSize] = useState<{ uncompressed: number; compressed: number } | null>(null)
+  const [voiceAvailable, setVoiceAvailable] = useState(() => hasJapaneseVoice())
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!isTtsSupported()) return
+    return subscribeVoices(() => setVoiceAvailable(hasJapaneseVoice()))
+  }, [])
 
   const handleBackup = async () => {
     setImportStatus(null)
@@ -400,6 +408,75 @@ function ProfilePage() {
             </div>
             <p className="font-display italic text-xs text-sumi/70 mt-3">
               Sounds also respect your system's reduced-motion preference — we won't play anything if you've asked the OS to keep things still.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* ---------- Japanese pronunciation (TTS) ---------- */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="font-display text-xl text-sumi font-medium flex items-center gap-2">
+              {isTtsEnabled(profile ?? null) && voiceAvailable ? (
+                <Mic aria-hidden="true" className="h-4 w-4 text-vermilion-deep" />
+              ) : (
+                <MicOff aria-hidden="true" className="h-4 w-4 text-sumi/55" />
+              )}
+              Japanese pronunciation
+            </CardTitle>
+            <CardDescription className="font-display italic text-sumi/70">
+              Tap the speaker icon next to a kanji, vocab word, or kana to hear it spoken using your device's Japanese voice. Nothing is sent to a server.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {!isTtsSupported() ? (
+              <p className="font-display italic text-xs text-sumi/70">
+                Your browser doesn't expose the Web Speech API. Pronunciation buttons won't appear in detail panels.
+              </p>
+            ) : !voiceAvailable ? (
+              <p className="font-display italic text-xs text-sumi/70">
+                No Japanese voice is installed on this device, so pronunciation buttons stay hidden. On Linux, install <code className="font-mono not-italic text-sumi">espeak-ng</code> with a Japanese voice; on Android, add a Japanese voice in <span className="not-italic">Settings → Accessibility → Text-to-speech</span>.
+              </p>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  type="button"
+                  variant={isTtsEnabled(profile ?? null) ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    const next = !isTtsEnabled(profile ?? null)
+                    void setTtsEnabled(next)
+                    if (next) speakJapanese("こんにちは")
+                  }}
+                  aria-pressed={isTtsEnabled(profile ?? null)}
+                  className="gap-2"
+                >
+                  {isTtsEnabled(profile ?? null) ? (
+                    <>
+                      <Mic aria-hidden="true" className="h-4 w-4" />
+                      Pronunciation on
+                    </>
+                  ) : (
+                    <>
+                      <MicOff aria-hidden="true" className="h-4 w-4" />
+                      Pronunciation off
+                    </>
+                  )}
+                </Button>
+                {isTtsEnabled(profile ?? null) && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => speakJapanese("こんにちは")}
+                    className="text-sumi/70"
+                  >
+                    Preview <span lang="ja" className="ml-1">こんにちは</span>
+                  </Button>
+                )}
+              </div>
+            )}
+            <p className="font-display italic text-xs text-sumi/70 mt-3">
+              Pronunciation also respects your system's reduced-motion preference.
             </p>
           </CardContent>
         </Card>
