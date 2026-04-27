@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { vocabularyData } from "@/data/vocabulary-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,6 +11,7 @@ import { SegmentedControl } from "@/components/segmented-control"
 import { JLPT_LEVELS } from "@/components/level-selector"
 import { VirtualizedVocabGrid } from "@/components/virtualized-vocab-grid"
 import { useDeferredSearch } from "@/lib/use-deferred-search"
+import { useSearchHotkey } from "@/lib/use-search-hotkey"
 
 interface VocabItem {
   word: string;
@@ -38,6 +39,15 @@ function VocabListPage() {
   const search = useDeferredSearch("")
   const [selectedVocab, setSelectedVocab] = useState<{ vocab: VocabItem; level: string } | null>(null)
   const [activeLevel, setActiveLevel] = useState<string>("N5")
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useSearchHotkey({
+    inputRef: searchInputRef,
+    onEscapeClear: () => {
+      search.clear()
+      setSelectedVocab(null)
+    },
+  })
 
   const trimmed = search.deferred.trim()
   const filtered = useMemo<VocabItem[]>(() => {
@@ -74,37 +84,43 @@ function VocabListPage() {
           </nav>
         </header>
 
-        {/* Sticky search — same pattern as kanji-list. */}
-        <div className="sticky top-16 z-30 bg-cream/95 backdrop-blur-sm pb-3 mb-4 -mx-4 px-4 border-b border-sumi/10 sm:mx-0 sm:px-0 sm:border-b-0">
-          <div className="relative">
-            <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70 pointer-events-none" />
-            <Input
-              type="search"
-              aria-label="Search vocabulary by word, meaning, or pronunciation"
-              placeholder="Search word, meaning, or pronunciation…"
-              value={search.value}
-              onChange={(e) => search.setValue(e.target.value)}
-              onCompositionStart={search.onCompositionStart}
-              onCompositionEnd={(e) => search.onCompositionEnd(e.currentTarget.value)}
-              className="pl-10 pr-10 bg-white/80 border-sumi/15"
-              enterKeyHint="search"
-              autoComplete="off"
-              spellCheck={false}
-            />
-            {search.value && (
-              <button
-                type="button"
-                onClick={() => {
-                  search.clear()
-                  setSelectedVocab(null)
-                }}
-                aria-label="Clear search"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
-              >
-                <X aria-hidden="true" className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+        <div className="relative mb-6">
+          <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70 pointer-events-none" />
+          <Input
+            ref={searchInputRef}
+            type="search"
+            aria-label="Search vocabulary by word, meaning, or pronunciation"
+            aria-keyshortcuts="/"
+            placeholder="Search word, meaning, or pronunciation…"
+            value={search.value}
+            onChange={(e) => search.setValue(e.target.value)}
+            onCompositionStart={search.onCompositionStart}
+            onCompositionEnd={(e) => search.onCompositionEnd(e.currentTarget.value)}
+            className="pl-10 pr-20 sm:pr-24 bg-white/80 border-sumi/15"
+            enterKeyHint="search"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {search.value ? (
+            <button
+              type="button"
+              onClick={() => {
+                search.clear()
+                setSelectedVocab(null)
+              }}
+              aria-label="Clear search (Escape)"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
+            >
+              <X aria-hidden="true" className="h-4 w-4" />
+            </button>
+          ) : (
+            <kbd
+              aria-hidden="true"
+              className="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded border border-sumi/20 bg-cream-deep text-sumi/70 font-mono text-[0.65rem] font-medium pointer-events-none"
+            >
+              /
+            </kbd>
+          )}
         </div>
 
         <div className="mb-6 sm:mb-8">
