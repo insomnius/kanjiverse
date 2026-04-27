@@ -9,6 +9,7 @@ Vite + React 19 + TanStack Router + Tailwind 3 + TypeScript (strict). Bun is the
 - `bun run build` — `tsc && vite build`. **This is the deploy gate** — `tsc` errors block deployment, including `noUnusedLocals` / `noUnusedParameters`. Always run the full `bun run build` before declaring work done; `vite build` alone is not sufficient.
 - `bun run a11y` — Playwright + axe-core sweep across all 10 routes (WCAG 2.1 AA). Boots `vite preview` itself; exits non-zero on critical/serious violations. Add `--all` (`bun run a11y:all`) to also sample per-character pages. Run before merging UI changes.
 - `bun run check:unused` — `knip` audit for unused files, dependencies, and exports. Configured in `knip.json`. Run when adding a file or import to confirm you haven't left orphans behind. The 3 reported unused shadcn exports (`DialogTrigger`, `DropdownMenuGroup`, `DropdownMenuPortal`) are intentional library surface — don't trim them.
+- `bun run check:licenses` — license audit (`scripts/check-licenses.ts`). Two passes: (1) every npm package in `node_modules`, separating production-tree from dev-only and applying a strict allowlist to the former; (2) every bundled / runtime-fetched data source declared in `data/data-licenses.json`. Exits non-zero on any production-tree package with a denied or unrecognised license, or any data source missing from the manifest. **Run before:** adding a new dependency (`bun add` anything), integrating a new data source, and once before each deploy.
 - `make buildprod` — Docker build against the `production-vm-1` context. Wired into the monorepo `make deploy_all` target.
 
 ## Project layout
@@ -319,6 +320,30 @@ Two retention mechanics, deliberately editorial-restrained:
   - `react-vendor`, `router-vendor`, `radix-vendor` — long-lived caches across deploys.
   - `kanji-data`, `vocabulary-data`, `kana-data` — keep heavy data files isolated so route code splitting can lazy-load them.
 - The landing page (`/`) does **not** import the data files, so first-paint JS stays small (~280 KB total over react-vendor + router-vendor + the route entry). Don't import `@/data/kanji-data` from the landing route or shared components.
+
+## License hygiene SOP
+
+The site is private (no source license declared) but redistributes a number of third-party assets — fonts, vocabulary lists, stroke-data lookups, the Insomnius brand mark. We keep an explicit audit trail so a clean "we're safe to ship" answer is always available without digging through `node_modules` by hand.
+
+### Rule of thumb
+
+- **npm dep**: must end up MIT / ISC / Apache-2.0 / BSD-* / MPL-2.0 / 0BSD / Unlicense / CC0 / OFL / BlueOak in the production tree (anything copyleft like GPL/LGPL/AGPL is denied if it ships to users; dev-only is OK). Allowlist + denylist live in `scripts/check-licenses.ts`.
+- **Bundled data** (anything we redistribute as a static asset): record in `data/data-licenses.json` with `id`, `description`, `license`, `url`, `redistributedAs`, `attribution`, and a `note` if anything's non-obvious. The audit refuses any data source not listed there.
+- **Runtime-fetched data** (e.g. hanzi-writer JSON from jsdelivr): also recorded in the manifest. We're not redistributing it ourselves, but the audit trail matters for facts like "we never ship the LGPL stroke paths into our bundle."
+
+### When to run `bun run check:licenses`
+
+1. **Before** running `bun add <anything>` — actually do this in this order: install, then run the audit. If a new transitive lands a denied license, you'll see it before committing.
+2. **Before** integrating a new bundled / runtime-fetched data source. After adding the entry to `data/data-licenses.json`, re-run.
+3. **Once per deploy.** Not strictly automated; the build doesn't gate on it. But it's a 2-second sanity check.
+
+### Adding a new permissive license to the allowlist
+
+If `check:licenses` flags an unfamiliar license that's actually permissive (e.g. a new SPDX token surfaces in a transitive), add it to the `ALLOWED` set in `scripts/check-licenses.ts` with a brief comment. Do **not** silence the warning by removing the package — fix the allowlist with intent.
+
+### Manual override for non-SPDX strings
+
+When a data source has a license string that isn't a clean SPDX identifier but a human review concludes our usage is compliant (the hanzi-writer-data case), set `manualOverride: { reason: "..." }` on the entry in `data/data-licenses.json`. The reason becomes the audit trail — write it for the next person, not for yourself.
 
 ## What's intentionally NOT here
 

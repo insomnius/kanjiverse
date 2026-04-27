@@ -1,0 +1,70 @@
+{
+  "$comment": "Manifest of bundled / runtime-fetched data sources, with their license + URL of origin. Edited by hand when adding a new third-party data dependency. `bun run check:licenses` reads this file and refuses unknown / non-permissive sources.",
+  "sources": [
+    {
+      "id": "newsreader-font",
+      "description": "Newsreader variable font (Latin subset)",
+      "license": "OFL-1.1",
+      "url": "https://fonts.google.com/specimen/Newsreader",
+      "redistributedAs": "node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-*.woff2",
+      "attribution": "Production Type, https://github.com/productiontype/Newsreader"
+    },
+    {
+      "id": "noto-serif-jp-kanji-subset",
+      "description": "Noto Serif JP subset containing only 漢字 glyphs, used for the wordmark.",
+      "license": "OFL-1.1",
+      "url": "https://fonts.google.com/noto/specimen/Noto+Serif+JP",
+      "redistributedAs": "public/fonts/noto-serif-jp-kanji-subset.woff2",
+      "attribution": "Google Inc., Adobe, et al. — Noto Project"
+    },
+    {
+      "id": "kanji-stroke-data",
+      "description": "Hanzi-writer stroke order JSON for kanji (loaded from CDN at runtime, not bundled).",
+      "license": "ARPHIC-PUBLIC-LICENSE / LGPL-3.0",
+      "url": "https://github.com/chanind/hanzi-writer-data",
+      "redistributedAs": "<runtime fetch from cdn.jsdelivr.net/npm/hanzi-writer-data{,-jp}>",
+      "attribution": "Make Me a Hanzi project (Lord Yu) — https://github.com/skishore/makemeahanzi",
+      "note": "Not redistributed by us — fetched on-demand at the user's browser. Our build pipeline only reads it once to derive the small kanji-stroke-counts.json + kanji-stroke-features.json (factual data: stroke counts and start/end coordinates), which falls under fair use of factual extraction. Original SVG paths never enter our bundle.",
+      "manualOverride": {
+        "reason": "Source license includes LGPL-3.0 which our denylist forbids for redistribution, but we don't redistribute the data — the user's browser fetches it directly from jsdelivr at runtime. The derived kanji-stroke-counts.json + kanji-stroke-features.json contain only factual measurements (stroke counts, start/end coordinates) which are not copyrightable under US/EU law. SVG path data never enters our bundle."
+      }
+    },
+    {
+      "id": "n1-vocab-list",
+      "description": "JLPT N1 vocabulary list (2,685 entries). Originally derived from Jonathan Waller's tanos.co.uk JLPT 1-kyū list (released into the public domain); curation + meanings by Jamie Sinclair under MIT.",
+      "license": "MIT",
+      "url": "https://github.com/jamsinclair/open-anki-jlpt-decks",
+      "redistributedAs": "data/vocabulary-data.ts (N1 block)",
+      "attribution": "Jamie Sinclair, 2020 — https://github.com/jamsinclair/open-anki-jlpt-decks"
+    },
+    {
+      "id": "n5-n4-n3-n2-vocab",
+      "description": "JLPT N5–N2 vocabulary list — entries authored locally over time, not lifted from a single upstream source. Free to redistribute.",
+      "license": "MIT",
+      "redistributedAs": "data/vocabulary-data.ts (N5–N2 blocks)",
+      "attribution": "Kanji by Insomnius project authors"
+    },
+    {
+      "id": "kanji-data",
+      "description": "JLPT N1–N5 kanji entries (2,034 characters with on/kun readings, meanings, and example words). Authored / curated locally for the project; not redistributed from a single upstream source.",
+      "license": "MIT",
+      "redistributedAs": "data/raw-kanji-data.json",
+      "attribution": "Kanji by Insomnius project authors"
+    },
+    {
+      "id": "kana-data",
+      "description": "Hiragana + katakana tables (gojūon, dakuten, yōon, extended). Authored locally; based on the standard Japanese kana inventory which is in the public domain.",
+      "license": "MIT",
+      "redistributedAs": "data/kana-data.ts",
+      "attribution": "Kanji by Insomnius project authors"
+    },
+    {
+      "id": "insomnius-logo",
+      "description": "Insomnius brand mark (small webp), used in the site footer and linked back to insomnius.dev.",
+      "license": "All rights reserved",
+      "redistributedAs": "public/insomnius-logo.webp",
+      "attribution": "Insomnius",
+      "note": "Internal asset. Same author as the site; permission is implicit."
+    }
+  ]
+}

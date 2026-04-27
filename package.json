@@ -9,7 +9,8 @@
     "a11y": "bun run scripts/a11y-check.ts",
     "a11y:all": "bun run scripts/a11y-check.ts -- --all",
     "check:unused": "knip",
-    "check:unused:fix": "knip --fix"
+    "check:unused:fix": "knip --fix",
+    "check:licenses": "bun run scripts/check-licenses.ts"
   },
   "dependencies": {
     "@fontsource-variable/newsreader": "^5.2.10",
