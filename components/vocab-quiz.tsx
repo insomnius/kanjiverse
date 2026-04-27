@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
@@ -27,6 +27,16 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
   const { profile } = useProgress()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
+  const nextButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Move focus to "Next Question" once feedback shows so a follow-up Enter
+  // advances naturally via native button activation (no double-fire risk from
+  // a global Enter listener competing with the focused button).
+  useEffect(() => {
+    if (feedback && nextButtonRef.current) {
+      nextButtonRef.current.focus()
+    }
+  }, [feedback])
 
   const handleSubmit = () => {
     if (!selectedOption || feedback) return
@@ -54,13 +64,10 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
       const target = event.target as HTMLElement | null
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
 
-      if (feedback) {
-        if (event.key === 'Enter') {
-          event.preventDefault()
-          nextQuestion(feedback.isCorrect)
-        }
-        return
-      }
+      // While feedback is showing, focus is on the Next Question button —
+      // native Enter activation handles advancing. Stay out of its way to avoid
+      // double-fire.
+      if (feedback) return
 
       // Number keys select option at that 1-indexed position
       const num = parseInt(event.key, 10)
@@ -152,6 +159,7 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
             </div>
 
             <Button
+              ref={nextButtonRef}
               onClick={() => nextQuestion(feedback.isCorrect)}
               className="w-full flex items-center justify-center"
             >

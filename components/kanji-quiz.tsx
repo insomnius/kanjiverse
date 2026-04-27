@@ -25,34 +25,16 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
   const [isChecking, setIsChecking] = useState(false)
   const [showAllExamples, setShowAllExamples] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const nextButtonRef = useRef<HTMLButtonElement>(null)
 
-  // Add keyboard event listener for Enter key when feedback is shown
+  // Move focus deliberately so a follow-up Enter goes to the right control.
+  // After submit the form's Submit button gets disabled, which strands focus on
+  // the body; we redirect it to "Next Question" so pressing Enter again advances.
+  // When a new question loads, focus returns to the input.
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' && feedback) {
-        if (feedback.isCorrect) {
-          // Go to next question when pressing Enter after a correct answer
-          onAnswer(true)
-          setUserAnswer("")
-          setFeedback(null)
-          setIsChecking(false)
-        } else {
-          // Go to next question when pressing Enter after an incorrect answer
-          handleNextQuestion()
-        }
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [feedback])
-
-  // Focus the input when ready for a new question
-  useEffect(() => {
-    if (!feedback && inputRef.current) {
+    if (feedback && nextButtonRef.current) {
+      nextButtonRef.current.focus()
+    } else if (!feedback && inputRef.current) {
       inputRef.current.focus()
     }
   }, [feedback])
@@ -86,7 +68,7 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
   }
 
   const handleNextQuestion = () => {
-    onAnswer(false)
+    onAnswer(feedback?.isCorrect ?? false)
     setUserAnswer("")
     setFeedback(null)
     setIsChecking(false)
@@ -202,11 +184,14 @@ export default function KanjiQuiz({ kanji, onAnswer }: KanjiQuizProps) {
                     </TabsContent>
                   </Tabs>
 
-                  {/* Next button for incorrect answers */}
                   {isChecking && (
                     <div className="mt-4">
-                      <Button onClick={handleNextQuestion} className="w-full flex items-center justify-center">
-                        Next Question <ArrowRight className="ml-2 h-4 w-4" />
+                      <Button
+                        ref={nextButtonRef}
+                        onClick={handleNextQuestion}
+                        className="w-full flex items-center justify-center"
+                      >
+                        Next Question <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
                   )}
