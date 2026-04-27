@@ -1,5 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { MainNav } from '@/components/navigation/main-nav'
+import { MilestoneToast } from '@/components/milestone-toast'
 // Vite resolves these to content-hashed URLs at build time. Importing as `?url` lets us preload
 // them with the right hash baked in — the alternative (declaring them in index.html) goes stale
 // every build.
@@ -62,6 +63,7 @@ export const Route = createRootRoute({
         Skip to main content
       </a>
       <MainNav />
+      <MilestoneToast />
       <main id="main" className="min-h-screen pt-8 px-4 pb-16">
         <Outlet />
       </main>

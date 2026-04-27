@@ -28,6 +28,12 @@ function KanjiCharacterPage() {
 
       {kanji ? (
         <>
+          {/* sr-only h1 satisfies axe page-has-heading-one without disrupting the visual
+              layout; the big kanji glyph in KanjiDetail is the visible heading. */}
+          <h1 className="sr-only">
+            <span lang="ja">{kanji.kanji}</span> — {kanji.meaning.join(", ")} — JLPT {kanji.jlptLevel} kanji
+          </h1>
+          <h2 className="sr-only">Character details</h2>
           <script
             type="application/ld+json"
             // React 19 hoists scripts; this provides Google with structured data

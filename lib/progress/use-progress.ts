@@ -22,9 +22,21 @@ export {
   exportData,
   importData,
   getRecentSessions,
+  getItemMastery,
+  getItemMasteryMap,
+  applyAnswerToMasteryMap,
+  dismissMilestone,
+  EMPTY_MASTERY,
+  STREAK_MILESTONES,
+  ANSWERED_MILESTONES,
   DEFAULT_DAILY_GOAL,
   MIN_DAILY_GOAL,
   MAX_DAILY_GOAL,
 } from "./store"
 
-export type { Profile, Session, DailyTotal, QuizType, ProgressCallback, BackupBlob, ImportResult } from "./store"
+export { srsWeight, pickWeighted, pickWeightedExcluding } from "./srs"
+
+export type {
+  Profile, Session, DailyTotal, QuizType, ProgressCallback, BackupBlob, ImportResult,
+  ItemMastery, Milestone,
+} from "./store"

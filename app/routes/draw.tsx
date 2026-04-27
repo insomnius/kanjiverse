@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,6 +9,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { ArrowRight } from "lucide-react"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
 import { kanjiData } from "@/data/kanji-data"
+import {
+  getItemMasteryMap,
+  pickWeightedExcluding,
+  type ItemMastery,
+} from "@/lib/progress/use-progress"
 
 const LEVELS = [
   { value: "N5", label: "Beginner" },
@@ -18,31 +23,44 @@ const LEVELS = [
   { value: "N1", label: "Advanced" },
 ]
 
-const pickRandomIndex = (max: number, exclude: number) => {
-  if (max <= 1) return 0
-  let next = Math.floor(Math.random() * max)
-  if (next === exclude) next = (next + 1) % max
-  return next
-}
-
 type JLPTLevel = "N5" | "N4" | "N3" | "N2" | "N1"
 
 function DrawPage() {
   const [level, setLevel] = useState<JLPTLevel>("N5")
   const [currentIndex, setCurrentIndex] = useState(0)
   const [seen, setSeen] = useState(0)
+  // The Draw page doesn't record answers (it's practice, not a quiz), but it can still
+  // bias toward kanji the user has missed in the kanji quiz — same effect as SRS.
+  const masteryRef = useRef<Map<string, ItemMastery>>(new Map())
 
   const levelKanji = kanjiData[level]
   const current = levelKanji[currentIndex]
 
-  // Reset position when level changes
   useEffect(() => {
-    setCurrentIndex(Math.floor(Math.random() * levelKanji.length))
+    let cancelled = false
+    void getItemMasteryMap("kanji").then((m) => {
+      if (!cancelled) masteryRef.current = m
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // Reset position when level changes — pick a starting kanji using the SRS picker
+  // so even the first card is biased correctly.
+  useEffect(() => {
+    const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, null, {
+      mastery: masteryRef.current,
+    })
+    setCurrentIndex(levelKanji.indexOf(next))
     setSeen(0)
-  }, [level, levelKanji.length])
+  }, [level, levelKanji])
 
   const handleNext = () => {
-    setCurrentIndex((prev) => pickRandomIndex(levelKanji.length, prev))
+    const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, current?.kanji ?? null, {
+      mastery: masteryRef.current,
+    })
+    setCurrentIndex(levelKanji.indexOf(next))
     setSeen((prev) => prev + 1)
   }
 

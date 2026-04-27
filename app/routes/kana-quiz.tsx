@@ -1,12 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { useState, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import { kanaData } from "@/data/kana-data"
 import KanaQuiz from "@/components/kana-quiz"
 import { QuizMeter } from "@/components/quiz-meter"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {
+  getItemMasteryMap,
+  applyAnswerToMasteryMap,
+  pickWeightedExcluding,
+  type ItemMastery,
+} from "@/lib/progress/use-progress"
 
 // Helper function to flatten kana data for easier access
 const flattenKanaData = (type: "hiragana" | "katakana", sections: string[]) => {
@@ -25,18 +31,23 @@ const flattenKanaData = (type: "hiragana" | "katakana", sections: string[]) => {
   return result
 }
 
-// Generate a new kana question
-const generateNewKana = (activeTab: "hiragana" | "katakana", difficulty: "basic" | "all", setCurrentKana: (kana: { kana: string; romaji: string; options: string[] }) => void) => {
+// Generate a new kana question. Stealth-SRS picker: weighted away from items the
+// user just got right, weighted toward recently-missed ones. Falls back to uniform
+// random when the mastery map is empty (first session).
+const generateNewKana = (
+  activeTab: "hiragana" | "katakana",
+  difficulty: "basic" | "all",
+  setCurrentKana: (kana: { kana: string; romaji: string; options: string[] }) => void,
+  mastery: Map<string, ItemMastery>,
+  excludeKana: string | null,
+) => {
   const sections = difficulty === "basic" ? ["basic"] : ["basic", "dakuten", "combinations"]
   if (activeTab === "katakana" && difficulty === "all") {
     sections.push("extended")
   }
 
   const kanaList = flattenKanaData(activeTab, sections)
-
-  // Select a random kana
-  const randomIndex = Math.floor(Math.random() * kanaList.length)
-  const selectedKana = kanaList[randomIndex]
+  const selectedKana = pickWeightedExcluding(kanaList, (k) => k.kana, excludeKana, { mastery })
 
   // Generate options (including the correct answer)
   let options = [selectedKana.romaji]
@@ -65,19 +76,32 @@ function KanaQuizPage() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [activeTab, setActiveTab] = useState<"hiragana" | "katakana">("hiragana")
   const [difficulty, setDifficulty] = useState<"basic" | "all">("basic")
+  const masteryRef = useRef<Map<string, ItemMastery>>(new Map())
 
+  useEffect(() => {
+    let cancelled = false
+    void getItemMasteryMap("kana").then((m) => {
+      if (!cancelled) masteryRef.current = m
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   // Initialize and handle tab changes
   useEffect(() => {
-    generateNewKana(activeTab, difficulty, setCurrentKana)
+    generateNewKana(activeTab, difficulty, setCurrentKana, masteryRef.current, null)
   }, [activeTab, difficulty])
 
   const handleAnswer = (isCorrect: boolean) => {
+    if (currentKana) {
+      applyAnswerToMasteryMap(masteryRef.current, currentKana.kana, isCorrect)
+    }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
       total: prev.total + 1,
     }))
-    generateNewKana(activeTab, difficulty, setCurrentKana)
+    generateNewKana(activeTab, difficulty, setCurrentKana, masteryRef.current, currentKana?.kana ?? null)
   }
 
   const handleDifficultyChange = (level: string) => {

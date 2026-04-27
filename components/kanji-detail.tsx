@@ -9,6 +9,7 @@ import { ChevronDown, ChevronUp, X, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
+import { MasteryBadge } from "@/components/mastery-badge"
 import type { Kanji } from "@/data/kanji-data"
 
 interface KanjiDetailProps {
@@ -45,11 +46,12 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
               {kanji.kanji}
             </div>
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap">
                 <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium">
                   {kanji.meaning.join(', ')}
                 </CardTitle>
                 <Badge>{kanji.jlptLevel || "N5"}</Badge>
+                <MasteryBadge type="kanji" itemKey={kanji.kanji} />
               </div>
               <CardDescription className="font-display italic text-sumi/70 text-base">
                 {kanji.onReadingRomaji && kanji.kunReadingRomaji

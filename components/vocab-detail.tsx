@@ -8,6 +8,7 @@ import { X, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { kanjiData } from "@/data/kanji-data"
+import { MasteryBadge } from "@/components/mastery-badge"
 import type { Kanji } from "@/data/kanji-data"
 
 interface VocabItem {
@@ -58,11 +59,12 @@ export default function VocabDetail({ vocab, level, onClose }: VocabDetailProps)
               {vocab.word}
             </div>
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap">
                 <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium">
                   {vocab.meaning}
                 </CardTitle>
                 <Badge>{level}</Badge>
+                <MasteryBadge type="vocab" itemKey={vocab.word} />
               </div>
               <CardDescription className="font-display italic text-sumi/70 text-base">
                 {vocab.romaji}

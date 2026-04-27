@@ -58,6 +58,10 @@ function KanaCharacterPage() {
 
       {lookup ? (
         <>
+          <h1 className="sr-only">
+            <span lang="ja">{lookup.kana}</span> ({lookup.romaji}) — {lookup.script === "hiragana" ? "Hiragana" : "Katakana"}
+          </h1>
+          <h2 className="sr-only">Kana details</h2>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

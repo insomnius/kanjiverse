@@ -8,6 +8,7 @@ import { X, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { kanaData } from "@/data/kana-data"
+import { MasteryBadge } from "@/components/mastery-badge"
 
 interface KanaDetailProps {
   kana: string
@@ -61,11 +62,12 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
               {kana}
             </div>
             <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap">
                 <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium italic">
                   {romaji}
                 </CardTitle>
                 <Badge>{script === "hiragana" ? "Hiragana" : "Katakana"}</Badge>
+                <MasteryBadge type="kana" itemKey={kana} />
               </div>
               <CardDescription className="font-display italic text-sumi/70 text-base">
                 {rowLabel}

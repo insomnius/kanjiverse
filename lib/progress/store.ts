@@ -13,6 +13,10 @@ export interface Profile {
   /** Daily question target. Optional — undefined falls back to DEFAULT_DAILY_GOAL.
    *  Additive field, no schema migration required (see docs/BACKUP_SCHEMA.md). */
   dailyGoal?: number
+  /** Milestones the user has already seen the celebration for, e.g. ["streak-7", "answered-100"].
+   *  Additive field. Suppressing already-seen milestones across page reloads is the whole point —
+   *  we don't want the user to be re-celebrated for a 7-day streak every time they revisit. */
+  milestonesShown?: string[]
 }
 
 export const DEFAULT_DAILY_GOAL = 10
@@ -50,6 +54,40 @@ export interface DailyTotal {
   durationMs: number
 }
 
+/** Per-item answer aggregate. Surfaced on detail pages and used by the SRS-style picker
+ *  to lightly weight quiz random-pick away from items the user just got correct. */
+export interface ItemMastery {
+  /** Total attempts the user has made on this specific item. */
+  count: number
+  /** How many of those attempts were correct. */
+  correct: number
+  /** Most recent attempt timestamp (ms since epoch); null if untouched. */
+  lastSeenAt: number | null
+  /** Whether the most recent attempt was correct; null if untouched. */
+  lastIsCorrect: boolean | null
+}
+
+export const EMPTY_MASTERY: ItemMastery = Object.freeze({
+  count: 0,
+  correct: 0,
+  lastSeenAt: null,
+  lastIsCorrect: null,
+})
+
+/** Brief "you just hit X" event surfaced after recordAnswer crosses a threshold.
+ *  Components render a toast; calling dismissMilestone() (or auto-timeout) clears it. */
+export interface Milestone {
+  /** Stable id for storage in profile.milestonesShown ("streak-7", "answered-100"). */
+  id: string
+  kind: "streak" | "answered"
+  value: number
+  /** Recorded at time of trigger so a stale milestone doesn't keep displaying. */
+  shownAt: number
+}
+
+export const STREAK_MILESTONES = [3, 7, 14, 30, 50, 100, 200, 365]
+export const ANSWERED_MILESTONES = [10, 50, 100, 500, 1000, 2500, 5000, 10000]
+
 interface State {
   profile: Profile | null
   todayTotal: DailyTotal | null
@@ -57,6 +95,9 @@ interface State {
   /** Last 365 days of dailyTotals, keyed by date string. Used for streak + future calendar. */
   recentDailyTotals: Record<string, DailyTotal>
   hydrated: boolean
+  /** Most-recently-triggered milestone. Components render a toast and call dismissMilestone()
+   *  (or wait for the auto-clear timer) to drop it. */
+  pendingMilestone: Milestone | null
 }
 
 // ---- localStorage mirror keys (sync reads on first paint) ----
@@ -131,6 +172,7 @@ let state: State = {
   })(),
   recentDailyTotals: {},
   hydrated: false,
+  pendingMilestone: null,
 }
 
 const listeners = new Set<() => void>()
@@ -185,6 +227,7 @@ async function hydrate(): Promise<void> {
       streak,
       recentDailyTotals,
       hydrated: true,
+      pendingMilestone: null,
     }
 
     // Refresh localStorage mirror
@@ -197,10 +240,57 @@ async function hydrate(): Promise<void> {
     notify()
   } catch (err) {
     // IndexedDB unavailable (private browsing, etc.) — keep cached values, mark hydrated so UI proceeds
-    state = { ...state, hydrated: true }
+    state = { ...state, hydrated: true, pendingMilestone: null }
     notify()
     console.warn("Progress hydration failed:", err)
   }
+}
+
+// ---- Milestones ----
+
+function highestThresholdHit(thresholds: readonly number[], value: number): number | null {
+  let hit: number | null = null
+  for (const t of thresholds) {
+    if (value >= t) hit = t
+    else break
+  }
+  return hit
+}
+
+function computeMilestone(
+  prevStreak: number,
+  newStreak: number,
+  totalAnswered: number,
+  shown: Set<string>,
+): Milestone | null {
+  // Prefer streak milestones (higher emotional value) when both fire on the same answer.
+  if (newStreak > prevStreak) {
+    const t = STREAK_MILESTONES.find((v) => newStreak >= v && prevStreak < v)
+    if (t !== undefined && !shown.has(`streak-${t}`)) {
+      return { id: `streak-${t}`, kind: "streak", value: t, shownAt: Date.now() }
+    }
+  }
+  // Answered: trigger only when crossing threshold "this answer" — i.e. previous total was below it.
+  // We can detect that by checking if `totalAnswered - 1 < t <= totalAnswered`.
+  const tAnswered = ANSWERED_MILESTONES.find(
+    (v) => totalAnswered >= v && totalAnswered - 1 < v,
+  )
+  if (tAnswered !== undefined && !shown.has(`answered-${tAnswered}`)) {
+    return { id: `answered-${tAnswered}`, kind: "answered", value: tAnswered, shownAt: Date.now() }
+  }
+  // Defensive: if a backup imported a state where the user is well past a threshold but the
+  // milestone wasn't recorded as shown, surface the highest unshown one once.
+  const highest = highestThresholdHit(ANSWERED_MILESTONES, totalAnswered)
+  if (highest !== null && !shown.has(`answered-${highest}`) && totalAnswered === highest) {
+    return { id: `answered-${highest}`, kind: "answered", value: highest, shownAt: Date.now() }
+  }
+  return null
+}
+
+export function dismissMilestone(): void {
+  if (!state.pendingMilestone) return
+  state = { ...state, pendingMilestone: null }
+  notify()
 }
 
 if (typeof window !== "undefined") {
@@ -298,11 +388,33 @@ export async function recordAnswer(
   const newDailyTotals = { ...state.recentDailyTotals, [todayKey]: todayTotal }
   const newStreak = computeStreak(newDailyTotals)
 
+  // Cumulative answered across the last 365 days — close enough to total for milestone purposes.
+  let totalAnswered = 0
+  for (const t of Object.values(newDailyTotals)) totalAnswered += t.questionsAnswered
+
+  const shown = new Set(state.profile?.milestonesShown ?? [])
+  const milestone = computeMilestone(state.streak, newStreak, totalAnswered, shown)
+
+  let nextProfile = state.profile
+  if (milestone) {
+    const existingIds = state.profile?.milestonesShown ?? []
+    nextProfile = {
+      id: "me",
+      displayName: state.profile?.displayName ?? null,
+      createdAt: state.profile?.createdAt ?? now,
+      ...(state.profile?.dailyGoal !== undefined && { dailyGoal: state.profile.dailyGoal }),
+      milestonesShown: [...existingIds, milestone.id],
+    }
+    void db.put("profile", nextProfile)
+  }
+
   state = {
     ...state,
+    profile: nextProfile,
     recentDailyTotals: newDailyTotals,
     todayTotal,
     streak: newStreak,
+    pendingMilestone: milestone ?? state.pendingMilestone,
   }
 
   safeLocalStorageSet(LS_STREAK, String(newStreak))
@@ -325,9 +437,79 @@ export async function reset(): Promise<void> {
     streak: 0,
     recentDailyTotals: {},
     hydrated: true,
+    pendingMilestone: null,
   }
   notify()
   broadcast()
+}
+
+// ---- Per-item mastery (used by detail pages + SRS-style picker) ----
+
+/** Aggregate answers for a single item. Cheap O(n) full-scan over `answers`; for repeat
+ *  reads in a single render pass, prefer `getItemMasteryMap` once and look up locally. */
+export async function getItemMastery(type: QuizType, itemKey: string): Promise<ItemMastery> {
+  const target = `${type}:${itemKey}`
+  try {
+    const all = await db.getAll<Answer>("answers")
+    let count = 0
+    let correct = 0
+    let lastSeenAt = 0
+    let lastIsCorrect: boolean | null = null
+    for (const a of all) {
+      if (a.itemKey !== target) continue
+      count += 1
+      if (a.isCorrect) correct += 1
+      if (a.answeredAt > lastSeenAt) {
+        lastSeenAt = a.answeredAt
+        lastIsCorrect = a.isCorrect
+      }
+    }
+    return { count, correct, lastSeenAt: lastSeenAt > 0 ? lastSeenAt : null, lastIsCorrect }
+  } catch {
+    return { ...EMPTY_MASTERY }
+  }
+}
+
+/** Build the full per-item aggregate map for one quiz type in one pass. Keys are the item
+ *  identifier without the "type:" prefix (e.g. `漢` rather than `kanji:漢`). */
+export async function getItemMasteryMap(type: QuizType): Promise<Map<string, ItemMastery>> {
+  const map = new Map<string, ItemMastery>()
+  const prefix = `${type}:`
+  try {
+    const all = await db.getAll<Answer>("answers")
+    for (const a of all) {
+      if (!a.itemKey.startsWith(prefix)) continue
+      const key = a.itemKey.slice(prefix.length)
+      const existing = map.get(key) ?? { count: 0, correct: 0, lastSeenAt: null, lastIsCorrect: null }
+      existing.count += 1
+      if (a.isCorrect) existing.correct += 1
+      if (existing.lastSeenAt === null || a.answeredAt > existing.lastSeenAt) {
+        existing.lastSeenAt = a.answeredAt
+        existing.lastIsCorrect = a.isCorrect
+      }
+      map.set(key, existing)
+    }
+  } catch {
+    // IDB unavailable — return empty map; consumers fall back to uniform random pick.
+  }
+  return map
+}
+
+/** Update an in-memory mastery map after `recordAnswer` writes a new answer. The caller
+ *  passes its working map; we mutate-in-place and return the same reference for ergonomic chaining. */
+export function applyAnswerToMasteryMap(
+  map: Map<string, ItemMastery>,
+  itemKey: string,
+  isCorrect: boolean,
+  answeredAt: number = Date.now(),
+): Map<string, ItemMastery> {
+  const existing = map.get(itemKey) ?? { count: 0, correct: 0, lastSeenAt: null, lastIsCorrect: null }
+  existing.count += 1
+  if (isCorrect) existing.correct += 1
+  existing.lastSeenAt = answeredAt
+  existing.lastIsCorrect = isCorrect
+  map.set(itemKey, existing)
+  return map
 }
 
 // ---- Backup / Import ----

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { useState, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import LevelSelector from "@/components/level-selector"
 import KanjiQuiz from "@/components/kanji-quiz"
 import VocabQuiz from "@/components/vocab-quiz"
@@ -10,6 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { kanjiData } from "@/data/kanji-data"
 import { vocabularyData } from "@/data/vocabulary-data"
 import type { Kanji } from "@/data/kanji-data"
+import {
+  getItemMasteryMap,
+  applyAnswerToMasteryMap,
+  pickWeightedExcluding,
+  type ItemMastery,
+} from "@/lib/progress/use-progress"
 
 function JapaneseLearningApp() {
   const [currentKanji, setCurrentKanji] = useState<Kanji | null>(null)
@@ -22,21 +28,42 @@ function JapaneseLearningApp() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [selectedLevel, setSelectedLevel] = useState("N5")
 
+  // Mastery maps live in refs (no re-renders needed when they update). We hydrate on
+  // mount and keep them current via applyAnswerToMasteryMap as the user answers.
+  const kanjiMasteryRef = useRef<Map<string, ItemMastery>>(new Map())
+  const vocabMasteryRef = useRef<Map<string, ItemMastery>>(new Map())
+
   useEffect(() => {
-    generateNewKanji(selectedLevel)
-    generateNewVocab(selectedLevel)
+    let cancelled = false
+    void getItemMasteryMap("kanji").then((m) => {
+      if (!cancelled) kanjiMasteryRef.current = m
+    })
+    void getItemMasteryMap("vocab").then((m) => {
+      if (!cancelled) vocabMasteryRef.current = m
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    generateNewKanji(selectedLevel, null)
+    generateNewVocab(selectedLevel, null)
   }, [selectedLevel])
 
-  const generateNewKanji = (selectedLevel: string) => {
+  const generateNewKanji = (selectedLevel: string, excludeKey: string | null) => {
     const levelData = kanjiData[selectedLevel as keyof typeof kanjiData]
-    const randomIndex = Math.floor(Math.random() * levelData.length)
-    setCurrentKanji(levelData[randomIndex])
+    const next = pickWeightedExcluding(levelData, (k) => k.kanji, excludeKey, {
+      mastery: kanjiMasteryRef.current,
+    })
+    setCurrentKanji(next)
   }
 
-  const generateNewVocab = (selectedLevel: string) => {
+  const generateNewVocab = (selectedLevel: string, excludeKey: string | null) => {
     const levelData = vocabularyData[selectedLevel as keyof typeof vocabularyData]
-    const randomIndex = Math.floor(Math.random() * levelData.length)
-    const correctVocab = levelData[randomIndex]
+    const correctVocab = pickWeightedExcluding(levelData, (v) => v.word, excludeKey, {
+      mastery: vocabMasteryRef.current,
+    })
 
     let options = [correctVocab.meaning]
     while (options.length < 4) {
@@ -58,19 +85,25 @@ function JapaneseLearningApp() {
   }
 
   const handleKanjiAnswer = (isCorrect: boolean) => {
+    if (currentKanji) {
+      applyAnswerToMasteryMap(kanjiMasteryRef.current, currentKanji.kanji, isCorrect)
+    }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
       total: prev.total + 1,
     }))
-    generateNewKanji(selectedLevel)
+    generateNewKanji(selectedLevel, currentKanji?.kanji ?? null)
   }
 
   const handleVocabAnswer = (isCorrect: boolean) => {
+    if (currentVocab) {
+      applyAnswerToMasteryMap(vocabMasteryRef.current, currentVocab.word, isCorrect)
+    }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
       total: prev.total + 1,
     }))
-    generateNewVocab(selectedLevel)
+    generateNewVocab(selectedLevel, currentVocab?.word ?? null)
   }
 
   const handleLevelChange = (level: string) => {

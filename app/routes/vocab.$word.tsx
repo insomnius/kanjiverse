@@ -34,6 +34,10 @@ function VocabWordPage() {
 
       {result ? (
         <>
+          <h1 className="sr-only">
+            <span lang="ja">{result.vocab.word}</span> — {result.vocab.meaning} — JLPT {result.level} vocabulary
+          </h1>
+          <h2 className="sr-only">Word details</h2>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
