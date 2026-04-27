@@ -3,12 +3,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Fragment, useMemo, useState } from "react"
 import { kanjiData } from "@/data/kanji-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Search, BookOpen, Pencil, PenLine } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import KanjiDetail from "@/components/kanji-detail"
+import { SegmentedControl } from "@/components/segmented-control"
+import { JLPT_LEVELS } from "@/components/level-selector"
 import type { Kanji } from "@/data/kanji-data"
 
 const ALL_KANJI_LEVELS: string[] = Object.keys(kanjiData)
@@ -49,6 +50,7 @@ const DetailEmptyState = () => (
 function KanjiListPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedKanji, setSelectedKanji] = useState<Kanji | null>(null)
+  const [activeLevel, setActiveLevel] = useState<string>("N5")
 
   const trimmed = searchTerm.trim()
   const isSearching = trimmed.length > 0
@@ -184,82 +186,84 @@ function KanjiListPage() {
             </aside>
           </div>
         ) : (
-          <Tabs defaultValue="N5" className="w-full" onValueChange={() => setSelectedKanji(null)}>
-            <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8" aria-label="JLPT level">
-              <TabsTrigger value="N5" className="font-display">N5</TabsTrigger>
-              <TabsTrigger value="N4" className="font-display">N4</TabsTrigger>
-              <TabsTrigger value="N3" className="font-display">N3</TabsTrigger>
-              <TabsTrigger value="N2" className="font-display">N2</TabsTrigger>
-              <TabsTrigger value="N1" className="font-display">N1</TabsTrigger>
-            </TabsList>
+          <>
+            <div className="mb-6 sm:mb-8">
+              <SegmentedControl
+                items={JLPT_LEVELS}
+                value={activeLevel}
+                onChange={(v) => {
+                  setActiveLevel(v)
+                  setSelectedKanji(null)
+                }}
+                ariaLabel="JLPT level"
+              />
+            </div>
 
-            {ALL_KANJI_LEVELS.map((level) => {
-              const list = kanjiData[level as keyof typeof kanjiData]
+            {(() => {
+              const list = kanjiData[activeLevel as keyof typeof kanjiData]
               return (
-                <TabsContent key={level} value={level}>
-                  <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-                    <div>
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="font-display text-xl text-sumi font-medium">
-                            JLPT {level} Kanji <span className="text-sumi/70 font-normal italic">({list.length})</span>
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                            {list.map((kanji, index) => {
-                              const isSelected = selectedKanji?.kanji === kanji.kanji
-                              return (
-                                <Fragment key={index}>
-                                  <button
-                                    type="button"
-                                    aria-label={`${kanji.kanji}, ${kanji.meaning.join(', ')}. ${isSelected ? 'Hide details.' : 'View details.'}`}
-                                    aria-pressed={isSelected}
-                                    className={`block w-full text-left border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
-                                      isSelected
-                                        ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
-                                        : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
-                                    }`}
-                                    onClick={() => setSelectedKanji(isSelected ? null : kanji)}
-                                  >
-                                    <div lang="ja" className="text-3xl sm:text-4xl font-bold mb-1.5 text-center text-sumi leading-none">
-                                      {kanji.kanji}
-                                    </div>
-                                    <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
-                                      {kanji.meaning.join(', ')}
-                                    </p>
-                                    <p className="text-[10px] text-sumi/70 text-center mt-1 inline-flex items-center gap-1 w-full justify-center">
-                                      <BookOpen aria-hidden="true" className="h-2.5 w-2.5" />
-                                      {kanji.examples.length}
-                                    </p>
-                                  </button>
-                                  {isSelected && (
-                                    <div className="md:hidden col-span-full mt-1 mb-2">
-                                      <KanjiDetail kanji={kanji} onClose={() => setSelectedKanji(null)} />
-                                    </div>
-                                  )}
-                                </Fragment>
-                              )
-                            })}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    <aside className="hidden md:block">
-                      <div className="sticky top-20">
-                        {selectedKanji ? (
-                          <KanjiDetail kanji={selectedKanji} onClose={() => setSelectedKanji(null)} />
-                        ) : (
-                          <DetailEmptyState />
-                        )}
-                      </div>
-                    </aside>
+                <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+                  <div>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="font-display text-xl text-sumi font-medium">
+                          JLPT {activeLevel} Kanji <span className="text-sumi/70 font-normal italic">({list.length})</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                          {list.map((kanji, index) => {
+                            const isSelected = selectedKanji?.kanji === kanji.kanji
+                            return (
+                              <Fragment key={index}>
+                                <button
+                                  type="button"
+                                  aria-label={`${kanji.kanji}, ${kanji.meaning.join(', ')}. ${isSelected ? 'Hide details.' : 'View details.'}`}
+                                  aria-pressed={isSelected}
+                                  className={`block w-full text-left border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
+                                    isSelected
+                                      ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
+                                      : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
+                                  }`}
+                                  onClick={() => setSelectedKanji(isSelected ? null : kanji)}
+                                >
+                                  <div lang="ja" className="text-3xl sm:text-4xl font-bold mb-1.5 text-center text-sumi leading-none">
+                                    {kanji.kanji}
+                                  </div>
+                                  <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
+                                    {kanji.meaning.join(', ')}
+                                  </p>
+                                  <p className="text-[10px] text-sumi/70 text-center mt-1 inline-flex items-center gap-1 w-full justify-center">
+                                    <BookOpen aria-hidden="true" className="h-2.5 w-2.5" />
+                                    {kanji.examples.length}
+                                  </p>
+                                </button>
+                                {isSelected && (
+                                  <div className="md:hidden col-span-full mt-1 mb-2">
+                                    <KanjiDetail kanji={kanji} onClose={() => setSelectedKanji(null)} />
+                                  </div>
+                                )}
+                              </Fragment>
+                            )
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </TabsContent>
+
+                  <aside className="hidden md:block">
+                    <div className="sticky top-20">
+                      {selectedKanji ? (
+                        <KanjiDetail kanji={selectedKanji} onClose={() => setSelectedKanji(null)} />
+                      ) : (
+                        <DetailEmptyState />
+                      )}
+                    </div>
+                  </aside>
+                </div>
               )
-            })}
-          </Tabs>
+            })()}
+          </>
         )}
       </div>
     </div>

@@ -3,11 +3,16 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from "react"
 import { kanaData } from "@/data/kana-data"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Search, BookOpen } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import KanaDetail from "@/components/kana-detail"
+import { SegmentedControl, type SegmentedControlItem } from "@/components/segmented-control"
+
+const KANA_SCRIPTS: SegmentedControlItem[] = [
+  { value: "hiragana", label: "Hiragana", description: "Native sounds" },
+  { value: "katakana", label: "Katakana", description: "Loanwords" },
+]
 
 type KanaChar = {
   kana: string;
@@ -41,6 +46,7 @@ const DetailEmptyState = () => (
 function KanaReferencePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedKana, setSelectedKana] = useState<{ kana: string; romaji: string; script: Script; rowLabel: string } | null>(null)
+  const [activeScript, setActiveScript] = useState<Script>("hiragana")
   const detailRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -285,82 +291,85 @@ function KanaReferencePage() {
           />
         </div>
 
-        <Tabs defaultValue="hiragana" className="w-full" onValueChange={() => setSelectedKana(null)}>
-          <TabsList className="grid w-full grid-cols-2 mb-6 sm:mb-8" aria-label="Kana script">
-            <TabsTrigger value="hiragana" className="font-display">Hiragana</TabsTrigger>
-            <TabsTrigger value="katakana" className="font-display">Katakana</TabsTrigger>
-          </TabsList>
+        <div className="mb-6 sm:mb-8">
+          <SegmentedControl
+            items={KANA_SCRIPTS}
+            value={activeScript}
+            onChange={(v) => {
+              setActiveScript(v as Script)
+              setSelectedKana(null)
+            }}
+            ariaLabel="Kana script"
+          />
+        </div>
 
-          <TabsContent value="hiragana">
-            <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-              <div>
-                {searchTerm && !hasMatches([kanaData.hiragana.basic, kanaData.hiragana.dakuten, kanaData.hiragana.combinations]) ? (
-                  <EmptyState />
-                ) : (
-                  <div className="space-y-8">
-                    {renderKanaSection(
-                      "Basic Hiragana",
-                      "The basic hiragana characters represent the core sounds in Japanese.",
-                      kanaData.hiragana.basic,
-                      "hiragana",
-                    )}
-                    {renderKanaSection(
-                      "Dakuten & Handakuten Hiragana",
-                      "These are modifications of the basic hiragana with diacritical marks.",
-                      kanaData.hiragana.dakuten,
-                      "hiragana",
-                    )}
-                    {renderKanaSection(
-                      "Combination Hiragana",
-                      "These are combinations of hiragana that create new sounds.",
-                      kanaData.hiragana.combinations,
-                      "hiragana",
-                    )}
-                  </div>
-                )}
-              </div>
-              {stickyAside}
+        {activeScript === "hiragana" ? (
+          <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+            <div>
+              {searchTerm && !hasMatches([kanaData.hiragana.basic, kanaData.hiragana.dakuten, kanaData.hiragana.combinations]) ? (
+                <EmptyState />
+              ) : (
+                <div className="space-y-8">
+                  {renderKanaSection(
+                    "Basic Hiragana",
+                    "The basic hiragana characters represent the core sounds in Japanese.",
+                    kanaData.hiragana.basic,
+                    "hiragana",
+                  )}
+                  {renderKanaSection(
+                    "Dakuten & Handakuten Hiragana",
+                    "These are modifications of the basic hiragana with diacritical marks.",
+                    kanaData.hiragana.dakuten,
+                    "hiragana",
+                  )}
+                  {renderKanaSection(
+                    "Combination Hiragana",
+                    "These are combinations of hiragana that create new sounds.",
+                    kanaData.hiragana.combinations,
+                    "hiragana",
+                  )}
+                </div>
+              )}
             </div>
-          </TabsContent>
-
-          <TabsContent value="katakana">
-            <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-              <div>
-                {searchTerm && !hasMatches([kanaData.katakana.basic, kanaData.katakana.dakuten, kanaData.katakana.combinations, kanaData.katakana.extended]) ? (
-                  <EmptyState />
-                ) : (
-                  <div className="space-y-8">
-                    {renderKanaSection(
-                      "Basic Katakana",
-                      "Katakana is primarily used for foreign words, loanwords, and emphasis.",
-                      kanaData.katakana.basic,
-                      "katakana",
-                    )}
-                    {renderKanaSection(
-                      "Dakuten & Handakuten Katakana",
-                      "Modified katakana with diacritical marks.",
-                      kanaData.katakana.dakuten,
-                      "katakana",
-                    )}
-                    {renderKanaSection(
-                      "Combination Katakana",
-                      "Combinations of katakana that create new sounds.",
-                      kanaData.katakana.combinations,
-                      "katakana",
-                    )}
-                    {renderKanaSection(
-                      "Extended Katakana",
-                      "Special katakana used for foreign sounds not native to Japanese.",
-                      kanaData.katakana.extended,
-                      "katakana",
-                    )}
-                  </div>
-                )}
-              </div>
-              {stickyAside}
+            {stickyAside}
+          </div>
+        ) : (
+          <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+            <div>
+              {searchTerm && !hasMatches([kanaData.katakana.basic, kanaData.katakana.dakuten, kanaData.katakana.combinations, kanaData.katakana.extended]) ? (
+                <EmptyState />
+              ) : (
+                <div className="space-y-8">
+                  {renderKanaSection(
+                    "Basic Katakana",
+                    "Katakana is primarily used for foreign words, loanwords, and emphasis.",
+                    kanaData.katakana.basic,
+                    "katakana",
+                  )}
+                  {renderKanaSection(
+                    "Dakuten & Handakuten Katakana",
+                    "Modified katakana with diacritical marks.",
+                    kanaData.katakana.dakuten,
+                    "katakana",
+                  )}
+                  {renderKanaSection(
+                    "Combination Katakana",
+                    "Combinations of katakana that create new sounds.",
+                    kanaData.katakana.combinations,
+                    "katakana",
+                  )}
+                  {renderKanaSection(
+                    "Extended Katakana",
+                    "Special katakana used for foreign sounds not native to Japanese.",
+                    kanaData.katakana.extended,
+                    "katakana",
+                  )}
+                </div>
+              )}
             </div>
-          </TabsContent>
-        </Tabs>
+            {stickyAside}
+          </div>
+        )}
       </div>
     </div>
   )

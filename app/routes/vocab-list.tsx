@@ -3,11 +3,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Fragment, useState } from "react"
 import { vocabularyData } from "@/data/vocabulary-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Search, BookOpen, Book } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import VocabDetail from "@/components/vocab-detail"
+import { SegmentedControl } from "@/components/segmented-control"
+import { JLPT_LEVELS } from "@/components/level-selector"
 
 interface VocabItem {
   word: string;
@@ -34,6 +35,7 @@ const DetailEmptyState = () => (
 function VocabListPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedVocab, setSelectedVocab] = useState<{ vocab: VocabItem; level: string } | null>(null)
+  const [activeLevel, setActiveLevel] = useState<string>("N5")
 
   const filterVocab = (_level: string, vocab: VocabItem[]) => {
     if (!searchTerm) return vocab
@@ -79,86 +81,84 @@ function VocabListPage() {
           />
         </div>
 
-        <Tabs defaultValue="N5" className="w-full" onValueChange={() => setSelectedVocab(null)}>
-          <TabsList className="grid w-full grid-cols-5 mb-6 sm:mb-8" aria-label="JLPT level">
-            <TabsTrigger value="N5" className="font-display">N5</TabsTrigger>
-            <TabsTrigger value="N4" className="font-display">N4</TabsTrigger>
-            <TabsTrigger value="N3" className="font-display">N3</TabsTrigger>
-            <TabsTrigger value="N2" className="font-display">N2</TabsTrigger>
-            <TabsTrigger value="N1" className="font-display">N1</TabsTrigger>
-          </TabsList>
+        <div className="mb-6 sm:mb-8">
+          <SegmentedControl
+            items={JLPT_LEVELS}
+            value={activeLevel}
+            onChange={(v) => {
+              setActiveLevel(v)
+              setSelectedVocab(null)
+            }}
+            ariaLabel="JLPT level"
+          />
+        </div>
 
-          {Object.keys(vocabularyData).map((level) => {
-            const filtered = filterVocab(level, vocabularyData[level as keyof typeof vocabularyData])
-            return (
-              <TabsContent key={level} value={level}>
-                <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-                  <div>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="font-display text-xl text-sumi font-medium">
-                          JLPT {level} Vocabulary <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        {filtered.length === 0 ? (
-                          <div className="py-16 text-center" role="status">
-                            <p className="font-display italic text-lg text-sumi/70 mb-2">
-                              No vocabulary matches “{searchTerm}” at JLPT {level}
-                            </p>
-                            <p className="text-sm text-sumi/70">Try a different level tab, or clear the search.</p>
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                            {filtered.map((vocab, index) => {
-                              const isSelected = selectedVocab?.vocab.word === vocab.word
-                              return (
-                                <Fragment key={index}>
-                                  <button
-                                    type="button"
-                                    aria-label={`${vocab.word}, ${vocab.meaning}. ${isSelected ? 'Hide details.' : 'View details.'}`}
-                                    aria-pressed={isSelected}
-                                    className={`block w-full text-left border rounded-lg p-3.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
-                                      isSelected
-                                        ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
-                                        : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
-                                    }`}
-                                    onClick={() => setSelectedVocab(isSelected ? null : { vocab, level })}
-                                  >
-                                    <div lang="ja" className="text-xl font-bold mb-1 text-sumi leading-tight">{vocab.word}</div>
-                                    <p className="text-sm font-medium text-sumi line-clamp-1">{vocab.meaning}</p>
-                                    <p className="text-xs text-sumi/70 italic">{vocab.romaji}</p>
-                                  </button>
-                                  {/* Inline detail right after the tapped card — only below md */}
-                                  {isSelected && (
-                                    <div className="md:hidden col-span-full mt-1 mb-2">
-                                      <VocabDetail vocab={vocab} level={level} onClose={() => setSelectedVocab(null)} />
-                                    </div>
-                                  )}
-                                </Fragment>
-                              )
-                            })}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
+        {(() => {
+          const filtered = filterVocab(activeLevel, vocabularyData[activeLevel as keyof typeof vocabularyData])
+          return (
+            <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="font-display text-xl text-sumi font-medium">
+                      JLPT {activeLevel} Vocabulary <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {filtered.length === 0 ? (
+                      <div className="py-16 text-center" role="status">
+                        <p className="font-display italic text-lg text-sumi/70 mb-2">
+                          No vocabulary matches &ldquo;{searchTerm}&rdquo; at JLPT {activeLevel}
+                        </p>
+                        <p className="text-sm text-sumi/70">Try a different level, or clear the search.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                        {filtered.map((vocab, index) => {
+                          const isSelected = selectedVocab?.vocab.word === vocab.word
+                          return (
+                            <Fragment key={index}>
+                              <button
+                                type="button"
+                                aria-label={`${vocab.word}, ${vocab.meaning}. ${isSelected ? 'Hide details.' : 'View details.'}`}
+                                aria-pressed={isSelected}
+                                className={`block w-full text-left border rounded-lg p-3.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
+                                  isSelected
+                                    ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
+                                    : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
+                                }`}
+                                onClick={() => setSelectedVocab(isSelected ? null : { vocab, level: activeLevel })}
+                              >
+                                <div lang="ja" className="text-xl font-bold mb-1 text-sumi leading-tight">{vocab.word}</div>
+                                <p className="text-sm font-medium text-sumi line-clamp-1">{vocab.meaning}</p>
+                                <p className="text-xs text-sumi/70 italic">{vocab.romaji}</p>
+                              </button>
+                              {isSelected && (
+                                <div className="md:hidden col-span-full mt-1 mb-2">
+                                  <VocabDetail vocab={vocab} level={activeLevel} onClose={() => setSelectedVocab(null)} />
+                                </div>
+                              )}
+                            </Fragment>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
 
-                  {/* Detail column — sticky on md+ */}
-                  <aside className="hidden md:block">
-                    <div className="sticky top-20">
-                      {selectedVocab ? (
-                        <VocabDetail vocab={selectedVocab.vocab} level={selectedVocab.level} onClose={() => setSelectedVocab(null)} />
-                      ) : (
-                        <DetailEmptyState />
-                      )}
-                    </div>
-                  </aside>
+              <aside className="hidden md:block">
+                <div className="sticky top-20">
+                  {selectedVocab ? (
+                    <VocabDetail vocab={selectedVocab.vocab} level={selectedVocab.level} onClose={() => setSelectedVocab(null)} />
+                  ) : (
+                    <DetailEmptyState />
+                  )}
                 </div>
-              </TabsContent>
-            )
-          })}
-        </Tabs>
+              </aside>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )
