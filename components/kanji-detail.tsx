@@ -12,6 +12,7 @@ import KanjiStrokeOrder from "@/components/kanji-stroke-order"
 import { MasteryBadge } from "@/components/mastery-badge"
 import { SpeakButton } from "@/components/speak-button"
 import { SimilarKanji } from "@/components/similar-kanji"
+import { RadicalBreakdown } from "@/components/radical-breakdown"
 import type { Kanji } from "@/data/kanji-data"
 
 interface KanjiDetailProps {
@@ -150,6 +151,11 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
                   )}
                 </div>
               </div>
+            </div>
+            <Separator />
+            <div>
+              <h3 className="font-display text-base text-sumi font-semibold mb-2">Parts</h3>
+              <RadicalBreakdown char={kanji.kanji} />
             </div>
           </TabsContent>
           <TabsContent value="strokes" className="mt-4">

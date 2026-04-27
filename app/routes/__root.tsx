@@ -1,4 +1,4 @@
-import { createRootRoute, HeadContent, Outlet, ScrollRestoration } from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Link, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { MainNav } from '@/components/navigation/main-nav'
 import { MilestoneToast } from '@/components/milestone-toast'
 // Vite resolves these to content-hashed URLs at build time. Importing as `?url` lets us preload
@@ -92,9 +92,17 @@ export const Route = createRootRoute({
               </span>
             </span>
           </a>
-          <p className="font-display italic text-xs text-sumi/70 text-center sm:text-right">
-            Free · No tracking · Lives in your browser
-          </p>
+          <div className="flex flex-col sm:items-end gap-1">
+            <p className="font-display italic text-xs text-sumi/70 text-center sm:text-right">
+              Free · No tracking · Lives in your browser
+            </p>
+            <Link
+              to="/credits"
+              className="font-display italic text-xs text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
+            >
+              Credits & data sources
+            </Link>
+          </div>
         </div>
       </footer>
       <ScrollRestoration />

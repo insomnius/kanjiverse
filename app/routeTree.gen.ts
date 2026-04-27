@@ -19,6 +19,7 @@ import { Route as KanaQuizRouteImport } from './routes/kana-quiz'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DrawSearchRouteImport } from './routes/draw-search'
 import { Route as DrawRouteImport } from './routes/draw'
+import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VocabWordRouteImport } from './routes/vocab.$word'
 import { Route as KanjiCharRouteImport } from './routes/kanji.$char'
@@ -74,6 +75,11 @@ const DrawRoute = DrawRouteImport.update({
   path: '/draw',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreditsRoute = CreditsRouteImport.update({
+  id: '/credits',
+  path: '/credits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -97,6 +103,7 @@ const KanaCharRoute = KanaCharRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/credits': typeof CreditsRoute
   '/draw': typeof DrawRoute
   '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/credits': typeof CreditsRoute
   '/draw': typeof DrawRoute
   '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/credits': typeof CreditsRoute
   '/draw': typeof DrawRoute
   '/draw-search': typeof DrawSearchRoute
   '/history': typeof HistoryRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/credits'
     | '/draw'
     | '/draw-search'
     | '/history'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/credits'
     | '/draw'
     | '/draw-search'
     | '/history'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/credits'
     | '/draw'
     | '/draw-search'
     | '/history'
@@ -197,6 +209,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreditsRoute: typeof CreditsRoute
   DrawRoute: typeof DrawRoute
   DrawSearchRoute: typeof DrawSearchRoute
   HistoryRoute: typeof HistoryRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DrawRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/credits': {
+      id: '/credits'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof CreditsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -317,6 +337,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreditsRoute: CreditsRoute,
   DrawRoute: DrawRoute,
   DrawSearchRoute: DrawSearchRoute,
   HistoryRoute: HistoryRoute,

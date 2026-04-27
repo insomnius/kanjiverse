@@ -52,6 +52,15 @@
       "attribution": "Kanji by Insomnius project authors"
     },
     {
+      "id": "kradfile-radicals",
+      "description": "KRADFILE — kanji-to-radical-component decomposition (~6,355 entries; we trim to the 1,966 of our 2,034 N1–N5 kanji that have entries).",
+      "license": "CC-BY-SA-4.0",
+      "url": "https://www.edrdg.org/krad/kradinf.html",
+      "redistributedAs": "data/kanji-radicals.json",
+      "attribution": "James Breen / Electronic Dictionary Research and Development Group (EDRDG) — http://www.edrdg.org/",
+      "note": "Fetched at build time from http://ftp.edrdg.org/pub/Nihongo/kradfile.gz (EUC-JP, gzipped). CC BY-SA 4.0 requires visible attribution; surfaced in the site footer credits link."
+    },
+    {
       "id": "kana-data",
       "description": "Hiragana + katakana tables (gojūon, dakuten, yōon, extended). Authored locally; based on the standard Japanese kana inventory which is in the public domain.",
       "license": "MIT",

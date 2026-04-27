@@ -22,6 +22,7 @@ export default defineConfig({
         { loc: "/kanji-list", changefreq: "monthly", priority: 0.8 },
         { loc: "/vocab-list", changefreq: "monthly", priority: 0.8 },
         { loc: "/kana-reference", changefreq: "monthly", priority: 0.7 },
+        { loc: "/credits", changefreq: "monthly", priority: 0.3 },
       ],
       dynamicRoutes: async () => {
         const [{ kanjiData }, { vocabularyData }, { kanaData }] = await Promise.all([
@@ -150,6 +151,7 @@ export default defineConfig({
           if (id.includes("kana-data")) return "kana-data"
           if (id.includes("kanji-stroke-features.json")) return "kanji-stroke-features"
           if (id.includes("kanji-stroke-counts.json")) return "kanji-stroke-counts"
+          if (id.includes("kanji-radicals.json")) return "kanji-radicals"
           // Group React + router into a stable vendor chunk so it caches across deploys.
           if (id.includes("node_modules/react") || id.includes("node_modules/scheduler")) return "react-vendor"
           if (id.includes("@tanstack/react-router")) return "router-vendor"

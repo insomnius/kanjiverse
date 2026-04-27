@@ -37,6 +37,12 @@ const ALLOWED = new Set([
   "CC0-1.0",
   "CC-BY-3.0",
   "CC-BY-4.0",
+  // CC-BY-SA: data-only allowance. Share-alike applies to derivatives of the data file
+  // itself (e.g. our trimmed kanji-radicals.json must remain CC-BY-SA), not to unrelated
+  // application code. We never accept CC-BY-SA in npm dependencies — only as data sources
+  // declared in data/data-licenses.json with explicit attribution surfaced in-app.
+  "CC-BY-SA-3.0",
+  "CC-BY-SA-4.0",
   "ISC",
   "MIT",
   "MIT-0",
