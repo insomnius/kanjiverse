@@ -43,3 +43,5 @@ next-env.d.ts
 
 # perf-tooling artifacts (dist/stats.html already excluded via /dist)
 /.lighthouseci
+# vite-plugin-pwa's dev-mode service-worker output (devOptions.enabled: true)
+/dev-dist

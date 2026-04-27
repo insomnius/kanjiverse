@@ -1,19 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Fragment, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { kanjiData } from "@/data/kanji-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Search, BookOpen, Pencil, PenLine } from "lucide-react"
+import { Search, BookOpen, Pencil, PenLine, X } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import KanjiDetail from "@/components/kanji-detail"
 import { SegmentedControl } from "@/components/segmented-control"
 import { JLPT_LEVELS } from "@/components/level-selector"
+import { VirtualizedKanjiGrid, type KanjiWithLevel } from "@/components/virtualized-kanji-grid"
+import { useDeferredSearch } from "@/lib/use-deferred-search"
 import type { Kanji } from "@/data/kanji-data"
 
 const ALL_KANJI_LEVELS: string[] = Object.keys(kanjiData)
-const ALL_KANJI_FLAT: Array<Kanji & { _level: string }> = ALL_KANJI_LEVELS.flatMap((lvl) =>
+const ALL_KANJI_FLAT: KanjiWithLevel[] = ALL_KANJI_LEVELS.flatMap((lvl) =>
   kanjiData[lvl as keyof typeof kanjiData].map((k) => ({ ...k, _level: lvl })),
 )
 const LEVEL_RANK: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 }
@@ -48,21 +49,26 @@ const DetailEmptyState = () => (
 )
 
 function KanjiListPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const search = useDeferredSearch("")
   const [selectedKanji, setSelectedKanji] = useState<Kanji | null>(null)
   const [activeLevel, setActiveLevel] = useState<string>("N5")
 
-  const trimmed = searchTerm.trim()
+  const trimmed = search.deferred.trim()
   const isSearching = trimmed.length > 0
 
   // Cross-level results when searching. Sorted N5 → N1 so beginner matches come
   // first — same heuristic /draw-search uses.
-  const searchResults = useMemo(() => {
-    if (!isSearching) return [] as Array<Kanji & { _level: string }>
+  const searchResults = useMemo<KanjiWithLevel[]>(() => {
+    if (!isSearching) return []
     return ALL_KANJI_FLAT
       .filter((k) => matchesSearch(k, trimmed))
-      .sort((a, b) => (LEVEL_RANK[a._level] ?? 9) - (LEVEL_RANK[b._level] ?? 9))
+      .sort((a, b) => (LEVEL_RANK[a._level ?? ""] ?? 9) - (LEVEL_RANK[b._level ?? ""] ?? 9))
   }, [trimmed, isSearching])
+
+  const levelItems = useMemo<KanjiWithLevel[]>(
+    () => kanjiData[activeLevel as keyof typeof kanjiData] as KanjiWithLevel[],
+    [activeLevel],
+  )
 
   return (
     <div className="py-6 sm:py-8 px-4">
@@ -99,16 +105,37 @@ function KanjiListPage() {
           </nav>
         </header>
 
-        <div className="relative mb-6">
-          <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70" />
-          <Input
-            type="search"
-            aria-label="Search kanji by character, meaning, or pronunciation"
-            placeholder="Search kanji, meaning, or pronunciation…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white/70 border-sumi/15"
-          />
+        {/* Sticky search — sits below the h-16 nav. backdrop-blur + cream/95 keeps the editorial palette legible while overlapping the content. */}
+        <div className="sticky top-16 z-30 bg-cream/95 backdrop-blur-sm pb-3 mb-4 -mx-4 px-4 border-b border-sumi/10 sm:mx-0 sm:px-0 sm:border-b-0">
+          <div className="relative">
+            <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70 pointer-events-none" />
+            <Input
+              type="search"
+              aria-label="Search kanji by character, meaning, or pronunciation"
+              placeholder="Search kanji, meaning, or pronunciation…"
+              value={search.value}
+              onChange={(e) => search.setValue(e.target.value)}
+              onCompositionStart={search.onCompositionStart}
+              onCompositionEnd={(e) => search.onCompositionEnd(e.currentTarget.value)}
+              className="pl-10 pr-10 bg-white/80 border-sumi/15"
+              enterKeyHint="search"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {search.value && (
+              <button
+                type="button"
+                onClick={() => {
+                  search.clear()
+                  setSelectedKanji(null)
+                }}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
+              >
+                <X aria-hidden="true" className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         {isSearching ? (
@@ -129,47 +156,11 @@ function KanjiListPage() {
                       <p className="text-sm text-sumi/70">Try a meaning, on/kun reading, or the kanji itself.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                      {searchResults.map((kanji, index) => {
-                        const isSelected = selectedKanji?.kanji === kanji.kanji
-                        return (
-                          <Fragment key={`${kanji.kanji}-${index}`}>
-                            <button
-                              type="button"
-                              aria-label={`${kanji.kanji}, ${kanji.meaning.join(', ')}, JLPT ${kanji._level}. ${isSelected ? 'Hide details.' : 'View details.'}`}
-                              aria-pressed={isSelected}
-                              className={`block w-full text-left border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
-                                isSelected
-                                  ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
-                                  : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
-                              }`}
-                              onClick={() => setSelectedKanji(isSelected ? null : kanji)}
-                            >
-                              <div lang="ja" className="text-3xl sm:text-4xl font-bold mb-1.5 text-center text-sumi leading-none">
-                                {kanji.kanji}
-                              </div>
-                              <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
-                                {kanji.meaning.join(', ')}
-                              </p>
-                              <p className="text-[10px] text-sumi/70 text-center mt-1.5 flex items-center gap-1.5 justify-center">
-                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 font-normal border-sumi/20">
-                                  {kanji._level}
-                                </Badge>
-                                <span className="inline-flex items-center gap-1">
-                                  <BookOpen aria-hidden="true" className="h-2.5 w-2.5" />
-                                  {kanji.examples.length}
-                                </span>
-                              </p>
-                            </button>
-                            {isSelected && (
-                              <div className="md:hidden col-span-full mt-1 mb-2">
-                                <KanjiDetail kanji={kanji} onClose={() => setSelectedKanji(null)} />
-                              </div>
-                            )}
-                          </Fragment>
-                        )
-                      })}
-                    </div>
+                    <VirtualizedKanjiGrid
+                      items={searchResults}
+                      selected={selectedKanji}
+                      onSelect={setSelectedKanji}
+                    />
                   )}
                 </CardContent>
               </Card>
@@ -199,70 +190,34 @@ function KanjiListPage() {
               />
             </div>
 
-            {(() => {
-              const list = kanjiData[activeLevel as keyof typeof kanjiData]
-              return (
-                <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-                  <div>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="font-display text-xl text-sumi font-medium">
-                          JLPT {activeLevel} Kanji <span className="text-sumi/70 font-normal italic">({list.length})</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                          {list.map((kanji, index) => {
-                            const isSelected = selectedKanji?.kanji === kanji.kanji
-                            return (
-                              <Fragment key={index}>
-                                <button
-                                  type="button"
-                                  aria-label={`${kanji.kanji}, ${kanji.meaning.join(', ')}. ${isSelected ? 'Hide details.' : 'View details.'}`}
-                                  aria-pressed={isSelected}
-                                  className={`block w-full text-left border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
-                                    isSelected
-                                      ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
-                                      : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
-                                  }`}
-                                  onClick={() => setSelectedKanji(isSelected ? null : kanji)}
-                                >
-                                  <div lang="ja" className="text-3xl sm:text-4xl font-bold mb-1.5 text-center text-sumi leading-none">
-                                    {kanji.kanji}
-                                  </div>
-                                  <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
-                                    {kanji.meaning.join(', ')}
-                                  </p>
-                                  <p className="text-[10px] text-sumi/70 text-center mt-1 inline-flex items-center gap-1 w-full justify-center">
-                                    <BookOpen aria-hidden="true" className="h-2.5 w-2.5" />
-                                    {kanji.examples.length}
-                                  </p>
-                                </button>
-                                {isSelected && (
-                                  <div className="md:hidden col-span-full mt-1 mb-2">
-                                    <KanjiDetail kanji={kanji} onClose={() => setSelectedKanji(null)} />
-                                  </div>
-                                )}
-                              </Fragment>
-                            )
-                          })}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+            <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="font-display text-xl text-sumi font-medium">
+                      JLPT {activeLevel} Kanji <span className="text-sumi/70 font-normal italic">({levelItems.length})</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <VirtualizedKanjiGrid
+                      items={levelItems}
+                      selected={selectedKanji}
+                      onSelect={setSelectedKanji}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
 
-                  <aside className="hidden md:block">
-                    <div className="sticky top-20">
-                      {selectedKanji ? (
-                        <KanjiDetail kanji={selectedKanji} onClose={() => setSelectedKanji(null)} />
-                      ) : (
-                        <DetailEmptyState />
-                      )}
-                    </div>
-                  </aside>
+              <aside className="hidden md:block">
+                <div className="sticky top-20">
+                  {selectedKanji ? (
+                    <KanjiDetail kanji={selectedKanji} onClose={() => setSelectedKanji(null)} />
+                  ) : (
+                    <DetailEmptyState />
+                  )}
                 </div>
-              )
-            })()}
+              </aside>
+            </div>
           </>
         )}
       </div>

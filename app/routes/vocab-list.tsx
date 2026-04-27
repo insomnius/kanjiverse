@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Fragment, useState } from "react"
+import { useMemo, useState } from "react"
 import { vocabularyData } from "@/data/vocabulary-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Search, BookOpen, Book } from "lucide-react"
+import { Search, BookOpen, Book, X } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import VocabDetail from "@/components/vocab-detail"
 import { SegmentedControl } from "@/components/segmented-control"
 import { JLPT_LEVELS } from "@/components/level-selector"
+import { VirtualizedVocabGrid } from "@/components/virtualized-vocab-grid"
+import { useDeferredSearch } from "@/lib/use-deferred-search"
 
 interface VocabItem {
   word: string;
@@ -33,19 +35,22 @@ const DetailEmptyState = () => (
 )
 
 function VocabListPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const search = useDeferredSearch("")
   const [selectedVocab, setSelectedVocab] = useState<{ vocab: VocabItem; level: string } | null>(null)
   const [activeLevel, setActiveLevel] = useState<string>("N5")
 
-  const filterVocab = (_level: string, vocab: VocabItem[]) => {
-    if (!searchTerm) return vocab
-    return vocab.filter(
+  const trimmed = search.deferred.trim()
+  const filtered = useMemo<VocabItem[]>(() => {
+    const list = vocabularyData[activeLevel as keyof typeof vocabularyData]
+    if (!trimmed) return list
+    const lower = trimmed.toLowerCase()
+    return list.filter(
       (v) =>
-        v.word.includes(searchTerm) ||
-        v.meaning.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        v.romaji.toLowerCase().includes(searchTerm.toLowerCase()),
+        v.word.includes(trimmed) ||
+        v.meaning.toLowerCase().includes(lower) ||
+        v.romaji.toLowerCase().includes(lower),
     )
-  }
+  }, [activeLevel, trimmed])
 
   return (
     <div className="py-6 sm:py-8 px-4">
@@ -69,16 +74,37 @@ function VocabListPage() {
           </nav>
         </header>
 
-        <div className="relative mb-6">
-          <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70" />
-          <Input
-            type="search"
-            aria-label="Search vocabulary by word, meaning, or pronunciation"
-            placeholder="Search word, meaning, or pronunciation…"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white/70 border-sumi/15"
-          />
+        {/* Sticky search — same pattern as kanji-list. */}
+        <div className="sticky top-16 z-30 bg-cream/95 backdrop-blur-sm pb-3 mb-4 -mx-4 px-4 border-b border-sumi/10 sm:mx-0 sm:px-0 sm:border-b-0">
+          <div className="relative">
+            <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70 pointer-events-none" />
+            <Input
+              type="search"
+              aria-label="Search vocabulary by word, meaning, or pronunciation"
+              placeholder="Search word, meaning, or pronunciation…"
+              value={search.value}
+              onChange={(e) => search.setValue(e.target.value)}
+              onCompositionStart={search.onCompositionStart}
+              onCompositionEnd={(e) => search.onCompositionEnd(e.currentTarget.value)}
+              className="pl-10 pr-10 bg-white/80 border-sumi/15"
+              enterKeyHint="search"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {search.value && (
+              <button
+                type="button"
+                onClick={() => {
+                  search.clear()
+                  setSelectedVocab(null)
+                }}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
+              >
+                <X aria-hidden="true" className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mb-6 sm:mb-8">
@@ -93,72 +119,44 @@ function VocabListPage() {
           />
         </div>
 
-        {(() => {
-          const filtered = filterVocab(activeLevel, vocabularyData[activeLevel as keyof typeof vocabularyData])
-          return (
-            <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
-              <div>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-display text-xl text-sumi font-medium">
-                      JLPT {activeLevel} Vocabulary <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {filtered.length === 0 ? (
-                      <div className="py-16 text-center" role="status">
-                        <p className="font-display italic text-lg text-sumi/70 mb-2">
-                          No vocabulary matches &ldquo;{searchTerm}&rdquo; at JLPT {activeLevel}
-                        </p>
-                        <p className="text-sm text-sumi/70">Try a different level, or clear the search.</p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
-                        {filtered.map((vocab, index) => {
-                          const isSelected = selectedVocab?.vocab.word === vocab.word
-                          return (
-                            <Fragment key={index}>
-                              <button
-                                type="button"
-                                aria-label={`${vocab.word}, ${vocab.meaning}. ${isSelected ? 'Hide details.' : 'View details.'}`}
-                                aria-pressed={isSelected}
-                                className={`block w-full text-left border rounded-lg p-3.5 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
-                                  isSelected
-                                    ? "border-vermilion/60 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.2)]"
-                                    : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
-                                }`}
-                                onClick={() => setSelectedVocab(isSelected ? null : { vocab, level: activeLevel })}
-                              >
-                                <div lang="ja" className="text-xl font-bold mb-1 text-sumi leading-tight">{vocab.word}</div>
-                                <p className="text-sm font-medium text-sumi line-clamp-1">{vocab.meaning}</p>
-                                <p className="text-xs text-sumi/70 italic">{vocab.romaji}</p>
-                              </button>
-                              {isSelected && (
-                                <div className="md:hidden col-span-full mt-1 mb-2">
-                                  <VocabDetail vocab={vocab} level={activeLevel} onClose={() => setSelectedVocab(null)} />
-                                </div>
-                              )}
-                            </Fragment>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+        <div className="grid gap-6 lg:gap-10 md:grid-cols-[minmax(0,1fr)_360px] lg:grid-cols-[minmax(0,1fr)_420px] xl:grid-cols-[minmax(0,1fr)_480px]">
+          <div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-display text-xl text-sumi font-medium">
+                  JLPT {activeLevel} Vocabulary <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {filtered.length === 0 ? (
+                  <div className="py-16 text-center" role="status">
+                    <p className="font-display italic text-lg text-sumi/70 mb-2">
+                      No vocabulary matches &ldquo;{trimmed}&rdquo; at JLPT {activeLevel}
+                    </p>
+                    <p className="text-sm text-sumi/70">Try a different level, or clear the search.</p>
+                  </div>
+                ) : (
+                  <VirtualizedVocabGrid
+                    items={filtered}
+                    level={activeLevel}
+                    selected={selectedVocab?.vocab ?? null}
+                    onSelect={(v) => setSelectedVocab(v ? { vocab: v, level: activeLevel } : null)}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-              <aside className="hidden md:block">
-                <div className="sticky top-20">
-                  {selectedVocab ? (
-                    <VocabDetail vocab={selectedVocab.vocab} level={selectedVocab.level} onClose={() => setSelectedVocab(null)} />
-                  ) : (
-                    <DetailEmptyState />
-                  )}
-                </div>
-              </aside>
+          <aside className="hidden md:block">
+            <div className="sticky top-20">
+              {selectedVocab ? (
+                <VocabDetail vocab={selectedVocab.vocab} level={selectedVocab.level} onClose={() => setSelectedVocab(null)} />
+              ) : (
+                <DetailEmptyState />
+              )}
             </div>
-          )
-        })()}
+          </aside>
+        </div>
       </div>
     </div>
   )

@@ -92,6 +92,11 @@ export default defineConfig(async () => {
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
+      // Serve the manifest + service worker in dev too. Without this the
+      // index.html still <link>s to /manifest.webmanifest, the request 404s
+      // back to the SPA shell, the browser tries to parse the HTML as JSON,
+      // and the console fills with "Manifest: Line: 1, column: 1, Syntax error."
+      devOptions: { enabled: true, type: "module" },
       manifest: {
         name: "Kanji by Insomnius",
         short_name: "Kanji",

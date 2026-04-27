@@ -13,7 +13,7 @@ Vite + React 19 + TanStack Router + Tailwind 3 + TypeScript (strict). Bun is the
 | License audit (npm + data manifest) | `bun run check:licenses` | ✅ after `bun add`, after data changes |
 | Bundle treemap (visual) | `bun run check:bundle` | manual, before chunking changes |
 | Lighthouse perf + CWV | `bun run check:lighthouse` | manual, before deploy |
-| Render-cause inspector | `Component.whyDidYouRender = true` (dev only) | manual, while debugging re-renders |
+| Render-cause inspector | `VITE_WDYR=1 bun run dev` + `Component.whyDidYouRender = true` | manual, while debugging re-renders |
 
 **Unbreakable rule** — adding a third-party data source means adding a row to `data/data-licenses.json` in the same commit. The `/credits` page is generated from the manifest; if the manifest is wrong, the credits are wrong, and we have a license problem. See [License hygiene SOP](#license-hygiene-sop).
 
@@ -27,7 +27,7 @@ Vite + React 19 + TanStack Router + Tailwind 3 + TypeScript (strict). Bun is the
 - `bun run check:licenses` — license audit (`scripts/check-licenses.ts`). Two passes: (1) every npm package in `node_modules`, separating production-tree from dev-only and applying a strict allowlist to the former; (2) every bundled / runtime-fetched data source declared in `data/data-licenses.json`. Exits non-zero on any production-tree package with a denied or unrecognised license, or any data source missing from the manifest. **Run before:** adding a new dependency (`bun add` anything), integrating a new data source, and once before each deploy.
 - `bun run check:bundle` — runs `ANALYZE=1 bun run build` and opens an interactive treemap (`dist/stats.html`) of every chunk via `rollup-plugin-visualizer`. Use when bundle sizes change unexpectedly or before a release to sanity-check that `manualChunks` rules still produce the splits we intend. The visualizer plugin is dev-only (deferred ESM import inside `defineConfig`) — normal builds don't load it.
 - `bun run check:lighthouse` — `@lhci/cli` boots `vite preview` and runs Lighthouse against `/`, `/quiz`, `/kanji-list` (one run each, desktop preset). Asserts perf ≥ 90, a11y ≥ 95, LCP < 2.5s, CLS < 0.1, TBT < 300ms. HTML + JSON reports land in `.lighthouseci/` (gitignored) for visual review. Run before each deploy as a Core Web Vitals gut-check.
-- **why-did-you-render** — wired into `app/main.tsx` via a dev-only dynamic import (`import.meta.env.DEV` guard, fully tree-shaken in prod). Doesn't run unless you opt in per component: set `MyComponent.whyDidYouRender = true` while debugging a suspected re-render hot path, then remove the line when done. Default config has `trackAllPureComponents: false` — turning that on floods the console.
+- **why-did-you-render** — opt-in render-cause inspector. Wired into `app/main.tsx` via a dynamic import gated on `import.meta.env.DEV && import.meta.env.VITE_WDYR === '1'`, so it's tree-shaken from prod AND dormant in normal `bun run dev`. **Off by default** because wdyr monkey-patches `useState` and collides with TanStack Router's `<Transitioner>`, causing a hooks-order crash. To use, run `VITE_WDYR=1 bun run dev` and mark suspect components with `MyComponent.whyDidYouRender = true`. Default config has `trackAllPureComponents: false` — turning that on floods the console.
 - `make buildprod` — Docker build against the `production-vm-1` context. Wired into the monorepo `make deploy_all` target.
 
 ## Project layout

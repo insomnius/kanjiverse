@@ -6,10 +6,14 @@ import './globals.css'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
-// why-did-you-render: dev-only render-cause inspector. Tree-shaken from prod
-// because the import is gated behind import.meta.env.DEV — Vite replaces the
-// expression with `false` at build time, the whole branch is DCE'd.
-if (import.meta.env.DEV) {
+// why-did-you-render: opt-in render-cause inspector for debugging re-renders.
+// Off by default — wdyr monkey-patches React.useState, which collides with
+// libraries that call useState conditionally inside their own internals
+// (TanStack Router's <Transitioner> in particular triggers a "hooks order
+// changed" crash). Set VITE_WDYR=1 (e.g. `VITE_WDYR=1 bun run dev`) only when
+// you actively want to debug. Tree-shaken from prod because the env constant
+// is replaced at build time and the branch is DCE'd.
+if (import.meta.env.DEV && import.meta.env.VITE_WDYR === '1') {
   void import('./wdyr')
 }
 
