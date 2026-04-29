@@ -198,16 +198,71 @@ function transformPath(d: string): string {
 }
 
 /**
- * Derive median waypoints for hanzi-writer's quiz-mode stroke matcher by
- * pulling absolute coordinates from the path commands. Three samples per
- * stroke is sufficient for kana — the matcher only needs rough start /
- * middle / end positions in 1024×1024 (Y-up) space.
+ * Derive on-curve median waypoints for hanzi-writer's stroke renderer.
+ *
+ * hanzi-writer renders each stroke as a thick line traced along the medians,
+ * clipped to the stroke-shape path. If medians wander OFF the curve the
+ * thick line gets clipped away and the stroke looks broken or partial.
+ *
+ * The previous implementation sampled raw path-command pairs — which for
+ * cubic Beziers includes the two control points, NOT the curve trajectory.
+ * Control points routinely sit far outside the visible curve (a hand-drawn
+ * fluid stroke uses overshoot control points), so sampling them produced
+ * zigzag medians that punched out of the clip region.
+ *
+ * This implementation walks the path command-by-command, evaluates each
+ * Bezier segment at multiple parameter values, accumulates an on-curve
+ * polyline approximation, then resamples to N points spread evenly along
+ * arc length. Output is in 1024×1024 Y-up to match hanzi-writer's coord
+ * space.
  */
+
+const MEDIAN_TARGET = 5
+// Density of intermediate samples per Bezier segment before arc-length
+// resampling. 16 keeps short straight strokes accurate without bloating
+// the JSON; cubic strokes through fluid-stroke control points need this
+// many to capture the actual curvature.
+const SEGMENT_SAMPLES = 16
+
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t
+}
+
+/** Evaluate a cubic Bezier (4 points) at parameter t∈[0,1]. */
+function cubicAt(
+  p0: [number, number],
+  p1: [number, number],
+  p2: [number, number],
+  p3: [number, number],
+  t: number,
+): [number, number] {
+  const u = 1 - t
+  const w0 = u * u * u
+  const w1 = 3 * u * u * t
+  const w2 = 3 * u * t * t
+  const w3 = t * t * t
+  return [
+    w0 * p0[0] + w1 * p1[0] + w2 * p2[0] + w3 * p3[0],
+    w0 * p0[1] + w1 * p1[1] + w2 * p2[1] + w3 * p3[1],
+  ]
+}
+
+/** Evaluate a quadratic Bezier (3 points) at parameter t∈[0,1]. */
+function quadAt(
+  p0: [number, number],
+  p1: [number, number],
+  p2: [number, number],
+  t: number,
+): [number, number] {
+  const u = 1 - t
+  return [
+    u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0],
+    u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1],
+  ]
+}
+
 function deriveMedians(d: string): number[][] {
   const tokenRe = /([MmLlHhVvCcSsQqTtAaZz])|(-?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)/g
-  const samples: Array<[number, number]> = []
-  let cursor: [number, number] = [0, 0]
-  let currentCmd = ""
   type Tok = { cmd: string } | { num: number }
   const toks: Tok[] = []
   let m: RegExpExecArray | null
@@ -216,64 +271,213 @@ function deriveMedians(d: string): number[][] {
     else toks.push({ num: parseFloat(m[2]) })
   }
 
-  let i = 0
-  while (i < toks.length) {
-    const t = toks[i]
-    if ("cmd" in t) { currentCmd = t.cmd; i++; continue }
-    const cmdUpper = currentCmd.toUpperCase()
-    const isRelative = currentCmd === currentCmd.toLowerCase()
+  // On-curve polyline: dense samples along each segment.
+  const polyline: Array<[number, number]> = []
+  let cursor: [number, number] = [0, 0]
+  let subpathStart: [number, number] = [0, 0]
+  let currentCmd = ""
+  // Track the previous segment's last control point for S/T smoothing.
+  let lastCubicControl: [number, number] | null = null
+  let lastQuadControl: [number, number] | null = null
 
-    const stepXY = (x: number, y: number): [number, number] => (
-      isRelative ? [cursor[0] + x, cursor[1] + y] : [x, y]
-    )
+  function pushPoint(p: [number, number]): void {
+    // De-dup consecutive identical points so resampling stride doesn't bias.
+    const last = polyline[polyline.length - 1]
+    if (!last || last[0] !== p[0] || last[1] !== p[1]) polyline.push(p)
+  }
 
-    if (cmdUpper === "H") {
-      const x = (t as { num: number }).num
-      cursor = isRelative ? [cursor[0] + x, cursor[1]] : [x, cursor[1]]
-      samples.push([cursor[0], cursor[1]])
-      i++
-    } else if (cmdUpper === "V") {
-      const y = (t as { num: number }).num
-      cursor = isRelative ? [cursor[0], cursor[1] + y] : [cursor[0], y]
-      samples.push([cursor[0], cursor[1]])
-      i++
-    } else if (cmdUpper === "A") {
-      const ex = (toks[i + 5] as { num: number }).num
-      const ey = (toks[i + 6] as { num: number }).num
-      cursor = stepXY(ex, ey)
-      samples.push([cursor[0], cursor[1]])
-      i += 7
-    } else if (cmdUpper === "Z") {
-      // Close — no coords.
-      // (cursor would jump back to subpath start; KanjiVG kana don't need this.)
-    } else {
-      // M/L/T: 1 pair; S/Q: 2 pairs; C: 3 pairs. We sample only the endpoint.
-      const pairs: Array<[number, number]> = []
-      while (i + 1 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
-        const x = (toks[i] as { num: number }).num
-        const y = (toks[i + 1] as { num: number }).num
-        pairs.push(stepXY(x, y))
-        i += 2
-        if (i < toks.length && "cmd" in toks[i]) break
-      }
-      if (pairs.length > 0) {
-        // Sample the endpoint of each command — a better median than just
-        // the single ending cursor.
-        for (const p of pairs) samples.push(p)
-        cursor = pairs[pairs.length - 1]
-      }
+  function sampleSegment(evaluator: (t: number) => [number, number]): void {
+    // Skip t=0 — it equals the previous segment's endpoint already in the polyline.
+    for (let k = 1; k <= SEGMENT_SAMPLES; k++) {
+      const t = k / SEGMENT_SAMPLES
+      pushPoint(evaluator(t))
     }
   }
 
-  if (samples.length === 0) return []
-  // Reduce to up to 5 samples spread evenly along the stroke, then
-  // transform to 1024×1024 (Y-up).
-  const target = Math.min(5, samples.length)
-  const stride = (samples.length - 1) / Math.max(1, target - 1)
+  let i = 0
+  while (i < toks.length) {
+    const t = toks[i]
+    if ("cmd" in t) {
+      currentCmd = t.cmd
+      i++
+      continue
+    }
+
+    const cmdUpper = currentCmd.toUpperCase()
+    const isRelative = currentCmd === currentCmd.toLowerCase()
+    const abs = (x: number, y: number): [number, number] =>
+      isRelative ? [cursor[0] + x, cursor[1] + y] : [x, y]
+
+    // Read a number from token i (typed) — helper to keep call sites tight.
+    const num = (idx: number): number => {
+      const tok = toks[idx]
+      if (!("num" in tok)) throw new Error(`Expected number at token ${idx} in "${d}"`)
+      return tok.num
+    }
+
+    if (cmdUpper === "M") {
+      // First pair = move; subsequent implicit Ls.
+      const start = abs(num(i), num(i + 1))
+      cursor = start
+      subpathStart = start
+      pushPoint(cursor)
+      i += 2
+      // Implicit L after M: continue consuming pairs.
+      while (i + 1 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        const next: [number, number] = abs(num(i), num(i + 1))
+        // Linear segment from cursor to next — sample.
+        const from = cursor
+        sampleSegment((tt) => [lerp(from[0], next[0], tt), lerp(from[1], next[1], tt)])
+        cursor = next
+        i += 2
+      }
+      lastCubicControl = null
+      lastQuadControl = null
+    } else if (cmdUpper === "L") {
+      while (i + 1 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        const next: [number, number] = abs(num(i), num(i + 1))
+        const from = cursor
+        sampleSegment((tt) => [lerp(from[0], next[0], tt), lerp(from[1], next[1], tt)])
+        cursor = next
+        i += 2
+      }
+      lastCubicControl = null
+      lastQuadControl = null
+    } else if (cmdUpper === "H") {
+      while (i < toks.length && "num" in toks[i]) {
+        const x = num(i)
+        const next: [number, number] = isRelative ? [cursor[0] + x, cursor[1]] : [x, cursor[1]]
+        const from = cursor
+        sampleSegment((tt) => [lerp(from[0], next[0], tt), lerp(from[1], next[1], tt)])
+        cursor = next
+        i++
+      }
+      lastCubicControl = null
+      lastQuadControl = null
+    } else if (cmdUpper === "V") {
+      while (i < toks.length && "num" in toks[i]) {
+        const y = num(i)
+        const next: [number, number] = isRelative ? [cursor[0], cursor[1] + y] : [cursor[0], y]
+        const from = cursor
+        sampleSegment((tt) => [lerp(from[0], next[0], tt), lerp(from[1], next[1], tt)])
+        cursor = next
+        i++
+      }
+      lastCubicControl = null
+      lastQuadControl = null
+    } else if (cmdUpper === "C") {
+      while (i + 5 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        const c1 = abs(num(i), num(i + 1))
+        const c2 = abs(num(i + 2), num(i + 3))
+        const end = abs(num(i + 4), num(i + 5))
+        const p0 = cursor
+        sampleSegment((tt) => cubicAt(p0, c1, c2, end, tt))
+        cursor = end
+        lastCubicControl = c2
+        lastQuadControl = null
+        i += 6
+      }
+    } else if (cmdUpper === "S") {
+      while (i + 3 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        // First control = reflection of previous cubic's c2 around cursor.
+        const c1: [number, number] = lastCubicControl
+          ? [2 * cursor[0] - lastCubicControl[0], 2 * cursor[1] - lastCubicControl[1]]
+          : cursor
+        const c2 = abs(num(i), num(i + 1))
+        const end = abs(num(i + 2), num(i + 3))
+        const p0 = cursor
+        sampleSegment((tt) => cubicAt(p0, c1, c2, end, tt))
+        cursor = end
+        lastCubicControl = c2
+        lastQuadControl = null
+        i += 4
+      }
+    } else if (cmdUpper === "Q") {
+      while (i + 3 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        const c = abs(num(i), num(i + 1))
+        const end = abs(num(i + 2), num(i + 3))
+        const p0 = cursor
+        sampleSegment((tt) => quadAt(p0, c, end, tt))
+        cursor = end
+        lastQuadControl = c
+        lastCubicControl = null
+        i += 4
+      }
+    } else if (cmdUpper === "T") {
+      while (i + 1 < toks.length && "num" in toks[i] && "num" in toks[i + 1]) {
+        const c: [number, number] = lastQuadControl
+          ? [2 * cursor[0] - lastQuadControl[0], 2 * cursor[1] - lastQuadControl[1]]
+          : cursor
+        const end = abs(num(i), num(i + 1))
+        const p0 = cursor
+        sampleSegment((tt) => quadAt(p0, c, end, tt))
+        cursor = end
+        lastQuadControl = c
+        lastCubicControl = null
+        i += 2
+      }
+    } else if (cmdUpper === "A") {
+      // Arcs are rare in KanjiVG kana — approximate as a line to endpoint.
+      // Good enough for medians; the visible stroke uses the path itself.
+      const end = abs(num(i + 5), num(i + 6))
+      const from = cursor
+      sampleSegment((tt) => [lerp(from[0], end[0], tt), lerp(from[1], end[1], tt)])
+      cursor = end
+      lastCubicControl = null
+      lastQuadControl = null
+      i += 7
+    } else if (cmdUpper === "Z") {
+      // Close — line back to subpath start.
+      const from = cursor
+      const to = subpathStart
+      sampleSegment((tt) => [lerp(from[0], to[0], tt), lerp(from[1], to[1], tt)])
+      cursor = subpathStart
+      lastCubicControl = null
+      lastQuadControl = null
+      // Z has no args; the outer loop already advanced past it via the cmd
+      // branch — but we entered here with i pointing at a number? No, Z is
+      // a cmd token consumed at the top. We arrive here only if a number
+      // follows Z (malformed). Defensive: skip the number.
+      if ("num" in toks[i]) i++
+    } else {
+      // Unknown command — skip the number to avoid an infinite loop.
+      i++
+    }
+  }
+
+  if (polyline.length === 0) return []
+
+  // Compute cumulative arc length along the polyline.
+  const cumLen: number[] = [0]
+  for (let k = 1; k < polyline.length; k++) {
+    const dx = polyline[k][0] - polyline[k - 1][0]
+    const dy = polyline[k][1] - polyline[k - 1][1]
+    cumLen.push(cumLen[k - 1] + Math.sqrt(dx * dx + dy * dy))
+  }
+  const totalLen = cumLen[cumLen.length - 1]
+
+  // Resample to MEDIAN_TARGET points evenly spaced by arc length.
+  const target = Math.min(MEDIAN_TARGET, polyline.length)
   const out: number[][] = []
+  if (totalLen === 0 || target === 1) {
+    // Degenerate — single point or zero-length stroke.
+    const [x, y] = polyline[0]
+    out.push([Math.round(x * SCALE), Math.round(HW_SIZE - y * SCALE)])
+    return out
+  }
   for (let k = 0; k < target; k++) {
-    const idx = Math.round(k * stride)
-    const [x, y] = samples[idx]
+    const targetLen = (k / (target - 1)) * totalLen
+    // Find the polyline segment containing targetLen.
+    let segIdx = 0
+    while (segIdx < cumLen.length - 1 && cumLen[segIdx + 1] < targetLen) segIdx++
+    const segStart = cumLen[segIdx]
+    const segEnd = cumLen[segIdx + 1] ?? segStart
+    const segLen = segEnd - segStart
+    const tt = segLen > 0 ? (targetLen - segStart) / segLen : 0
+    const [ax, ay] = polyline[segIdx]
+    const [bx, by] = polyline[segIdx + 1] ?? polyline[segIdx]
+    const x = lerp(ax, bx, tt)
+    const y = lerp(ay, by, tt)
     out.push([Math.round(x * SCALE), Math.round(HW_SIZE - y * SCALE)])
   }
   return out
