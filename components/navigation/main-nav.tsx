@@ -97,7 +97,7 @@ export function MainNav() {
             <span
               lang="ja"
               aria-hidden="true"
-              className="font-jp text-[1.4rem] leading-none font-semibold text-vermilion"
+              className="font-jp text-[1.4rem] leading-none font-semibold text-vermilion-deep"
             >
               漢字
             </span>
