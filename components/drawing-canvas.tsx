@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from "react"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface Point {
   x: number
@@ -40,6 +41,7 @@ interface DrawingCanvasProps {
  */
 export const DrawingCanvas = forwardRef<DrawingCanvasHandle, DrawingCanvasProps>(
   function DrawingCanvas({ size = 280, onStrokesChange, onFirstStroke }, ref) {
+    const { t } = useTranslation()
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const strokesRef = useRef<Stroke[]>([])
     const currentStrokeRef = useRef<Stroke | null>(null)
@@ -169,7 +171,7 @@ export const DrawingCanvas = forwardRef<DrawingCanvasHandle, DrawingCanvasProps>
       <canvas
         ref={canvasRef}
         role="img"
-        aria-label="Drawing area. Use mouse, touch, or stylus to draw a kanji stroke by stroke."
+        aria-label={t("drawCanvas.aria")}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}

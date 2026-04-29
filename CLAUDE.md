@@ -201,6 +201,61 @@ When building a mutually-exclusive selector with ≤7 options, follow the `Level
 - Touch target: `min-h-[44px] min-w-[56px]` (sm:72px)
 - Transitions: `transition-colors motion-reduce:transition-none`
 
+## Internationalization — bilingual is the default, not an afterthought
+
+**The app ships in English AND Bahasa Indonesia.** Every user-facing string must go through the i18n hook. There is no "we'll translate it later" — adding an English literal directly into a component is a regression that ships visible English to ID-locale users.
+
+### The unbreakable rule
+
+Any new `<button>`, `<p>`, `aria-label`, `placeholder`, `title`, fallback message, error string, empty-state copy, or chrome label that a user can see (or a screen reader can announce) **must** come from `t("namespace.key")`. No exceptions.
+
+If you find yourself writing a literal English string in JSX, stop and add a translation key instead.
+
+### How to add a translatable string
+
+1. Add the key + English value to `lib/i18n/messages.en.ts` (just before `} as const`). Convention: dot-namespaced lowercase (`profile.language.title`), kebab-case multi-word, interpolation via `{var}`.
+2. Add the same key with Indonesian value to `lib/i18n/messages.id.ts`. Missing keys silently fall back to English at runtime — that's a soft failure, not a crash, but it means a user gets EN where they should get ID. Treat missing entries as bugs.
+3. In the component:
+   ```tsx
+   import { useTranslation } from "@/lib/i18n/use-translation"
+
+   function MyComponent() {
+     const { t } = useTranslation()
+     return <p>{t("namespace.key")}</p>
+   }
+   ```
+4. For interpolation: `t("streak.aria", { n: 5, unit: t("streak.unit") })` — the second arg is `Record<string, string | number>` and `{n}` placeholders in the value get replaced.
+5. For locale-aware data (kanji + vocab meanings): use the helpers, never the raw English fields.
+   - Kanji: `getKanjiMeaning(kanji, locale).join(", ")` (from `@/data/kanji-data`)
+   - Vocab: `getVocabMeaning(item, locale)` (from `@/data/vocabulary-data`)
+   - Examples: `getExampleTranslation(ex, locale)`
+   - `locale` comes from `const { t, locale } = useTranslation()`.
+
+### What does NOT need to translate
+
+- **SEO meta** (`title`, `description`, OG tags inside `head()`): stay English. SEO is a single-locale game today; if we add hreflang per-locale routes later we'll revisit.
+- **JSON-LD blocks** in deep-link routes.
+- **Code comments and dev-only console messages.**
+- **Brand names** ("Kanji", "Insomnius", "JLPT", "GitHub", "IndexedDB", `font-jp` mark `漢字`).
+- **Mnemonic phonetic row labels** in kana-reference (`K-row`, `SH-row` — they describe the consonant prefix; only "Vowels", "Foreign sounds", "W-extended" are translated).
+- **Fixed Japanese strings** like `こんにちは` in TTS preview demos.
+
+### Locale detection + persistence (already wired)
+
+- `Profile.locale: "en" | "id"` — additive optional field on the IDB-backed profile.
+- `lib/geo-detect.ts` reads the `cf_country` cookie that nginx sets from `$http_cf_ipcountry`. Country `ID` → defaults to `"id"` on first hydrate; persists to IDB so subsequent visits stick.
+- Locale switcher is in `/profile` (Language card). Was previously in the nav; moved because settings live in profile.
+- `<html lang>` syncs to active locale via the root component's `useEffect`.
+- `localStorage.kbi-locale` mirrors the persisted locale for sync first-paint reads (avoids flash of English).
+
+### Common pitfalls
+
+- **Forgetting the ID side**: adding a key to `messages.en.ts` but not `messages.id.ts`. The runtime falls back to English silently — only way to catch this is to actually flip locale and check the page. The TypeScript type alone won't catch it (id is `Partial<Record<MessageKey, string>>`).
+- **Indonesian doesn't suffix-pluralize**: `5 days streak` is `5 hari beruntun`, not `5 hari[s]`. For count-dependent strings, prefer a single phrase (`{n} hari`) over conditional plurals.
+- **Hardcoding English in helper components** like `LevelSelector` JLPT_LEVELS array, segmented-control items, etc. Build the array inside the component using `t()`, not as a module-level constant.
+- **Search filters**: when matching against meanings, search BOTH languages so users in ID locale can still type "water" and find 水. See `kanji-list.tsx#matchesSearch` for the canonical pattern.
+- **SEO meta is exempt from i18n**: the `head()` block stays English. Don't accidentally translate `title`/`description` there.
+
 ## Accessibility — WCAG 2.1 AA is the floor, not the goal
 
 **Every feature in this codebase must ship accessible.** Not "we'll add a11y later," not "the design has a11y issues but it's polished." Inaccessible UI is unfinished UI. Treat the checklist below the way you treat tests: if it's not green, the feature isn't done.

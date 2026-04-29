@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { AlertCircle, CheckCircle, ArrowRight } from "lucide-react"
+import { SpeakButton } from "@/components/speak-button"
 import { recordAnswer, isSoundEnabled, useProgress } from "@/lib/progress/use-progress"
 import { playCorrect, playIncorrect } from "@/lib/sounds"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface VocabQuizProps {
   word: string
@@ -25,6 +27,7 @@ const Kbd = ({ children }: { children: React.ReactNode }) => (
 
 export default function VocabQuiz({ word, meaning, romaji, options, level, onAnswer }: VocabQuizProps) {
   const { profile } = useProgress()
+  const { t } = useTranslation()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
   const nextButtonRef = useRef<HTMLButtonElement>(null)
@@ -48,7 +51,9 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
     }
     setFeedback({
       isCorrect,
-      message: isCorrect ? "Correct! (Press Enter for next)" : `Incorrect. The meaning is "${meaning}". (Press Enter for next)`,
+      message: isCorrect
+        ? t("quiz.vocab.feedback.correct")
+        : t("quiz.vocab.feedback.incorrect", { meaning }),
     })
   }
 
@@ -92,14 +97,17 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
     <div className="flex flex-col items-center">
       {/* Screen-reader-only hint about hotkeys, announced once on render */}
       <p className="sr-only">
-        Tip: press number keys 1 through {options.length} to choose an answer, then press Enter to submit.
+        {t("quiz.vocab.srHint", { count: options.length })}
       </p>
 
       <div className="mb-8">
         {/* No aria-label here — it would override the visible Japanese text and lose lang="ja" pronunciation. */}
         <p lang="ja" className="text-4xl font-bold mb-2 text-center text-sumi leading-none">{word}</p>
+        <div className="flex justify-center mb-1">
+          <SpeakButton text={word} label={t("speak.aria.word", { value: word })} />
+        </div>
         <p className="text-lg text-center text-sumi/70 mb-1">{romaji}</p>
-        <p className="text-sm text-center text-sumi/70">Select the meaning of this word</p>
+        <p className="text-sm text-center text-sumi/70">{t("quiz.vocab.instruction")}</p>
       </div>
 
       <div className="w-full max-w-md space-y-6">
@@ -132,12 +140,12 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
           className="w-full"
           disabled={!selectedOption || feedback !== null}
         >
-          Check Answer
+          {t("quiz.vocab.checkAnswer")}
         </Button>
 
         {!feedback && (
           <p className="font-display italic text-sm text-sumi/70 text-center" aria-hidden="true">
-            Press <Kbd>1</Kbd>{options.length > 1 ? <>–<Kbd>{options.length}</Kbd></> : null} to choose, <Kbd>Enter</Kbd> to submit
+            {t("quiz.kbdHint.before")} <Kbd>1</Kbd>{options.length > 1 ? <>–<Kbd>{options.length}</Kbd></> : null} {t("quiz.kbdHint.middle")} <Kbd>Enter</Kbd> {t("quiz.kbdHint.after")}
           </p>
         )}
 
@@ -155,7 +163,7 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
               ) : (
                 <AlertCircle aria-hidden="true" className="mr-2 h-5 w-5" />
               )}
-              <span><span className="sr-only">{feedback.isCorrect ? "Correct: " : "Incorrect: "}</span>{feedback.message}</span>
+              <span><span className="sr-only">{feedback.isCorrect ? t("quiz.feedback.sr.correct") : t("quiz.feedback.sr.incorrect")}</span>{feedback.message}</span>
             </div>
 
             <Button
@@ -163,11 +171,11 @@ export default function VocabQuiz({ word, meaning, romaji, options, level, onAns
               onClick={() => nextQuestion(feedback.isCorrect)}
               className="w-full flex items-center justify-center"
             >
-              Next Question <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
+              {t("quiz.vocab.next")} <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
             </Button>
 
             <p className="font-display italic text-sm text-sumi/70 text-center mt-3" aria-hidden="true">
-              Press <Kbd>Enter</Kbd> for next
+              {t("quiz.kbdHint.next.before")} <Kbd>Enter</Kbd> {t("quiz.kbdHint.next.after")}
             </p>
           </div>
         )}

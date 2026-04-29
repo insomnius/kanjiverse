@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DrawingCanvas, type DrawingCanvasHandle, type Stroke } from "@/components/drawing-canvas"
-import { kanjiData, type Kanji } from "@/data/kanji-data"
+import { kanjiData, getKanjiMeaning, type Kanji } from "@/data/kanji-data"
 import strokeCountsRaw from "@/data/kanji-stroke-counts.json"
 import strokeFeaturesRaw from "@/data/kanji-stroke-features.json"
 import {
@@ -13,6 +13,7 @@ import {
   strokeSetDistance,
   type StrokeFeatures,
 } from "@/lib/stroke-similarity"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 const strokeCounts = strokeCountsRaw as Record<string, number>
 const strokeFeatures = strokeFeaturesRaw as Record<string, number[][]>
@@ -48,6 +49,7 @@ const indexByStrokeCount: Record<number, string[]> = (() => {
 const levelRank: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 }
 
 function DrawSearchPage() {
+  const { t, locale } = useTranslation()
   const canvasRef = useRef<DrawingCanvasHandle>(null)
   const [strokeCount, setStrokeCount] = useState(0)
   const [searched, setSearched] = useState<{
@@ -143,10 +145,10 @@ function DrawSearchPage() {
       <div className="max-w-5xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            Find a kanji by drawing
+            {t("drawSearch.page.heading")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            Sketch the character. We compare your stroke shapes to the JLPT N1–N5 set and rank the closest matches.
+            {t("drawSearch.page.intro")}
           </p>
         </header>
 
@@ -156,10 +158,10 @@ function DrawSearchPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="font-display text-lg text-sumi font-medium">
-                  Sketch pad
+                  {t("drawSearch.page.sketchPad")}
                 </CardTitle>
                 <CardDescription className="font-display italic text-sumi/70 text-sm">
-                  Stroke order doesn't have to be perfect — we match on shape and start/end points.
+                  {t("drawSearch.page.sketchPad.description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center gap-4">
@@ -176,7 +178,7 @@ function DrawSearchPage() {
                   className="font-display tabular-nums text-sm text-sumi"
                 >
                   <span className="font-semibold">{strokeCount}</span>
-                  <span className="text-sumi/70 italic"> stroke{strokeCount === 1 ? "" : "s"}</span>
+                  <span className="text-sumi/70 italic"> {strokeCount === 1 ? t("drawSearch.page.stroke") : t("drawSearch.page.strokes")}</span>
                 </div>
 
                 <div className="flex gap-2 flex-wrap justify-center">
@@ -189,7 +191,7 @@ function DrawSearchPage() {
                     className="gap-1.5"
                   >
                     <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
-                    Undo
+                    {t("drawSearch.undo")}
                   </Button>
                   <Button
                     type="button"
@@ -200,7 +202,7 @@ function DrawSearchPage() {
                     className="gap-1.5"
                   >
                     <Eraser aria-hidden="true" className="h-3.5 w-3.5" />
-                    Clear
+                    {t("drawSearch.clear")}
                   </Button>
                   <Button
                     type="button"
@@ -210,13 +212,13 @@ function DrawSearchPage() {
                     className="gap-1.5 min-w-[6rem]"
                   >
                     <Search aria-hidden="true" className="h-3.5 w-3.5" />
-                    Search
+                    {t("drawSearch.page.searchButton")}
                   </Button>
                 </div>
 
                 {!touched && (
                   <p className="font-display italic text-xs text-sumi/70 text-center max-w-[26ch]">
-                    Tip: draw inside the dotted guides for the most accurate match.
+                    {t("drawSearch.page.tip")}
                   </p>
                 )}
               </CardContent>
@@ -229,15 +231,15 @@ function DrawSearchPage() {
               <CardHeader>
                 <CardTitle className="font-display text-lg text-sumi font-medium">
                   {!searched
-                    ? "Results"
-                    : `Top ${candidates.length} of ${totalForBucket} candidates`}
+                    ? t("drawSearch.page.results.title")
+                    : t("drawSearch.page.results.titleCount", { shown: candidates.length, total: totalForBucket })}
                 </CardTitle>
                 <CardDescription className="font-display italic text-sumi/70 text-sm">
                   {!searched
-                    ? "Draw a kanji on the left, then tap Search."
+                    ? t("drawSearch.page.results.beforeSearch")
                     : candidates.length === 0
-                      ? "No matches in the JLPT N1–N5 set for that stroke shape."
-                      : `Ranked by stroke-shape similarity. The closer your sketch, the better the top results.`}
+                      ? t("drawSearch.page.results.noneInSet")
+                      : t("drawSearch.page.results.rankedHint")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -251,18 +253,20 @@ function DrawSearchPage() {
                       className="h-12 w-12 text-vermilion-deep/60 mx-auto mb-4"
                     />
                     <p className="font-display italic text-sumi/70">
-                      Sketch a character to begin.
+                      {t("drawSearch.page.empty.cta")}
                     </p>
                   </div>
                 ) : candidates.length === 0 ? (
                   <div role="status" className="py-16 text-center">
                     <p className="font-display italic text-lg text-sumi/70 mb-2">
-                      No matches near {searched.userCount} stroke{searched.userCount === 1 ? "" : "s"}.
+                      {searched.userCount === 1
+                        ? t("drawSearch.page.noNear.singular", { count: searched.userCount })
+                        : t("drawSearch.page.noNear.plural", { count: searched.userCount })}
                     </p>
                     <p className="text-sm text-sumi/70 max-w-md mx-auto">
-                      Try refining the sketch, or browse{" "}
+                      {t("drawSearch.page.noNear.tryRefine")}{" "}
                       <Link to="/kanji-list" className="underline underline-offset-2 hover:text-vermilion-deep">
-                        the full kanji list
+                        {t("drawSearch.page.noNear.fullList")}
                       </Link>
                       .
                     </p>
@@ -279,13 +283,18 @@ function DrawSearchPage() {
                             ? "border-vermilion/40 bg-vermilion/5 shadow-[0_2px_10px_-2px_rgba(200,85,61,0.15)]"
                             : "border-sumi/10 bg-white/60 hover:border-vermilion/40 hover:shadow-[0_2px_8px_-2px_rgba(168,124,47,0.15)]"
                         }`}
-                        aria-label={`${entry.kanji.kanji}, ${entry.kanji.meaning.join(", ")}, JLPT ${entry.kanji.jlptLevel}, rank ${idx + 1}`}
+                        aria-label={t("drawSearch.page.card.aria", {
+                          kanji: entry.kanji.kanji,
+                          meaning: getKanjiMeaning(entry.kanji, locale).join(", "),
+                          level: entry.kanji.jlptLevel,
+                          rank: idx + 1,
+                        })}
                       >
                         <div lang="ja" className="text-3xl sm:text-4xl font-bold text-center text-sumi leading-none mb-1.5">
                           {entry.kanji.kanji}
                         </div>
                         <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
-                          {entry.kanji.meaning.join(", ")}
+                          {getKanjiMeaning(entry.kanji, locale).join(", ")}
                         </p>
                         <p className="text-[10px] text-sumi/70 text-center mt-1 inline-flex items-center gap-1 w-full justify-center">
                           <Badge className="text-[9px] px-1.5 py-0 leading-tight">{entry.kanji.jlptLevel}</Badge>

@@ -68,6 +68,15 @@
       "attribution": "Kanji by Insomnius project authors"
     },
     {
+      "id": "kanjivg-kana-strokes",
+      "description": "Hiragana + katakana stroke order paths (~154 glyphs) derived from KanjiVG SVGs. Bundled into the app for the kana writing practice and writing quiz.",
+      "license": "CC-BY-SA-3.0",
+      "url": "https://github.com/KanjiVG/kanjivg",
+      "redistributedAs": "data/kana-stroke-data.json",
+      "attribution": "Copyright © 2009–2011 Ulrich Apel and KanjiVG contributors — https://kanjivg.tagaini.net/",
+      "note": "Fetched at build time via scripts/extract-kanjivg-kana.ts; the JSON output carries an SPDX header. CC BY-SA 3.0 requires visible attribution and that downstream redistributions of the data file remain under the same license — surfaced on the /credits page."
+    },
+    {
       "id": "insomnius-logo",
       "description": "Insomnius brand mark (small webp), used in the site footer and linked back to insomnius.dev.",
       "license": "All rights reserved",

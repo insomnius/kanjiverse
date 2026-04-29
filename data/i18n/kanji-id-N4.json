@@ -1,0 +1,5101 @@
+{
+  "力": {
+    "meaningId": [
+      "kekuatan"
+    ],
+    "examplesId": [
+      {
+        "kana": "学力 (がくりょく )",
+        "translationId": "kemampuan akademik, pengetahuan"
+      },
+      {
+        "kana": "有力 (ゆうりょく )",
+        "translationId": "berpengaruh, terkemuka"
+      },
+      {
+        "kana": "体力 (たいりょく )",
+        "translationId": "kekuatan fisik"
+      },
+      {
+        "kana": "動力 (どうりょく )",
+        "translationId": "tenaga, tenaga penggerak"
+      },
+      {
+        "kana": "強力 (きょうりょく )",
+        "translationId": "ampuh, kuat"
+      },
+      {
+        "kana": "全力 (ぜんりょく )",
+        "translationId": "seluruh kekuatan seseorang"
+      }
+    ]
+  },
+  "夕": {
+    "meaningId": [
+      "sore"
+    ],
+    "examplesId": [
+      {
+        "kana": "夕べ (ゆうべ )",
+        "translationId": "sore, tadi malam"
+      },
+      {
+        "kana": "夕食 (ゆうしょく )",
+        "translationId": "makan malam"
+      },
+      {
+        "kana": "夕日 (ゆうひ )",
+        "translationId": "matahari sore, matahari terbenam"
+      },
+      {
+        "kana": "夕立 (ゆうだち )",
+        "translationId": "hujan sore yang tiba-tiba"
+      },
+      {
+        "kana": "夕方 (ゆうがた )",
+        "translationId": "sore, senja"
+      },
+      {
+        "kana": "夕飯 (ゆうはん )",
+        "translationId": "makan malam"
+      }
+    ]
+  },
+  "工": {
+    "meaningId": [
+      "kerajinan",
+      "konstruksi"
+    ],
+    "examplesId": [
+      {
+        "kana": "大工 (だいく )",
+        "translationId": "tukang kayu"
+      },
+      {
+        "kana": "人工 (じんこう )",
+        "translationId": "buatan, buatan manusia"
+      },
+      {
+        "kana": "工事 (こうじ )",
+        "translationId": "konstruksi"
+      },
+      {
+        "kana": "工場 (こうじょう )",
+        "translationId": "pabrik"
+      },
+      {
+        "kana": "工業 (こうぎょう )",
+        "translationId": "industri"
+      },
+      {
+        "kana": "工夫 (くふう )",
+        "translationId": "rencana, akal"
+      }
+    ]
+  },
+  "元": {
+    "meaningId": [
+      "asli"
+    ],
+    "examplesId": [
+      {
+        "kana": "元気 (げんき )",
+        "translationId": "sehat, bugar"
+      },
+      {
+        "kana": "元日 (がんじつ )",
+        "translationId": "hari Tahun Baru"
+      },
+      {
+        "kana": "手元 (てもと )",
+        "translationId": "uang yang ada di tangan atau di rumah"
+      },
+      {
+        "kana": "耳元 (みみもと)",
+        "translationId": "dekat telinga"
+      },
+      {
+        "kana": "紀元前 (きげんぜん)",
+        "translationId": "sebelum masehi, SM"
+      },
+      {
+        "kana": "還元 (かんげん)",
+        "translationId": "pengembalian, reduksi"
+      }
+    ]
+  },
+  "止": {
+    "meaningId": [
+      "berhenti"
+    ],
+    "examplesId": [
+      {
+        "kana": "中止 (ちゅうし )",
+        "translationId": "penghentian, pembatalan"
+      },
+      {
+        "kana": "止まる (とまる )",
+        "translationId": "berhenti"
+      },
+      {
+        "kana": "止める (とめる )",
+        "translationId": "menghentikan, mematikan"
+      },
+      {
+        "kana": "止める (やめる )",
+        "translationId": "mengakhiri, menghentikan"
+      },
+      {
+        "kana": "防止 (ぼうし )",
+        "translationId": "pencegahan"
+      },
+      {
+        "kana": "停止 (ていし )",
+        "translationId": "penghentian, penangguhan"
+      }
+    ]
+  },
+  "引": {
+    "meaningId": [
+      "tarik"
+    ],
+    "examplesId": [
+      {
+        "kana": "引く (ひく )",
+        "translationId": "menarik"
+      },
+      {
+        "kana": "引き出す (ひきだす )",
+        "translationId": "menarik keluar, mengeluarkan"
+      },
+      {
+        "kana": "引き上げる (ひきあげる )",
+        "translationId": "menarik ke atas, mengangkat"
+      },
+      {
+        "kana": "長引く (ながびく )",
+        "translationId": "berkepanjangan, berlarut-larut"
+      },
+      {
+        "kana": "手引き (てびき )",
+        "translationId": "panduan, bimbingan"
+      },
+      {
+        "kana": "引用 (いんよう )",
+        "translationId": "kutipan, sitasi, referensi"
+      }
+    ]
+  },
+  "牛": {
+    "meaningId": [
+      "sapi"
+    ],
+    "examplesId": [
+      {
+        "kana": "牛肉 (ぎゅうにく )",
+        "translationId": "daging sapi"
+      },
+      {
+        "kana": "牛乳 (ぎゅうにゅう )",
+        "translationId": "susu sapi"
+      },
+      {
+        "kana": "雌牛 (めうし)",
+        "translationId": "sapi betina"
+      }
+    ]
+  },
+  "区": {
+    "meaningId": [
+      "wilayah",
+      "distrik"
+    ],
+    "examplesId": [
+      {
+        "kana": "区切る (くぎる )",
+        "translationId": "membatasi, memisahkan"
+      },
+      {
+        "kana": "区別 (くべつ )",
+        "translationId": "perbedaan, pembedaan"
+      },
+      {
+        "kana": "区役所 (くやくしょ )",
+        "translationId": "kantor wilayah"
+      }
+    ]
+  },
+  "犬": {
+    "meaningId": [
+      "anjing"
+    ],
+    "examplesId": [
+      {
+        "kana": "犬小屋 (いぬごや)",
+        "translationId": "kandang anjing"
+      },
+      {
+        "kana": "犬歯 (けんし)",
+        "translationId": "gigi taring"
+      },
+      {
+        "kana": "盲導犬 (もうどうけん)",
+        "translationId": "anjing penuntun bagi tunanetra"
+      }
+    ]
+  },
+  "不": {
+    "meaningId": [
+      "negatif",
+      "buruk"
+    ],
+    "examplesId": [
+      {
+        "kana": "不足 (ふそく )",
+        "translationId": "kekurangan, kelangkaan"
+      },
+      {
+        "kana": "不安 (ふあん )",
+        "translationId": "kecemasan, kegelisahan"
+      },
+      {
+        "kana": "不恰好 (ぶかっこう )",
+        "translationId": "tidak rupawan, tidak proporsional"
+      },
+      {
+        "kana": "不図 (ふと )",
+        "translationId": "tiba-tiba, secara spontan"
+      },
+      {
+        "kana": "不明 (ふめい )",
+        "translationId": "tidak diketahui, tidak pasti"
+      },
+      {
+        "kana": "不便 (ふべん )",
+        "translationId": "ketidaknyamanan"
+      }
+    ]
+  },
+  "文": {
+    "meaningId": [
+      "kalimat",
+      "tulisan"
+    ],
+    "examplesId": [
+      {
+        "kana": "本文 (ほんぶん )",
+        "translationId": "teks, isi (surat)"
+      },
+      {
+        "kana": "文書 (ぶんしょ )",
+        "translationId": "dokumen, tulisan, surat"
+      },
+      {
+        "kana": "文学 (ぶんがく )",
+        "translationId": "sastra"
+      },
+      {
+        "kana": "文字 (もじ )",
+        "translationId": "huruf, karakter"
+      },
+      {
+        "kana": "文体 (ぶんたい )",
+        "translationId": "gaya bahasa"
+      },
+      {
+        "kana": "作文 (さくぶん )",
+        "translationId": "karangan, komposisi"
+      }
+    ]
+  },
+  "方": {
+    "meaningId": [
+      "orang",
+      "arah"
+    ],
+    "examplesId": [
+      {
+        "kana": "方言 (ほうげん )",
+        "translationId": "dialek"
+      },
+      {
+        "kana": "一方 (いっぽう )",
+        "translationId": "salah satu (dari dua), yang lain"
+      },
+      {
+        "kana": "何方 (どなた )",
+        "translationId": "siapa?"
+      },
+      {
+        "kana": "見方 (みかた )",
+        "translationId": "sudut pandang"
+      },
+      {
+        "kana": "言い方 (いいかた )",
+        "translationId": "cara berbicara"
+      },
+      {
+        "kana": "書き方 (かきかた )",
+        "translationId": "cara menulis"
+      }
+    ]
+  },
+  "心": {
+    "meaningId": [
+      "hati"
+    ],
+    "examplesId": [
+      {
+        "kana": "中心 (ちゅうしん )",
+        "translationId": "pusat, tengah, inti"
+      },
+      {
+        "kana": "心がけ (こころがけ )",
+        "translationId": "niat, perhatian"
+      },
+      {
+        "kana": "心がける (こころがける )",
+        "translationId": "mengingat dalam hati"
+      },
+      {
+        "kana": "用心 (ようじん )",
+        "translationId": "kehati-hatian, kewaspadaan"
+      },
+      {
+        "kana": "心地よい (ここちよい )",
+        "translationId": "nyaman, menyenangkan"
+      },
+      {
+        "kana": "都心 (としん )",
+        "translationId": "pusat kota"
+      }
+    ]
+  },
+  "切": {
+    "meaningId": [
+      "potong"
+    ],
+    "examplesId": [
+      {
+        "kana": "千切る (ちぎる )",
+        "translationId": "memotong halus, memetik (buah)"
+      },
+      {
+        "kana": "切る (きる )",
+        "translationId": "memotong, mematikan"
+      },
+      {
+        "kana": "切れ (きれ )",
+        "translationId": "potongan, irisan"
+      },
+      {
+        "kana": "切手 (きって )",
+        "translationId": "perangko"
+      },
+      {
+        "kana": "大切 (たいせつ )",
+        "translationId": "penting, berharga"
+      },
+      {
+        "kana": "区切る (くぎる )",
+        "translationId": "membatasi, memisahkan"
+      }
+    ]
+  },
+  "太": {
+    "meaningId": [
+      "gemuk"
+    ],
+    "examplesId": [
+      {
+        "kana": "太い (ふとい )",
+        "translationId": "tebal, gemuk"
+      },
+      {
+        "kana": "太る (ふとる )",
+        "translationId": "menjadi gemuk"
+      },
+      {
+        "kana": "太平洋 (たいへいよう )",
+        "translationId": "Samudra Pasifik"
+      },
+      {
+        "kana": "太陽 (たいよう )",
+        "translationId": "matahari"
+      },
+      {
+        "kana": "伊太利 (イタリア)",
+        "translationId": "Italia"
+      },
+      {
+        "kana": "太鼓 (たいこ )",
+        "translationId": "drum, gendang"
+      }
+    ]
+  },
+  "代": {
+    "meaningId": [
+      "pengganti",
+      "perubahan"
+    ],
+    "examplesId": [
+      {
+        "kana": "代わり (かわり )",
+        "translationId": "pengganti"
+      },
+      {
+        "kana": "代金 (だいきん )",
+        "translationId": "harga, biaya, pembayaran"
+      },
+      {
+        "kana": "年代 (ねんだい )",
+        "translationId": "zaman, era, periode"
+      },
+      {
+        "kana": "古代 (こだい )",
+        "translationId": "zaman kuno"
+      },
+      {
+        "kana": "時代 (じだい )",
+        "translationId": "periode, era, zaman"
+      },
+      {
+        "kana": "近代 (きんだい )",
+        "translationId": "zaman modern"
+      }
+    ]
+  },
+  "台": {
+    "meaningId": [
+      "papan",
+      "dudukan"
+    ],
+    "examplesId": [
+      {
+        "kana": "台所 (だいどころ )",
+        "translationId": "dapur"
+      },
+      {
+        "kana": "台風 (たいふう )",
+        "translationId": "topan, badai"
+      },
+      {
+        "kana": "台無し (だいなし )",
+        "translationId": "rusak, kacau"
+      },
+      {
+        "kana": "灯台 (とうだい )",
+        "translationId": "mercusuar"
+      },
+      {
+        "kana": "寝台 (しんだい )",
+        "translationId": "tempat tidur, dipan"
+      },
+      {
+        "kana": "舞台 (ぶたい )",
+        "translationId": "panggung, pentas"
+      }
+    ]
+  },
+  "世": {
+    "meaningId": [
+      "periode",
+      "dunia"
+    ],
+    "examplesId": [
+      {
+        "kana": "世の中 (よのなか )",
+        "translationId": "masyarakat, dunia, zaman"
+      },
+      {
+        "kana": "世間 (せけん )",
+        "translationId": "dunia, masyarakat"
+      },
+      {
+        "kana": "世話 (せわ )",
+        "translationId": "merawat, bantuan"
+      },
+      {
+        "kana": "中世 (ちゅうせい )",
+        "translationId": "abad pertengahan"
+      },
+      {
+        "kana": "出世 (しゅっせ )",
+        "translationId": "promosi, sukses dalam karier"
+      },
+      {
+        "kana": "世界 (せかい )",
+        "translationId": "dunia, masyarakat, alam semesta"
+      }
+    ]
+  },
+  "正": {
+    "meaningId": [
+      "benar",
+      "tepat"
+    ],
+    "examplesId": [
+      {
+        "kana": "正しい (ただしい )",
+        "translationId": "benar, tepat"
+      },
+      {
+        "kana": "正月 (しょうがつ )",
+        "translationId": "Tahun Baru, Hari Tahun Baru"
+      },
+      {
+        "kana": "正午 (しょうご )",
+        "translationId": "tengah hari"
+      },
+      {
+        "kana": "校正 (こうせい )",
+        "translationId": "pengoreksian naskah"
+      },
+      {
+        "kana": "正門 (せいもん )",
+        "translationId": "gerbang utama, pintu masuk utama"
+      },
+      {
+        "kana": "正式 (せいしき )",
+        "translationId": "resmi, formal"
+      }
+    ]
+  },
+  "田": {
+    "meaningId": [
+      "sawah",
+      "petak sawah"
+    ],
+    "examplesId": [
+      {
+        "kana": "田んぼ (たんぼ )",
+        "translationId": "sawah, ladang"
+      },
+      {
+        "kana": "田植え (たうえ )",
+        "translationId": "penanaman padi"
+      },
+      {
+        "kana": "屯田 (とんでん)",
+        "translationId": "kolonisasi pertanian"
+      },
+      {
+        "kana": "田舎 (いなか )",
+        "translationId": "pedesaan, daerah desa"
+      },
+      {
+        "kana": "票田 (ひょうでん)",
+        "translationId": "lumbung suara"
+      },
+      {
+        "kana": "稲田 (いなだ)",
+        "translationId": "sawah padi"
+      }
+    ]
+  },
+  "冬": {
+    "meaningId": [
+      "musim dingin"
+    ],
+    "examplesId": [
+      {
+        "kana": "冬休み (ふゆやすみ )",
+        "translationId": "liburan musim dingin"
+      },
+      {
+        "kana": "冬期 (とうき)",
+        "translationId": "musim dingin"
+      }
+    ]
+  },
+  "民": {
+    "meaningId": [
+      "rakyat",
+      "bangsa"
+    ],
+    "examplesId": [
+      {
+        "kana": "国民 (こくみん )",
+        "translationId": "rakyat, bangsa, kewarganegaraan"
+      },
+      {
+        "kana": "民間 (みんかん )",
+        "translationId": "swasta, sipil"
+      },
+      {
+        "kana": "人民 (じんみん )",
+        "translationId": "rakyat, publik"
+      },
+      {
+        "kana": "市民 (しみん )",
+        "translationId": "warga kota"
+      },
+      {
+        "kana": "住民 (じゅうみん )",
+        "translationId": "warga, penduduk"
+      },
+      {
+        "kana": "民族 (みんぞく )",
+        "translationId": "suku bangsa, ras"
+      }
+    ]
+  },
+  "用": {
+    "meaningId": [
+      "pakai"
+    ],
+    "examplesId": [
+      {
+        "kana": "引用 (いんよう )",
+        "translationId": "kutipan, sitasi, referensi"
+      },
+      {
+        "kana": "用いる (もちいる )",
+        "translationId": "menggunakan, memanfaatkan"
+      },
+      {
+        "kana": "用語 (ようご )",
+        "translationId": "istilah, terminologi"
+      },
+      {
+        "kana": "用心 (ようじん )",
+        "translationId": "kehati-hatian, kewaspadaan"
+      },
+      {
+        "kana": "私用 (しよう )",
+        "translationId": "penggunaan pribadi"
+      },
+      {
+        "kana": "作用 (さよう )",
+        "translationId": "tindakan, operasi, efek"
+      }
+    ]
+  },
+  "兄": {
+    "meaningId": [
+      "kakak laki-laki"
+    ],
+    "examplesId": [
+      {
+        "kana": "兄さん (にいさん )",
+        "translationId": "kakak laki-laki"
+      },
+      {
+        "kana": "父兄 (ふけい )",
+        "translationId": "wali, orang tua"
+      },
+      {
+        "kana": "兄弟 (きょうだい )",
+        "translationId": "saudara kandung"
+      },
+      {
+        "kana": "従兄弟 (いとこ )",
+        "translationId": "sepupu laki-laki"
+      }
+    ]
+  },
+  "以": {
+    "meaningId": [
+      "dengan/melalui"
+    ],
+    "examplesId": [
+      {
+        "kana": "以下 (いか )",
+        "translationId": "tidak melebihi, kurang dari"
+      },
+      {
+        "kana": "以外 (いがい )",
+        "translationId": "kecuali, selain"
+      },
+      {
+        "kana": "以後 (いご )",
+        "translationId": "sesudah ini, mulai sekarang"
+      },
+      {
+        "kana": "以上 (いじょう )",
+        "translationId": "tidak kurang dari, sekian"
+      },
+      {
+        "kana": "以前 (いぜん )",
+        "translationId": "sebelumnya, dulu"
+      },
+      {
+        "kana": "以来 (いらい )",
+        "translationId": "sejak, setelahnya"
+      }
+    ]
+  },
+  "去": {
+    "meaningId": [
+      "pergi"
+    ],
+    "examplesId": [
+      {
+        "kana": "立ち去る (たちさる )",
+        "translationId": "meninggalkan, beranjak"
+      },
+      {
+        "kana": "去る (さる )",
+        "translationId": "pergi, meninggalkan"
+      },
+      {
+        "kana": "去年 (きょねん )",
+        "translationId": "tahun lalu"
+      },
+      {
+        "kana": "過去 (かこ )",
+        "translationId": "masa lalu"
+      },
+      {
+        "kana": "逝去 (せいきょ)",
+        "translationId": "wafat (hormat)"
+      }
+    ]
+  },
+  "仕": {
+    "meaningId": [
+      "melayani",
+      "melakukan"
+    ],
+    "examplesId": [
+      {
+        "kana": "仕上げる (しあげる )",
+        "translationId": "menyelesaikan, merampungkan"
+      },
+      {
+        "kana": "仕方 (しかた )",
+        "translationId": "cara, metode"
+      },
+      {
+        "kana": "仕方がない (しかたがない )",
+        "translationId": "tidak ada cara lain, tak terhindarkan"
+      },
+      {
+        "kana": "仕事 (しごと )",
+        "translationId": "pekerjaan, tugas"
+      },
+      {
+        "kana": "仕度 (したく )",
+        "translationId": "persiapan"
+      },
+      {
+        "kana": "仕組み (しくみ )",
+        "translationId": "struktur, mekanisme"
+      }
+    ]
+  },
+  "市": {
+    "meaningId": [
+      "kota",
+      "pasar"
+    ],
+    "examplesId": [
+      {
+        "kana": "市長 (しちょう )",
+        "translationId": "wali kota"
+      },
+      {
+        "kana": "市民 (しみん )",
+        "translationId": "warga kota"
+      },
+      {
+        "kana": "都市 (とし )",
+        "translationId": "kota, perkotaan"
+      },
+      {
+        "kana": "市場 (いちば )",
+        "translationId": "pasar"
+      },
+      {
+        "kana": "市内 (しない )",
+        "translationId": "dalam kota"
+      },
+      {
+        "kana": "市役所 (しやくしょ )",
+        "translationId": "balai kota"
+      }
+    ]
+  },
+  "広": {
+    "meaningId": [
+      "lebar",
+      "luas"
+    ],
+    "examplesId": [
+      {
+        "kana": "広い (ひろい )",
+        "translationId": "luas, lebar"
+      },
+      {
+        "kana": "広がる (ひろがる )",
+        "translationId": "meluas, menyebar"
+      },
+      {
+        "kana": "広さ (ひろさ )",
+        "translationId": "luas, keluasan"
+      },
+      {
+        "kana": "広まる (ひろまる )",
+        "translationId": "menyebar, tersebar luas"
+      },
+      {
+        "kana": "広場 (ひろば )",
+        "translationId": "lapangan, alun-alun"
+      },
+      {
+        "kana": "広告 (こうこく )",
+        "translationId": "iklan"
+      }
+    ]
+  },
+  "主": {
+    "meaningId": [
+      "utama",
+      "tuan"
+    ],
+    "examplesId": [
+      {
+        "kana": "主食 (しゅしょく )",
+        "translationId": "makanan pokok"
+      },
+      {
+        "kana": "主人 (しゅじん )",
+        "translationId": "suami, tuan rumah"
+      },
+      {
+        "kana": "地主 (じぬし )",
+        "translationId": "tuan tanah, pemilik tanah"
+      },
+      {
+        "kana": "持ち主 (もちぬし )",
+        "translationId": "pemilik"
+      },
+      {
+        "kana": "家主 (やぬし )",
+        "translationId": "pemilik rumah"
+      },
+      {
+        "kana": "主役 (しゅやく )",
+        "translationId": "peran utama, aktor utama"
+      }
+    ]
+  },
+  "写": {
+    "meaningId": [
+      "salin"
+    ],
+    "examplesId": [
+      {
+        "kana": "写生 (しゃせい )",
+        "translationId": "sketsa"
+      },
+      {
+        "kana": "写し (うつし )",
+        "translationId": "salinan, duplikat"
+      },
+      {
+        "kana": "写す (うつす )",
+        "translationId": "menyalin, menggandakan"
+      },
+      {
+        "kana": "写る (うつる )",
+        "translationId": "terfoto, tertangkap kamera"
+      },
+      {
+        "kana": "写真 (しゃしん )",
+        "translationId": "foto"
+      },
+      {
+        "kana": "複写 (ふくしゃ)",
+        "translationId": "salinan, duplikat"
+      }
+    ]
+  },
+  "字": {
+    "meaningId": [
+      "karakter",
+      "huruf"
+    ],
+    "examplesId": [
+      {
+        "kana": "ローマ字 (ローマじ )",
+        "translationId": "huruf Latin"
+      },
+      {
+        "kana": "文字 (もじ )",
+        "translationId": "huruf, karakter"
+      },
+      {
+        "kana": "赤字 (あかじ )",
+        "translationId": "defisit"
+      },
+      {
+        "kana": "赤十字 (せきじゅうじ )",
+        "translationId": "Palang Merah"
+      },
+      {
+        "kana": "漢字 (かんじ )",
+        "translationId": "karakter Tionghoa, kanji"
+      },
+      {
+        "kana": "活字 (かつじ )",
+        "translationId": "huruf cetak"
+      }
+    ]
+  },
+  "自": {
+    "meaningId": [
+      "diri sendiri"
+    ],
+    "examplesId": [
+      {
+        "kana": "自ら (みずから )",
+        "translationId": "diri sendiri, secara pribadi"
+      },
+      {
+        "kana": "自分 (じぶん )",
+        "translationId": "diri sendiri, saya"
+      },
+      {
+        "kana": "自転車 (じてんしゃ )",
+        "translationId": "sepeda"
+      },
+      {
+        "kana": "自動車 (じどうしゃ )",
+        "translationId": "mobil"
+      },
+      {
+        "kana": "自習 (じしゅう )",
+        "translationId": "belajar mandiri"
+      },
+      {
+        "kana": "不自由 (ふじゆう )",
+        "translationId": "ketidaknyamanan, keterbatasan"
+      }
+    ]
+  },
+  "考": {
+    "meaningId": [
+      "mempertimbangkan",
+      "berpikir"
+    ],
+    "examplesId": [
+      {
+        "kana": "考え (かんがえ )",
+        "translationId": "pemikiran, ide"
+      },
+      {
+        "kana": "考える (かんがえる )",
+        "translationId": "berpikir, mempertimbangkan"
+      },
+      {
+        "kana": "参考 (さんこう )",
+        "translationId": "rujukan, konsultasi"
+      },
+      {
+        "kana": "参考書 (さんこうしょ )",
+        "translationId": "buku rujukan"
+      },
+      {
+        "kana": "考慮 (こうりょ )",
+        "translationId": "pertimbangan"
+      }
+    ]
+  },
+  "合": {
+    "meaningId": [
+      "menggabungkan",
+      "cocok"
+    ],
+    "examplesId": [
+      {
+        "kana": "合う (あう )",
+        "translationId": "bertemu, cocok"
+      },
+      {
+        "kana": "合わせる (あわせる )",
+        "translationId": "menyesuaikan, menyelaraskan"
+      },
+      {
+        "kana": "合間 (あいま )",
+        "translationId": "jeda, sela"
+      },
+      {
+        "kana": "会合 (かいごう )",
+        "translationId": "pertemuan, rapat"
+      },
+      {
+        "kana": "間に合う (まにあう )",
+        "translationId": "tepat waktu"
+      },
+      {
+        "kana": "話し合う (はなしあう )",
+        "translationId": "berdiskusi, berbicara bersama"
+      }
+    ]
+  },
+  "光": {
+    "meaningId": [
+      "cahaya"
+    ],
+    "examplesId": [
+      {
+        "kana": "日光 (にっこう )",
+        "translationId": "sinar matahari"
+      },
+      {
+        "kana": "光る (ひかる )",
+        "translationId": "bersinar, berkilau"
+      },
+      {
+        "kana": "光景 (こうけい )",
+        "translationId": "pemandangan"
+      },
+      {
+        "kana": "陽光 (ようこう)",
+        "translationId": "sinar matahari"
+      },
+      {
+        "kana": "光線 (こうせん )",
+        "translationId": "berkas cahaya"
+      },
+      {
+        "kana": "観光 (かんこう )",
+        "translationId": "wisata, pariwisata"
+      }
+    ]
+  },
+  "好": {
+    "meaningId": [
+      "suka"
+    ],
+    "examplesId": [
+      {
+        "kana": "好き (すき )",
+        "translationId": "kesukaan, cinta"
+      },
+      {
+        "kana": "好ましい (このましい )",
+        "translationId": "menarik, disukai"
+      },
+      {
+        "kana": "好み (このみ )",
+        "translationId": "selera, kesukaan"
+      },
+      {
+        "kana": "好む (このむ )",
+        "translationId": "menyukai, memilih"
+      },
+      {
+        "kana": "不恰好 (ぶかっこう )",
+        "translationId": "tidak rupawan"
+      },
+      {
+        "kana": "物好き (ものずき )",
+        "translationId": "rasa ingin tahu"
+      }
+    ]
+  },
+  "死": {
+    "meaningId": [
+      "kematian"
+    ],
+    "examplesId": [
+      {
+        "kana": "生死 (せいし )",
+        "translationId": "hidup dan mati"
+      },
+      {
+        "kana": "死ぬ (しぬ )",
+        "translationId": "mati"
+      },
+      {
+        "kana": "死者 (ししゃ )",
+        "translationId": "orang yang meninggal"
+      },
+      {
+        "kana": "必死 (ひっし )",
+        "translationId": "putus asa, mati-matian"
+      },
+      {
+        "kana": "戦死 (せんし )",
+        "translationId": "gugur dalam pertempuran"
+      },
+      {
+        "kana": "死亡 (しぼう )",
+        "translationId": "kematian"
+      }
+    ]
+  },
+  "回": {
+    "meaningId": [
+      "berputar",
+      "kali"
+    ],
+    "examplesId": [
+      {
+        "kana": "回す (まわす )",
+        "translationId": "memutar"
+      },
+      {
+        "kana": "回り (まわり )",
+        "translationId": "keliling, sekitar"
+      },
+      {
+        "kana": "回り道 (まわりみち )",
+        "translationId": "jalan memutar"
+      },
+      {
+        "kana": "回る (まわる )",
+        "translationId": "berputar"
+      },
+      {
+        "kana": "回転 (かいてん )",
+        "translationId": "rotasi, perputaran"
+      },
+      {
+        "kana": "回答 (かいとう )",
+        "translationId": "jawaban, balasan"
+      }
+    ]
+  },
+  "有": {
+    "meaningId": [
+      "punya"
+    ],
+    "examplesId": [
+      {
+        "kana": "有らゆる (あらゆる )",
+        "translationId": "segala, setiap"
+      },
+      {
+        "kana": "有名 (ゆうめい )",
+        "translationId": "terkenal"
+      },
+      {
+        "kana": "有力 (ゆうりょく )",
+        "translationId": "berpengaruh, terkemuka"
+      },
+      {
+        "kana": "所有 (しょゆう )",
+        "translationId": "kepemilikan"
+      },
+      {
+        "kana": "特有 (とくゆう )",
+        "translationId": "khas, ciri khas"
+      },
+      {
+        "kana": "有料 (ゆうりょう )",
+        "translationId": "berbayar, dikenakan biaya"
+      }
+    ]
+  },
+  "同": {
+    "meaningId": [
+      "sama"
+    ],
+    "examplesId": [
+      {
+        "kana": "同じ (おなじ )",
+        "translationId": "sama, identik"
+      },
+      {
+        "kana": "同一 (どういつ )",
+        "translationId": "kesamaan, identitas"
+      },
+      {
+        "kana": "同時 (どうじ )",
+        "translationId": "bersamaan, simultan"
+      },
+      {
+        "kana": "合同 (ごうどう )",
+        "translationId": "gabungan"
+      },
+      {
+        "kana": "同意 (どうい )",
+        "translationId": "persetujuan"
+      },
+      {
+        "kana": "共同 (きょうどう )",
+        "translationId": "bersama, kerja sama"
+      }
+    ]
+  },
+  "肉": {
+    "meaningId": [
+      "daging"
+    ],
+    "examplesId": [
+      {
+        "kana": "牛肉 (ぎゅうにく )",
+        "translationId": "daging sapi"
+      },
+      {
+        "kana": "肉体 (にくたい )",
+        "translationId": "tubuh, jasmani"
+      },
+      {
+        "kana": "鳥肉 (とりにく )",
+        "translationId": "daging ayam"
+      },
+      {
+        "kana": "皮肉 (ひにく )",
+        "translationId": "sindiran, sarkasme"
+      },
+      {
+        "kana": "朱肉 (しゅにく)",
+        "translationId": "tinta merah cap"
+      },
+      {
+        "kana": "豚肉 (ぶたにく )",
+        "translationId": "daging babi"
+      }
+    ]
+  },
+  "色": {
+    "meaningId": [
+      "warna"
+    ],
+    "examplesId": [
+      {
+        "kana": "色んな (いろんな )",
+        "translationId": "berbagai macam"
+      },
+      {
+        "kana": "水色 (みずいろ )",
+        "translationId": "biru muda"
+      },
+      {
+        "kana": "金色 (きんいろ )",
+        "translationId": "warna emas"
+      },
+      {
+        "kana": "茶色 (ちゃいろ )",
+        "translationId": "cokelat"
+      },
+      {
+        "kana": "特色 (とくしょく )",
+        "translationId": "ciri khas, fitur"
+      },
+      {
+        "kana": "顔色 (かおいろ )",
+        "translationId": "rona wajah"
+      }
+    ]
+  },
+  "早": {
+    "meaningId": [
+      "awal",
+      "cepat"
+    ],
+    "examplesId": [
+      {
+        "kana": "早い (はやい )",
+        "translationId": "cepat"
+      },
+      {
+        "kana": "お早う (おはよう )",
+        "translationId": "selamat pagi"
+      },
+      {
+        "kana": "早起き (はやおき )",
+        "translationId": "bangun pagi"
+      },
+      {
+        "kana": "早退 (そうたい )",
+        "translationId": "pulang lebih awal"
+      },
+      {
+        "kana": "早速 (さっそく )",
+        "translationId": "segera, langsung"
+      }
+    ]
+  },
+  "地": {
+    "meaningId": [
+      "tanah",
+      "bumi"
+    ],
+    "examplesId": [
+      {
+        "kana": "心地よい (ここちよい )",
+        "translationId": "nyaman, menyenangkan"
+      },
+      {
+        "kana": "土地 (とち )",
+        "translationId": "tanah, lahan"
+      },
+      {
+        "kana": "地下 (ちか )",
+        "translationId": "bawah tanah"
+      },
+      {
+        "kana": "地下道 (ちかどう )",
+        "translationId": "terowongan bawah tanah"
+      },
+      {
+        "kana": "地主 (じぬし )",
+        "translationId": "tuan tanah, pemilik tanah"
+      },
+      {
+        "kana": "地上 (ちじょう )",
+        "translationId": "di atas tanah"
+      }
+    ]
+  },
+  "池": {
+    "meaningId": [
+      "kolam"
+    ],
+    "examplesId": [
+      {
+        "kana": "電池 (でんち )",
+        "translationId": "baterai"
+      }
+    ]
+  },
+  "村": {
+    "meaningId": [
+      "desa",
+      "kampung"
+    ],
+    "examplesId": [
+      {
+        "kana": "農村 (のうそん )",
+        "translationId": "desa pertanian"
+      },
+      {
+        "kana": "漁村 (ぎょそん )",
+        "translationId": "desa nelayan"
+      }
+    ]
+  },
+  "体": {
+    "meaningId": [
+      "tubuh"
+    ],
+    "examplesId": [
+      {
+        "kana": "大体 (だいたい )",
+        "translationId": "umumnya, kira-kira"
+      },
+      {
+        "kana": "体力 (たいりょく )",
+        "translationId": "kekuatan fisik"
+      },
+      {
+        "kana": "気体 (きたい )",
+        "translationId": "gas, uap"
+      },
+      {
+        "kana": "肉体 (にくたい )",
+        "translationId": "tubuh, jasmani"
+      },
+      {
+        "kana": "文体 (ぶんたい )",
+        "translationId": "gaya bahasa"
+      },
+      {
+        "kana": "一体 (いったい )",
+        "translationId": "sebenarnya, apa-apaan"
+      }
+    ]
+  },
+  "町": {
+    "meaningId": [
+      "kota kecil"
+    ],
+    "examplesId": [
+      {
+        "kana": "下町 (したまち )",
+        "translationId": "kota tua, daerah bawah kota"
+      },
+      {
+        "kana": "町中 (まちなか)",
+        "translationId": "pusat kota"
+      }
+    ]
+  },
+  "低": {
+    "meaningId": [
+      "rendah"
+    ],
+    "examplesId": [
+      {
+        "kana": "低い (ひくい )",
+        "translationId": "rendah, pendek"
+      },
+      {
+        "kana": "低下 (ていか )",
+        "translationId": "penurunan"
+      }
+    ]
+  },
+  "弟": {
+    "meaningId": [
+      "adik laki-laki"
+    ],
+    "examplesId": [
+      {
+        "kana": "弟子 (でし )",
+        "translationId": "murid, pengikut"
+      },
+      {
+        "kana": "兄弟 (きょうだい )",
+        "translationId": "saudara kandung"
+      },
+      {
+        "kana": "従兄弟 (いとこ )",
+        "translationId": "sepupu laki-laki"
+      }
+    ]
+  },
+  "走": {
+    "meaningId": [
+      "lari"
+    ],
+    "examplesId": [
+      {
+        "kana": "走る (はしる )",
+        "translationId": "berlari"
+      },
+      {
+        "kana": "御馳走 (ごちそう )",
+        "translationId": "jamuan, traktiran"
+      },
+      {
+        "kana": "御馳走様 (ごちそうさま )",
+        "translationId": "terima kasih atas hidangannya"
+      }
+    ]
+  },
+  "赤": {
+    "meaningId": [
+      "merah"
+    ],
+    "examplesId": [
+      {
+        "kana": "赤字 (あかじ )",
+        "translationId": "defisit"
+      },
+      {
+        "kana": "赤十字 (せきじゅうじ )",
+        "translationId": "Palang Merah"
+      },
+      {
+        "kana": "赤道 (せきどう )",
+        "translationId": "khatulistiwa"
+      },
+      {
+        "kana": "赤い (あかい )",
+        "translationId": "merah"
+      },
+      {
+        "kana": "赤ちゃん (あかちゃん )",
+        "translationId": "bayi"
+      },
+      {
+        "kana": "真っ赤 (まっか )",
+        "translationId": "merah menyala"
+      }
+    ]
+  },
+  "図": {
+    "meaningId": [
+      "peta",
+      "gambar"
+    ],
+    "examplesId": [
+      {
+        "kana": "図々しい (ずうずうしい )",
+        "translationId": "tidak tahu malu, kurang ajar"
+      },
+      {
+        "kana": "図る (はかる )",
+        "translationId": "merencanakan, mengupayakan"
+      },
+      {
+        "kana": "図書 (としょ )",
+        "translationId": "buku-buku"
+      },
+      {
+        "kana": "不図 (ふと )",
+        "translationId": "tiba-tiba, secara spontan"
+      },
+      {
+        "kana": "合図 (あいず )",
+        "translationId": "tanda, isyarat"
+      },
+      {
+        "kana": "地図 (ちず )",
+        "translationId": "peta"
+      }
+    ]
+  },
+  "究": {
+    "meaningId": [
+      "riset",
+      "studi"
+    ],
+    "examplesId": [
+      {
+        "kana": "究明 (きゅうめい)",
+        "translationId": "penyelidikan akademik"
+      },
+      {
+        "kana": "研究 (けんきゅう )",
+        "translationId": "penelitian, studi"
+      }
+    ]
+  },
+  "声": {
+    "meaningId": [
+      "suara"
+    ],
+    "examplesId": [
+      {
+        "kana": "大声 (おおごえ )",
+        "translationId": "suara keras"
+      },
+      {
+        "kana": "声明 (せいめい )",
+        "translationId": "pernyataan, deklarasi"
+      },
+      {
+        "kana": "音声 (おんせい )",
+        "translationId": "suara"
+      },
+      {
+        "kana": "泣き声 (なきごえ)",
+        "translationId": "tangisan, suara menangis"
+      },
+      {
+        "kana": "銃声 (じゅうせい)",
+        "translationId": "suara tembakan"
+      }
+    ]
+  },
+  "売": {
+    "meaningId": [
+      "jual"
+    ],
+    "examplesId": [
+      {
+        "kana": "小売り (こうり )",
+        "translationId": "eceran, ritel"
+      },
+      {
+        "kana": "売り出す (うりだす )",
+        "translationId": "memasarkan, menjual"
+      },
+      {
+        "kana": "売り切れる (うりきれる )",
+        "translationId": "habis terjual"
+      },
+      {
+        "kana": "売る (うる )",
+        "translationId": "menjual"
+      },
+      {
+        "kana": "売れる (うれる )",
+        "translationId": "laku terjual"
+      },
+      {
+        "kana": "売店 (ばいてん )",
+        "translationId": "kios, gerai"
+      }
+    ]
+  },
+  "別": {
+    "meaningId": [
+      "pisah",
+      "lain"
+    ],
+    "examplesId": [
+      {
+        "kana": "別々 (べつべつ )",
+        "translationId": "terpisah, masing-masing"
+      },
+      {
+        "kana": "別れ (わかれ )",
+        "translationId": "perpisahan"
+      },
+      {
+        "kana": "別れる (わかれる )",
+        "translationId": "berpisah, berpisah jalan"
+      },
+      {
+        "kana": "区別 (くべつ )",
+        "translationId": "perbedaan, pembedaan"
+      },
+      {
+        "kana": "特別 (とくべつ )",
+        "translationId": "khusus, istimewa"
+      }
+    ]
+  },
+  "医": {
+    "meaningId": [
+      "dokter",
+      "kedokteran"
+    ],
+    "examplesId": [
+      {
+        "kana": "医学 (いがく )",
+        "translationId": "ilmu kedokteran"
+      },
+      {
+        "kana": "医者 (いしゃ )",
+        "translationId": "dokter"
+      },
+      {
+        "kana": "医師 (いし )",
+        "translationId": "dokter"
+      },
+      {
+        "kana": "獣医 (じゅうい)",
+        "translationId": "dokter hewan"
+      }
+    ]
+  },
+  "近": {
+    "meaningId": [
+      "dekat"
+    ],
+    "examplesId": [
+      {
+        "kana": "近代 (きんだい )",
+        "translationId": "zaman modern"
+      },
+      {
+        "kana": "近道 (ちかみち )",
+        "translationId": "jalan pintas"
+      },
+      {
+        "kana": "近い (ちかい )",
+        "translationId": "dekat"
+      },
+      {
+        "kana": "近く (ちかく )",
+        "translationId": "dekat, sekitar"
+      },
+      {
+        "kana": "近ごろ (ちかごろ )",
+        "translationId": "akhir-akhir ini, belakangan"
+      },
+      {
+        "kana": "近づく (ちかづく )",
+        "translationId": "mendekat"
+      }
+    ]
+  },
+  "私": {
+    "meaningId": [
+      "pribadi",
+      "saya",
+      "aku"
+    ],
+    "examplesId": [
+      {
+        "kana": "私用 (しよう )",
+        "translationId": "penggunaan pribadi"
+      },
+      {
+        "kana": "私立 (しりつ )",
+        "translationId": "swasta"
+      },
+      {
+        "kana": "私たち (わたしたち )",
+        "translationId": "kami, kita"
+      },
+      {
+        "kana": "私鉄 (してつ )",
+        "translationId": "kereta api swasta"
+      }
+    ]
+  },
+  "作": {
+    "meaningId": [
+      "membuat",
+      "menyiapkan",
+      "membangun"
+    ],
+    "examplesId": [
+      {
+        "kana": "作る (つくる )",
+        "translationId": "membuat"
+      },
+      {
+        "kana": "作文 (さくぶん )",
+        "translationId": "karangan, komposisi"
+      },
+      {
+        "kana": "作用 (さよう )",
+        "translationId": "tindakan, operasi, efek"
+      },
+      {
+        "kana": "名作 (めいさく )",
+        "translationId": "mahakarya"
+      },
+      {
+        "kana": "作者 (さくしゃ )",
+        "translationId": "penulis, pengarang"
+      },
+      {
+        "kana": "作物 (さくもつ )",
+        "translationId": "hasil tanaman, hasil panen"
+      }
+    ]
+  },
+  "住": {
+    "meaningId": [
+      "tinggal",
+      "menetap"
+    ],
+    "examplesId": [
+      {
+        "kana": "住まい (すまい )",
+        "translationId": "tempat tinggal, kediaman"
+      },
+      {
+        "kana": "住む (すむ )",
+        "translationId": "tinggal, menetap"
+      },
+      {
+        "kana": "住民 (じゅうみん )",
+        "translationId": "warga, penduduk"
+      },
+      {
+        "kana": "住所 (じゅうしょ )",
+        "translationId": "alamat"
+      },
+      {
+        "kana": "住居 (じゅうきょ )",
+        "translationId": "tempat tinggal, kediaman"
+      },
+      {
+        "kana": "移住 (いじゅう )",
+        "translationId": "migrasi, imigrasi"
+      }
+    ]
+  },
+  "者": {
+    "meaningId": [
+      "orang"
+    ],
+    "examplesId": [
+      {
+        "kana": "読者 (どくしゃ )",
+        "translationId": "pembaca"
+      },
+      {
+        "kana": "作者 (さくしゃ )",
+        "translationId": "penulis, pengarang"
+      },
+      {
+        "kana": "死者 (ししゃ )",
+        "translationId": "orang yang meninggal"
+      },
+      {
+        "kana": "医者 (いしゃ )",
+        "translationId": "dokter"
+      },
+      {
+        "kana": "学者 (がくしゃ )",
+        "translationId": "cendekiawan, ilmuwan"
+      },
+      {
+        "kana": "役者 (やくしゃ )",
+        "translationId": "aktor, aktris"
+      }
+    ]
+  },
+  "事": {
+    "meaningId": [
+      "hal",
+      "perkara",
+      "urusan"
+    ],
+    "examplesId": [
+      {
+        "kana": "食事 (しょくじ )",
+        "translationId": "makanan, santapan"
+      },
+      {
+        "kana": "人事 (じんじ )",
+        "translationId": "urusan personalia"
+      },
+      {
+        "kana": "火事 (かじ )",
+        "translationId": "kebakaran"
+      },
+      {
+        "kana": "仕事 (しごと )",
+        "translationId": "pekerjaan, tugas"
+      },
+      {
+        "kana": "行事 (ぎょうじ )",
+        "translationId": "acara, kegiatan"
+      },
+      {
+        "kana": "工事 (こうじ )",
+        "translationId": "konstruksi"
+      }
+    ]
+  },
+  "使": {
+    "meaningId": [
+      "pakai",
+      "tugas"
+    ],
+    "examplesId": [
+      {
+        "kana": "大使 (たいし )",
+        "translationId": "duta besar"
+      },
+      {
+        "kana": "使用 (しよう )",
+        "translationId": "penggunaan, pemakaian"
+      },
+      {
+        "kana": "使い (つかい )",
+        "translationId": "utusan, suruhan"
+      },
+      {
+        "kana": "使う (つかう )",
+        "translationId": "menggunakan"
+      },
+      {
+        "kana": "大使館 (たいしかん )",
+        "translationId": "kedutaan besar"
+      },
+      {
+        "kana": "使命 (しめい )",
+        "translationId": "misi, tugas, pesan"
+      }
+    ]
+  },
+  "始": {
+    "meaningId": [
+      "mulai"
+    ],
+    "examplesId": [
+      {
+        "kana": "始まり (はじまり )",
+        "translationId": "awal, permulaan"
+      },
+      {
+        "kana": "始まる (はじまる )",
+        "translationId": "dimulai"
+      },
+      {
+        "kana": "始め (はじめ )",
+        "translationId": "awal, permulaan"
+      },
+      {
+        "kana": "始める (はじめる )",
+        "translationId": "memulai"
+      },
+      {
+        "kana": "終始 (しゅうし )",
+        "translationId": "awal dan akhir"
+      },
+      {
+        "kana": "始終 (しじゅう )",
+        "translationId": "terus-menerus"
+      }
+    ]
+  },
+  "姉": {
+    "meaningId": [
+      "kakak perempuan"
+    ],
+    "examplesId": [
+      {
+        "kana": "姉さん (ねえさん )",
+        "translationId": "kakak perempuan"
+      },
+      {
+        "kana": "姉妹 (しまい )",
+        "translationId": "kakak beradik perempuan"
+      }
+    ]
+  },
+  "英": {
+    "meaningId": [
+      "unggul"
+    ],
+    "examplesId": [
+      {
+        "kana": "英語 (えいご )",
+        "translationId": "bahasa Inggris"
+      },
+      {
+        "kana": "英文 (えいぶん )",
+        "translationId": "kalimat bahasa Inggris"
+      },
+      {
+        "kana": "英雄 (えいゆう )",
+        "translationId": "pahlawan, tokoh besar"
+      }
+    ]
+  },
+  "京": {
+    "meaningId": [
+      "ibu kota"
+    ],
+    "examplesId": [
+      {
+        "kana": "東京 (とうきょう)",
+        "translationId": "Tokyo"
+      },
+      {
+        "kana": "京都 (きょうと)",
+        "translationId": "Kyoto"
+      },
+      {
+        "kana": "帝京 (ていきょう)",
+        "translationId": "ibu kota kekaisaran"
+      }
+    ]
+  },
+  "画": {
+    "meaningId": [
+      "gambar",
+      "lukisan"
+    ],
+    "examplesId": [
+      {
+        "kana": "映画 (えいが )",
+        "translationId": "film"
+      },
+      {
+        "kana": "計画 (けいかく )",
+        "translationId": "rencana, proyek"
+      },
+      {
+        "kana": "画家 (がか )",
+        "translationId": "pelukis, seniman"
+      },
+      {
+        "kana": "映画館 (えいがかん )",
+        "translationId": "bioskop"
+      },
+      {
+        "kana": "版画 (はんが)",
+        "translationId": "cetakan kayu, ukiran cetak"
+      },
+      {
+        "kana": "絵画 (かいが )",
+        "translationId": "lukisan"
+      }
+    ]
+  },
+  "妹": {
+    "meaningId": [
+      "adik perempuan"
+    ],
+    "examplesId": [
+      {
+        "kana": "姉妹 (しまい )",
+        "translationId": "kakak beradik perempuan"
+      }
+    ]
+  },
+  "味": {
+    "meaningId": [
+      "rasa"
+    ],
+    "examplesId": [
+      {
+        "kana": "味わう (あじわう )",
+        "translationId": "merasakan, menikmati"
+      },
+      {
+        "kana": "味方 (みかた )",
+        "translationId": "teman, sekutu, pendukung"
+      },
+      {
+        "kana": "地味 (じみ )",
+        "translationId": "sederhana, tidak mencolok"
+      },
+      {
+        "kana": "中味 (なかみ )",
+        "translationId": "isi, kandungan"
+      },
+      {
+        "kana": "意味 (いみ )",
+        "translationId": "arti, makna"
+      },
+      {
+        "kana": "美味しい (おいしい )",
+        "translationId": "enak, lezat"
+      }
+    ]
+  },
+  "服": {
+    "meaningId": [
+      "pakaian"
+    ],
+    "examplesId": [
+      {
+        "kana": "洋服 (ようふく )",
+        "translationId": "pakaian gaya barat"
+      },
+      {
+        "kana": "和服 (わふく )",
+        "translationId": "pakaian Jepang"
+      },
+      {
+        "kana": "衣服 (いふく )",
+        "translationId": "pakaian"
+      },
+      {
+        "kana": "服装 (ふくそう )",
+        "translationId": "pakaian, busana"
+      },
+      {
+        "kana": "克服 (こくふく)",
+        "translationId": "penaklukan, mengatasi"
+      },
+      {
+        "kana": "征服 (せいふく)",
+        "translationId": "penaklukan"
+      }
+    ]
+  },
+  "物": {
+    "meaningId": [
+      "benda"
+    ],
+    "examplesId": [
+      {
+        "kana": "名物 (めいぶつ )",
+        "translationId": "produk khas, spesialitas"
+      },
+      {
+        "kana": "書物 (しょもつ )",
+        "translationId": "buku-buku"
+      },
+      {
+        "kana": "物体 (ぶったい )",
+        "translationId": "benda, objek"
+      },
+      {
+        "kana": "飲み物 (のみもの )",
+        "translationId": "minuman"
+      },
+      {
+        "kana": "作物 (さくもつ )",
+        "translationId": "hasil tanaman, hasil panen"
+      },
+      {
+        "kana": "見物 (けんぶつ )",
+        "translationId": "tamasya, wisata"
+      }
+    ]
+  },
+  "歩": {
+    "meaningId": [
+      "jalan"
+    ],
+    "examplesId": [
+      {
+        "kana": "歩く (あるく )",
+        "translationId": "berjalan"
+      },
+      {
+        "kana": "歩道 (ほどう )",
+        "translationId": "trotoar, jalan kaki"
+      },
+      {
+        "kana": "進歩 (しんぽ )",
+        "translationId": "kemajuan, perkembangan"
+      },
+      {
+        "kana": "初歩 (しょほ )",
+        "translationId": "dasar, langkah awal"
+      },
+      {
+        "kana": "徒歩 (とほ)",
+        "translationId": "berjalan kaki"
+      },
+      {
+        "kana": "散歩 (さんぽ )",
+        "translationId": "jalan-jalan"
+      }
+    ]
+  },
+  "門": {
+    "meaningId": [
+      "gerbang"
+    ],
+    "examplesId": [
+      {
+        "kana": "正門 (せいもん )",
+        "translationId": "gerbang utama"
+      },
+      {
+        "kana": "専門 (せんもん )",
+        "translationId": "spesialisasi, bidang studi"
+      },
+      {
+        "kana": "専門家 (せんもんか )",
+        "translationId": "ahli, spesialis"
+      }
+    ]
+  },
+  "夜": {
+    "meaningId": [
+      "malam"
+    ],
+    "examplesId": [
+      {
+        "kana": "今夜 (こんや )",
+        "translationId": "malam ini"
+      },
+      {
+        "kana": "夜間 (やかん )",
+        "translationId": "pada malam hari"
+      },
+      {
+        "kana": "夜中 (よなか )",
+        "translationId": "tengah malam"
+      },
+      {
+        "kana": "昨夜 (さくや )",
+        "translationId": "tadi malam"
+      },
+      {
+        "kana": "徹夜 (てつや)",
+        "translationId": "begadang semalaman"
+      }
+    ]
+  },
+  "明": {
+    "meaningId": [
+      "terang",
+      "jelas"
+    ],
+    "examplesId": [
+      {
+        "kana": "明かり (あかり )",
+        "translationId": "cahaya, penerangan"
+      },
+      {
+        "kana": "明らか (あきらか )",
+        "translationId": "jelas, nyata"
+      },
+      {
+        "kana": "明るい (あかるい )",
+        "translationId": "terang, ceria"
+      },
+      {
+        "kana": "明後日 (あさって )",
+        "translationId": "lusa"
+      },
+      {
+        "kana": "明日 (あした )",
+        "translationId": "besok"
+      },
+      {
+        "kana": "明年 (みょうねん )",
+        "translationId": "tahun depan"
+      }
+    ]
+  },
+  "林": {
+    "meaningId": [
+      "hutan kecil",
+      "rimba"
+    ],
+    "examplesId": [
+      {
+        "kana": "林立 (りんりつ)",
+        "translationId": "berdiri rapat berdekatan"
+      },
+      {
+        "kana": "林道 (りんどう)",
+        "translationId": "jalan setapak hutan"
+      },
+      {
+        "kana": "森林 (しんりん)",
+        "translationId": "hutan"
+      },
+      {
+        "kana": "竹林 (ちくりん)",
+        "translationId": "rumpun bambu"
+      },
+      {
+        "kana": "杉林 (すぎばやし)",
+        "translationId": "hutan cedar"
+      },
+      {
+        "kana": "茂林 (もりん)",
+        "translationId": "hutan lebat"
+      }
+    ]
+  },
+  "青": {
+    "meaningId": [
+      "biru"
+    ],
+    "examplesId": [
+      {
+        "kana": "青年 (せいねん )",
+        "translationId": "pemuda"
+      },
+      {
+        "kana": "青白い (あおじろい )",
+        "translationId": "pucat"
+      },
+      {
+        "kana": "青い (あおい )",
+        "translationId": "biru"
+      },
+      {
+        "kana": "青春 (せいしゅん )",
+        "translationId": "masa muda"
+      },
+      {
+        "kana": "真っ青 (まっさお )",
+        "translationId": "biru tua, pucat pasi"
+      }
+    ]
+  },
+  "所": {
+    "meaningId": [
+      "tempat"
+    ],
+    "examplesId": [
+      {
+        "kana": "名所 (めいしょ )",
+        "translationId": "tempat terkenal"
+      },
+      {
+        "kana": "近所 (きんじょ )",
+        "translationId": "tetangga, sekitar"
+      },
+      {
+        "kana": "長所 (ちょうしょ )",
+        "translationId": "kelebihan, keunggulan"
+      },
+      {
+        "kana": "台所 (だいどころ )",
+        "translationId": "dapur"
+      },
+      {
+        "kana": "所々 (ところどころ )",
+        "translationId": "di sana-sini"
+      },
+      {
+        "kana": "所が (ところが )",
+        "translationId": "namun, akan tetapi"
+      }
+    ]
+  },
+  "注": {
+    "meaningId": [
+      "menuang",
+      "fokus"
+    ],
+    "examplesId": [
+      {
+        "kana": "注文 (ちゅうもん )",
+        "translationId": "pesanan"
+      },
+      {
+        "kana": "注目 (ちゅうもく )",
+        "translationId": "perhatian, sorotan"
+      },
+      {
+        "kana": "注ぐ (そそぐ )",
+        "translationId": "menuangkan, mengisi"
+      },
+      {
+        "kana": "注意 (ちゅうい )",
+        "translationId": "kehati-hatian, perhatian"
+      },
+      {
+        "kana": "注射 (ちゅうしゃ )",
+        "translationId": "suntikan"
+      }
+    ]
+  },
+  "知": {
+    "meaningId": [
+      "tahu",
+      "kebijaksanaan"
+    ],
+    "examplesId": [
+      {
+        "kana": "知事 (ちじ )",
+        "translationId": "gubernur prefektur"
+      },
+      {
+        "kana": "知人 (ちじん )",
+        "translationId": "kenalan, teman"
+      },
+      {
+        "kana": "知らせ (しらせ )",
+        "translationId": "pemberitahuan"
+      },
+      {
+        "kana": "知らせる (しらせる )",
+        "translationId": "memberitahu"
+      },
+      {
+        "kana": "知り合い (しりあい )",
+        "translationId": "kenalan"
+      },
+      {
+        "kana": "知る (しる )",
+        "translationId": "tahu, memahami"
+      }
+    ]
+  },
+  "昼": {
+    "meaningId": [
+      "siang",
+      "tengah hari"
+    ],
+    "examplesId": [
+      {
+        "kana": "お昼 (おひる )",
+        "translationId": "makan siang, tengah hari"
+      },
+      {
+        "kana": "昼間 (ひるま )",
+        "translationId": "siang hari"
+      },
+      {
+        "kana": "昼休み (ひるやすみ )",
+        "translationId": "istirahat siang"
+      },
+      {
+        "kana": "昼食 (ちゅうしょく )",
+        "translationId": "makan siang"
+      },
+      {
+        "kana": "昼飯 (ひるめし )",
+        "translationId": "makan siang"
+      },
+      {
+        "kana": "昼寝 (ひるね )",
+        "translationId": "tidur siang"
+      }
+    ]
+  },
+  "茶": {
+    "meaningId": [
+      "teh"
+    ],
+    "examplesId": [
+      {
+        "kana": "茶の間 (ちゃのま )",
+        "translationId": "ruang keluarga gaya Jepang"
+      },
+      {
+        "kana": "茶色 (ちゃいろ )",
+        "translationId": "cokelat"
+      },
+      {
+        "kana": "お茶 (おちゃ )",
+        "translationId": "teh"
+      },
+      {
+        "kana": "無茶 (むちゃ )",
+        "translationId": "tidak masuk akal, sembrono"
+      },
+      {
+        "kana": "緑茶 (りょくちゃ)",
+        "translationId": "teh hijau"
+      },
+      {
+        "kana": "紅茶 (こうちゃ )",
+        "translationId": "teh hitam"
+      }
+    ]
+  },
+  "待": {
+    "meaningId": [
+      "menunggu"
+    ],
+    "examplesId": [
+      {
+        "kana": "待ち合わせる (まちあわせる )",
+        "translationId": "janjian bertemu"
+      },
+      {
+        "kana": "待つ (まつ )",
+        "translationId": "menunggu"
+      },
+      {
+        "kana": "待合室 (まちあいしつ )",
+        "translationId": "ruang tunggu"
+      },
+      {
+        "kana": "招待 (しょうたい )",
+        "translationId": "undangan"
+      },
+      {
+        "kana": "接待 (せったい)",
+        "translationId": "penyambutan, jamuan"
+      },
+      {
+        "kana": "期待 (きたい )",
+        "translationId": "harapan, antisipasi"
+      }
+    ]
+  },
+  "洗": {
+    "meaningId": [
+      "cuci"
+    ],
+    "examplesId": [
+      {
+        "kana": "手洗い (てあらい )",
+        "translationId": "cuci tangan, toilet"
+      },
+      {
+        "kana": "洗う (あらう )",
+        "translationId": "mencuci"
+      },
+      {
+        "kana": "皿洗い (さらあらい)",
+        "translationId": "cuci piring"
+      },
+      {
+        "kana": "洗面所 (せんめんじょ )",
+        "translationId": "kamar mandi, toilet"
+      },
+      {
+        "kana": "洗濯 (せんたく )",
+        "translationId": "mencuci pakaian"
+      },
+      {
+        "kana": "洗濯機 (せんたくき )",
+        "translationId": "mesin cuci"
+      }
+    ]
+  },
+  "送": {
+    "meaningId": [
+      "mengirim"
+    ],
+    "examplesId": [
+      {
+        "kana": "見送る (みおくる )",
+        "translationId": "mengantar, melepas"
+      },
+      {
+        "kana": "送る (おくる )",
+        "translationId": "mengirim"
+      },
+      {
+        "kana": "送金 (そうきん )",
+        "translationId": "pengiriman uang"
+      },
+      {
+        "kana": "放送 (ほうそう )",
+        "translationId": "siaran, penyiaran"
+      },
+      {
+        "kana": "輸送 (ゆそう )",
+        "translationId": "transportasi, pengangkutan"
+      }
+    ]
+  },
+  "品": {
+    "meaningId": [
+      "barang"
+    ],
+    "examplesId": [
+      {
+        "kana": "手品 (てじな )",
+        "translationId": "sulap, trik tangan"
+      },
+      {
+        "kana": "作品 (さくひん )",
+        "translationId": "karya (buku, film)"
+      },
+      {
+        "kana": "日用品 (にちようひん )",
+        "translationId": "kebutuhan sehari-hari"
+      },
+      {
+        "kana": "品物 (しなもの )",
+        "translationId": "barang"
+      },
+      {
+        "kana": "上品 (じょうひん )",
+        "translationId": "elegan, anggun"
+      },
+      {
+        "kana": "食品 (しょくひん )",
+        "translationId": "bahan makanan"
+      }
+    ]
+  },
+  "洋": {
+    "meaningId": [
+      "samudra",
+      "gaya barat"
+    ],
+    "examplesId": [
+      {
+        "kana": "大西洋 (たいせいよう )",
+        "translationId": "Samudra Atlantik"
+      },
+      {
+        "kana": "東洋 (とうよう )",
+        "translationId": "dunia Timur"
+      },
+      {
+        "kana": "洋間 (ようま )",
+        "translationId": "kamar gaya barat"
+      },
+      {
+        "kana": "洋食 (ようしょく )",
+        "translationId": "masakan barat"
+      },
+      {
+        "kana": "洋服 (ようふく )",
+        "translationId": "pakaian gaya barat"
+      },
+      {
+        "kana": "洋風 (ようふう )",
+        "translationId": "gaya barat"
+      }
+    ]
+  },
+  "便": {
+    "meaningId": [
+      "nyaman"
+    ],
+    "examplesId": [
+      {
+        "kana": "大便 (だいべん )",
+        "translationId": "tinja"
+      },
+      {
+        "kana": "小便 (しょうべん )",
+        "translationId": "air seni"
+      },
+      {
+        "kana": "不便 (ふべん )",
+        "translationId": "ketidaknyamanan"
+      },
+      {
+        "kana": "便り (たより )",
+        "translationId": "kabar, berita"
+      },
+      {
+        "kana": "便所 (べんじょ )",
+        "translationId": "toilet"
+      },
+      {
+        "kana": "便箋 (びんせん )",
+        "translationId": "kertas surat"
+      }
+    ]
+  },
+  "風": {
+    "meaningId": [
+      "angin"
+    ],
+    "examplesId": [
+      {
+        "kana": "台風 (たいふう )",
+        "translationId": "topan, badai"
+      },
+      {
+        "kana": "洋風 (ようふう )",
+        "translationId": "gaya barat"
+      },
+      {
+        "kana": "北風 (きたかぜ)",
+        "translationId": "angin utara"
+      },
+      {
+        "kana": "秋風 (あきかぜ)",
+        "translationId": "angin musim gugur"
+      },
+      {
+        "kana": "和風 (わふう )",
+        "translationId": "gaya Jepang, angin sepoi"
+      },
+      {
+        "kana": "風船 (ふうせん )",
+        "translationId": "balon"
+      }
+    ]
+  },
+  "発": {
+    "meaningId": [
+      "mulai",
+      "memancarkan"
+    ],
+    "examplesId": [
+      {
+        "kana": "出発 (しゅっぱつ )",
+        "translationId": "keberangkatan"
+      },
+      {
+        "kana": "発明 (はつめい )",
+        "translationId": "penemuan, invensi"
+      },
+      {
+        "kana": "発電 (はつでん )",
+        "translationId": "pembangkit listrik"
+      },
+      {
+        "kana": "発売 (はつばい )",
+        "translationId": "penjualan, peluncuran"
+      },
+      {
+        "kana": "発見 (はっけん )",
+        "translationId": "penemuan"
+      },
+      {
+        "kana": "発言 (はつげん )",
+        "translationId": "ucapan, pernyataan"
+      }
+    ]
+  },
+  "度": {
+    "meaningId": [
+      "derajat",
+      "kali"
+    ],
+    "examplesId": [
+      {
+        "kana": "年度 (ねんど )",
+        "translationId": "tahun fiskal, tahun ajaran"
+      },
+      {
+        "kana": "お目出度う (おめでとう )",
+        "translationId": "selamat"
+      },
+      {
+        "kana": "何度 (なんど )",
+        "translationId": "berapa kali?"
+      },
+      {
+        "kana": "今度 (こんど )",
+        "translationId": "kali ini, lain kali"
+      },
+      {
+        "kana": "仕度 (したく )",
+        "translationId": "persiapan"
+      },
+      {
+        "kana": "度々 (たびたび )",
+        "translationId": "sering, berkali-kali"
+      }
+    ]
+  },
+  "映": {
+    "meaningId": [
+      "memantulkan",
+      "memproyeksikan"
+    ],
+    "examplesId": [
+      {
+        "kana": "映す (うつす )",
+        "translationId": "memproyeksikan, memantulkan"
+      },
+      {
+        "kana": "映る (うつる )",
+        "translationId": "terpantul, terlihat"
+      },
+      {
+        "kana": "映画 (えいが )",
+        "translationId": "film"
+      },
+      {
+        "kana": "映画館 (えいがかん )",
+        "translationId": "bioskop"
+      },
+      {
+        "kana": "反映 (はんえい )",
+        "translationId": "pengaruh, cerminan"
+      }
+    ]
+  },
+  "海": {
+    "meaningId": [
+      "laut",
+      "samudra"
+    ],
+    "examplesId": [
+      {
+        "kana": "海外 (かいがい )",
+        "translationId": "luar negeri"
+      },
+      {
+        "kana": "海苔 (のり )",
+        "translationId": "nori (rumput laut)"
+      },
+      {
+        "kana": "北海 (ほっかい)",
+        "translationId": "laut utara"
+      },
+      {
+        "kana": "北海道 (ほっかいどう)",
+        "translationId": "Hokkaido"
+      },
+      {
+        "kana": "海老 (えび )",
+        "translationId": "udang, lobster"
+      },
+      {
+        "kana": "海岸 (かいがん )",
+        "translationId": "pantai, pesisir"
+      }
+    ]
+  },
+  "界": {
+    "meaningId": [
+      "dunia"
+    ],
+    "examplesId": [
+      {
+        "kana": "世界 (せかい )",
+        "translationId": "dunia, masyarakat, alam semesta"
+      },
+      {
+        "kana": "限界 (げんかい )",
+        "translationId": "batas"
+      },
+      {
+        "kana": "境界 (きょうかい )",
+        "translationId": "batas, perbatasan"
+      }
+    ]
+  },
+  "屋": {
+    "meaningId": [
+      "toko"
+    ],
+    "examplesId": [
+      {
+        "kana": "八百屋 (やおや )",
+        "translationId": "tukang sayur"
+      },
+      {
+        "kana": "屋上 (おくじょう )",
+        "translationId": "atap gedung"
+      },
+      {
+        "kana": "小屋 (こや )",
+        "translationId": "gubuk, kabin"
+      },
+      {
+        "kana": "犬小屋 (いぬごや)",
+        "translationId": "kandang anjing"
+      },
+      {
+        "kana": "酒屋 (さかや )",
+        "translationId": "toko minuman keras"
+      },
+      {
+        "kana": "屋根 (やね )",
+        "translationId": "atap"
+      }
+    ]
+  },
+  "音": {
+    "meaningId": [
+      "bunyi",
+      "suara"
+    ],
+    "examplesId": [
+      {
+        "kana": "足音 (あしおと )",
+        "translationId": "suara langkah kaki"
+      },
+      {
+        "kana": "音声 (おんせい )",
+        "translationId": "suara"
+      },
+      {
+        "kana": "発音 (はつおん )",
+        "translationId": "pelafalan"
+      },
+      {
+        "kana": "物音 (ものおと )",
+        "translationId": "bunyi, suara"
+      },
+      {
+        "kana": "音楽 (おんがく )",
+        "translationId": "musik"
+      },
+      {
+        "kana": "雑音 (ざつおん )",
+        "translationId": "kebisingan, derau"
+      }
+    ]
+  },
+  "急": {
+    "meaningId": [
+      "terburu-buru",
+      "mendadak"
+    ],
+    "examplesId": [
+      {
+        "kana": "急用 (きゅうよう )",
+        "translationId": "urusan mendesak"
+      },
+      {
+        "kana": "急ぐ (いそぐ )",
+        "translationId": "bergegas"
+      },
+      {
+        "kana": "急行 (きゅうこう )",
+        "translationId": "ekspres (kereta)"
+      },
+      {
+        "kana": "大急ぎ (おおいそぎ )",
+        "translationId": "sangat mendesak"
+      },
+      {
+        "kana": "急病 (きゅうびょう )",
+        "translationId": "sakit mendadak"
+      },
+      {
+        "kana": "特急 (とっきゅう )",
+        "translationId": "kereta ekspres terbatas"
+      }
+    ]
+  },
+  "計": {
+    "meaningId": [
+      "rencana",
+      "menghitung"
+    ],
+    "examplesId": [
+      {
+        "kana": "計る (はかる )",
+        "translationId": "mengukur, menimbang"
+      },
+      {
+        "kana": "計画 (けいかく )",
+        "translationId": "rencana, proyek"
+      },
+      {
+        "kana": "会計 (かいけい )",
+        "translationId": "akuntansi, pembayaran"
+      },
+      {
+        "kana": "時計 (とけい )",
+        "translationId": "jam, arloji"
+      },
+      {
+        "kana": "合計 (ごうけい )",
+        "translationId": "jumlah total"
+      },
+      {
+        "kana": "家計 (かけい )",
+        "translationId": "ekonomi rumah tangga"
+      }
+    ]
+  },
+  "建": {
+    "meaningId": [
+      "membangun"
+    ],
+    "examplesId": [
+      {
+        "kana": "建つ (たつ )",
+        "translationId": "didirikan, dibangun"
+      },
+      {
+        "kana": "建てる (たてる )",
+        "translationId": "membangun, mendirikan"
+      },
+      {
+        "kana": "建前 (たてまえ )",
+        "translationId": "sikap di depan publik"
+      },
+      {
+        "kana": "建物 (たてもの )",
+        "translationId": "gedung"
+      },
+      {
+        "kana": "建設 (けんせつ )",
+        "translationId": "konstruksi, pembangunan"
+      },
+      {
+        "kana": "建築 (けんちく )",
+        "translationId": "arsitektur, konstruksi"
+      }
+    ]
+  },
+  "研": {
+    "meaningId": [
+      "mengasah",
+      "meneliti"
+    ],
+    "examplesId": [
+      {
+        "kana": "研ぐ (とぐ )",
+        "translationId": "mengasah"
+      },
+      {
+        "kana": "研究 (けんきゅう )",
+        "translationId": "penelitian, studi"
+      }
+    ]
+  },
+  "県": {
+    "meaningId": [
+      "prefektur"
+    ],
+    "examplesId": [
+      {
+        "kana": "県道 (けんどう)",
+        "translationId": "jalan prefektur"
+      },
+      {
+        "kana": "県庁 (けんちょう )",
+        "translationId": "kantor prefektur"
+      },
+      {
+        "kana": "岡山県 (おかやまけん)",
+        "translationId": "Prefektur Okayama"
+      }
+    ]
+  },
+  "思": {
+    "meaningId": [
+      "berpikir"
+    ],
+    "examplesId": [
+      {
+        "kana": "思いがけない (おもいがけない )",
+        "translationId": "tidak terduga"
+      },
+      {
+        "kana": "思いつく (おもいつく )",
+        "translationId": "terpikir"
+      },
+      {
+        "kana": "思い出 (おもいで )",
+        "translationId": "kenangan"
+      },
+      {
+        "kana": "思い出す (おもいだす )",
+        "translationId": "mengingat kembali"
+      },
+      {
+        "kana": "思い切り (おもいきり )",
+        "translationId": "dengan segenap kekuatan"
+      },
+      {
+        "kana": "思う (おもう )",
+        "translationId": "berpikir"
+      }
+    ]
+  },
+  "乗": {
+    "meaningId": [
+      "naik"
+    ],
+    "examplesId": [
+      {
+        "kana": "乗り物 (のりもの )",
+        "translationId": "kendaraan"
+      },
+      {
+        "kana": "乗る (のる )",
+        "translationId": "naik, menaiki"
+      },
+      {
+        "kana": "乗客 (じょうきゃく )",
+        "translationId": "penumpang"
+      },
+      {
+        "kana": "乗車券 (じょうしゃけん )",
+        "translationId": "tiket penumpang"
+      },
+      {
+        "kana": "乗り降り (のりおり )",
+        "translationId": "naik turun"
+      },
+      {
+        "kana": "乗り換え (のりかえ )",
+        "translationId": "transfer (kereta, bus)"
+      }
+    ]
+  },
+  "重": {
+    "meaningId": [
+      "berat"
+    ],
+    "examplesId": [
+      {
+        "kana": "重い (おもい )",
+        "translationId": "berat"
+      },
+      {
+        "kana": "重さ (おもさ )",
+        "translationId": "berat"
+      },
+      {
+        "kana": "重なる (かさなる )",
+        "translationId": "tumpang tindih"
+      },
+      {
+        "kana": "重ねる (かさねる )",
+        "translationId": "menumpuk"
+      },
+      {
+        "kana": "重大 (じゅうだい )",
+        "translationId": "penting, signifikan"
+      },
+      {
+        "kana": "体重 (たいじゅう )",
+        "translationId": "berat badan"
+      }
+    ]
+  },
+  "春": {
+    "meaningId": [
+      "musim semi"
+    ],
+    "examplesId": [
+      {
+        "kana": "青春 (せいしゅん )",
+        "translationId": "masa muda"
+      },
+      {
+        "kana": "春休み (はるやすみ)",
+        "translationId": "liburan musim semi"
+      }
+    ]
+  },
+  "室": {
+    "meaningId": [
+      "kamar"
+    ],
+    "examplesId": [
+      {
+        "kana": "図書室 (としょしつ )",
+        "translationId": "ruang perpustakaan"
+      },
+      {
+        "kana": "待合室 (まちあいしつ )",
+        "translationId": "ruang tunggu"
+      },
+      {
+        "kana": "病室 (びょうしつ )",
+        "translationId": "ruang rawat"
+      },
+      {
+        "kana": "教室 (きょうしつ )",
+        "translationId": "ruang kelas"
+      },
+      {
+        "kana": "室内 (しつない )",
+        "translationId": "dalam ruangan"
+      },
+      {
+        "kana": "和室 (わしつ )",
+        "translationId": "kamar gaya Jepang"
+      }
+    ]
+  },
+  "持": {
+    "meaningId": [
+      "memegang",
+      "memiliki"
+    ],
+    "examplesId": [
+      {
+        "kana": "金持ち (かねもち )",
+        "translationId": "orang kaya"
+      },
+      {
+        "kana": "気持ち (きもち )",
+        "translationId": "perasaan, suasana hati"
+      },
+      {
+        "kana": "持ち (もち )",
+        "translationId": "pegang, daya tahan"
+      },
+      {
+        "kana": "持ち主 (もちぬし )",
+        "translationId": "pemilik"
+      },
+      {
+        "kana": "持ち物 (もちもの )",
+        "translationId": "barang bawaan, milik"
+      },
+      {
+        "kana": "持っていく (もっていく )",
+        "translationId": "membawa pergi"
+      }
+    ]
+  },
+  "首": {
+    "meaningId": [
+      "leher"
+    ],
+    "examplesId": [
+      {
+        "kana": "手首 (てくび )",
+        "translationId": "pergelangan tangan"
+      },
+      {
+        "kana": "首都 (しゅと )",
+        "translationId": "ibu kota"
+      },
+      {
+        "kana": "首相 (しゅしょう )",
+        "translationId": "perdana menteri"
+      },
+      {
+        "kana": "縛り首 (しばりくび)",
+        "translationId": "hukuman gantung"
+      }
+    ]
+  },
+  "秋": {
+    "meaningId": [
+      "musim gugur"
+    ],
+    "examplesId": [
+      {
+        "kana": "秋風 (あきかぜ)",
+        "translationId": "angin musim gugur"
+      },
+      {
+        "kana": "秋分 (しゅうぶん)",
+        "translationId": "ekuinoks musim gugur"
+      }
+    ]
+  },
+  "借": {
+    "meaningId": [
+      "meminjam",
+      "menyewa"
+    ],
+    "examplesId": [
+      {
+        "kana": "借り (かり )",
+        "translationId": "pinjaman, utang"
+      },
+      {
+        "kana": "借りる (かりる )",
+        "translationId": "meminjam"
+      },
+      {
+        "kana": "借金 (しゃっきん )",
+        "translationId": "utang, pinjaman"
+      }
+    ]
+  },
+  "弱": {
+    "meaningId": [
+      "lemah"
+    ],
+    "examplesId": [
+      {
+        "kana": "弱い (よわい )",
+        "translationId": "lemah"
+      },
+      {
+        "kana": "弱める (よわめる )",
+        "translationId": "melemahkan"
+      },
+      {
+        "kana": "衰弱 (すいじゃく)",
+        "translationId": "kelemahan, kemerosotan"
+      }
+    ]
+  },
+  "紙": {
+    "meaningId": [
+      "kertas"
+    ],
+    "examplesId": [
+      {
+        "kana": "手紙 (てがみ )",
+        "translationId": "surat"
+      },
+      {
+        "kana": "紙くず (かみくず )",
+        "translationId": "sampah kertas"
+      },
+      {
+        "kana": "表紙 (ひょうし )",
+        "translationId": "sampul depan"
+      },
+      {
+        "kana": "鼻紙 (はながみ)",
+        "translationId": "tisu"
+      }
+    ]
+  },
+  "帰": {
+    "meaningId": [
+      "pulang"
+    ],
+    "examplesId": [
+      {
+        "kana": "帰り (かえり )",
+        "translationId": "kepulangan"
+      },
+      {
+        "kana": "帰る (かえる )",
+        "translationId": "pulang, kembali"
+      },
+      {
+        "kana": "日帰り (ひがえり )",
+        "translationId": "perjalanan satu hari"
+      },
+      {
+        "kana": "帰宅 (きたく )",
+        "translationId": "pulang ke rumah"
+      },
+      {
+        "kana": "里帰り (さとがえり)",
+        "translationId": "pulang kampung"
+      }
+    ]
+  },
+  "起": {
+    "meaningId": [
+      "bangkit",
+      "bangun"
+    ],
+    "examplesId": [
+      {
+        "kana": "起きる (おきる )",
+        "translationId": "bangun, bangkit"
+      },
+      {
+        "kana": "起こす (おこす )",
+        "translationId": "membangkitkan, menyebabkan"
+      },
+      {
+        "kana": "早起き (はやおき )",
+        "translationId": "bangun pagi"
+      },
+      {
+        "kana": "起源 (きげん )",
+        "translationId": "asal usul, awal mula"
+      },
+      {
+        "kana": "縁起 (えんぎ)",
+        "translationId": "pertanda, firasat keberuntungan"
+      },
+      {
+        "kana": "躍起 (やっき)",
+        "translationId": "putus asa, sangat antusias"
+      }
+    ]
+  },
+  "夏": {
+    "meaningId": [
+      "musim panas"
+    ],
+    "examplesId": [
+      {
+        "kana": "夏休み (なつやすみ )",
+        "translationId": "liburan musim panas"
+      },
+      {
+        "kana": "夏ばて (なつばて)",
+        "translationId": "kelelahan akibat panas"
+      }
+    ]
+  },
+  "家": {
+    "meaningId": [
+      "rumah",
+      "kediaman"
+    ],
+    "examplesId": [
+      {
+        "kana": "家計 (かけい )",
+        "translationId": "ekonomi rumah tangga"
+      },
+      {
+        "kana": "家事 (かじ )",
+        "translationId": "pekerjaan rumah tangga"
+      },
+      {
+        "kana": "家主 (やぬし )",
+        "translationId": "pemilik rumah"
+      },
+      {
+        "kana": "家出 (いえで )",
+        "translationId": "kabur dari rumah"
+      },
+      {
+        "kana": "作家 (さっか )",
+        "translationId": "penulis, pengarang"
+      },
+      {
+        "kana": "国家 (こっか )",
+        "translationId": "negara, bangsa"
+      }
+    ]
+  },
+  "院": {
+    "meaningId": [
+      "lembaga"
+    ],
+    "examplesId": [
+      {
+        "kana": "入院 (にゅういん )",
+        "translationId": "rawat inap"
+      },
+      {
+        "kana": "病院 (びょういん )",
+        "translationId": "rumah sakit"
+      },
+      {
+        "kana": "寺院 (じいん)",
+        "translationId": "kuil"
+      },
+      {
+        "kana": "退院 (たいいん )",
+        "translationId": "keluar dari rumah sakit"
+      },
+      {
+        "kana": "衆議院 (しゅうぎいん )",
+        "translationId": "majelis rendah parlemen"
+      },
+      {
+        "kana": "棋院 (きいん)",
+        "translationId": "perkumpulan go"
+      }
+    ]
+  },
+  "員": {
+    "meaningId": [
+      "anggota"
+    ],
+    "examplesId": [
+      {
+        "kana": "会員 (かいいん )",
+        "translationId": "anggota"
+      },
+      {
+        "kana": "駅員 (えきいん )",
+        "translationId": "petugas stasiun"
+      },
+      {
+        "kana": "店員 (てんいん )",
+        "translationId": "pegawai toko"
+      },
+      {
+        "kana": "教員 (きょういん )",
+        "translationId": "staf pengajar"
+      },
+      {
+        "kana": "全員 (ぜんいん )",
+        "translationId": "semua anggota, semua orang"
+      },
+      {
+        "kana": "委員 (いいん )",
+        "translationId": "anggota komite"
+      }
+    ]
+  },
+  "病": {
+    "meaningId": [
+      "sakit"
+    ],
+    "examplesId": [
+      {
+        "kana": "臆病 (おくびょう )",
+        "translationId": "pengecut, penakut"
+      },
+      {
+        "kana": "急病 (きゅうびょう )",
+        "translationId": "sakit mendadak"
+      },
+      {
+        "kana": "病院 (びょういん )",
+        "translationId": "rumah sakit"
+      },
+      {
+        "kana": "病気 (びょうき )",
+        "translationId": "penyakit, sakit"
+      },
+      {
+        "kana": "病室 (びょうしつ )",
+        "translationId": "ruang rawat"
+      },
+      {
+        "kana": "病人 (びょうにん )",
+        "translationId": "orang sakit, pasien"
+      }
+    ]
+  },
+  "勉": {
+    "meaningId": [
+      "berusaha"
+    ],
+    "examplesId": [
+      {
+        "kana": "勉強 (べんきょう )",
+        "translationId": "belajar"
+      },
+      {
+        "kana": "勤勉 (きんべん )",
+        "translationId": "kerajinan, ketekunan"
+      }
+    ]
+  },
+  "特": {
+    "meaningId": [
+      "khusus"
+    ],
+    "examplesId": [
+      {
+        "kana": "特に (とくに )",
+        "translationId": "terutama, khususnya"
+      },
+      {
+        "kana": "特急 (とっきゅう )",
+        "translationId": "kereta ekspres terbatas"
+      },
+      {
+        "kana": "特別 (とくべつ )",
+        "translationId": "khusus, istimewa"
+      },
+      {
+        "kana": "特有 (とくゆう )",
+        "translationId": "khas"
+      },
+      {
+        "kana": "特色 (とくしょく )",
+        "translationId": "ciri khas, fitur"
+      },
+      {
+        "kana": "独特 (どくとく )",
+        "translationId": "unik, khas"
+      }
+    ]
+  },
+  "旅": {
+    "meaningId": [
+      "bepergian",
+      "perjalanan"
+    ],
+    "examplesId": [
+      {
+        "kana": "旅行 (りょこう )",
+        "translationId": "perjalanan, wisata"
+      },
+      {
+        "kana": "旅館 (りょかん )",
+        "translationId": "penginapan tradisional Jepang"
+      },
+      {
+        "kana": "旅客 (りょかく )",
+        "translationId": "penumpang"
+      },
+      {
+        "kana": "旅費 (りょひ )",
+        "translationId": "biaya perjalanan"
+      }
+    ]
+  },
+  "料": {
+    "meaningId": [
+      "biaya",
+      "bahan"
+    ],
+    "examplesId": [
+      {
+        "kana": "料金 (りょうきん )",
+        "translationId": "biaya, ongkos, tarif"
+      },
+      {
+        "kana": "有料 (ゆうりょう )",
+        "translationId": "berbayar"
+      },
+      {
+        "kana": "食料 (しょくりょう )",
+        "translationId": "bahan makanan"
+      },
+      {
+        "kana": "料理 (りょうり )",
+        "translationId": "masakan, memasak"
+      },
+      {
+        "kana": "材料 (ざいりょう )",
+        "translationId": "bahan baku"
+      },
+      {
+        "kana": "給料 (きゅうりょう )",
+        "translationId": "gaji, upah"
+      }
+    ]
+  },
+  "真": {
+    "meaningId": [
+      "sejati",
+      "nyata"
+    ],
+    "examplesId": [
+      {
+        "kana": "真っ青 (まっさお )",
+        "translationId": "biru tua, pucat pasi"
+      },
+      {
+        "kana": "真っ赤 (まっか )",
+        "translationId": "merah menyala"
+      },
+      {
+        "kana": "真っ白 (まっしろ )",
+        "translationId": "putih bersih"
+      },
+      {
+        "kana": "真ん中 (まんなか )",
+        "translationId": "tepat di tengah"
+      },
+      {
+        "kana": "写真 (しゃしん )",
+        "translationId": "foto"
+      },
+      {
+        "kana": "真理 (しんり )",
+        "translationId": "kebenaran"
+      }
+    ]
+  },
+  "通": {
+    "meaningId": [
+      "melewati",
+      "berkomunikasi"
+    ],
+    "examplesId": [
+      {
+        "kana": "人通り (ひとどおり )",
+        "translationId": "lalu lintas pejalan kaki"
+      },
+      {
+        "kana": "不通 (ふつう )",
+        "translationId": "terputus, terhenti"
+      },
+      {
+        "kana": "通知 (つうち )",
+        "translationId": "pemberitahuan"
+      },
+      {
+        "kana": "通う (かよう )",
+        "translationId": "pergi pulang secara rutin"
+      },
+      {
+        "kana": "通じる (つうじる )",
+        "translationId": "tersambung, dimengerti"
+      },
+      {
+        "kana": "通す (とおす )",
+        "translationId": "membiarkan lewat, mengabaikan"
+      }
+    ]
+  },
+  "鳥": {
+    "meaningId": [
+      "burung",
+      "ayam"
+    ],
+    "examplesId": [
+      {
+        "kana": "鳥肉 (とりにく )",
+        "translationId": "daging ayam"
+      },
+      {
+        "kana": "小鳥 (ことり )",
+        "translationId": "burung kecil"
+      },
+      {
+        "kana": "牝鳥 (めんどり)",
+        "translationId": "ayam betina"
+      }
+    ]
+  },
+  "転": {
+    "meaningId": [
+      "berputar"
+    ],
+    "examplesId": [
+      {
+        "kana": "転がる (ころがる )",
+        "translationId": "menggelinding, berguling"
+      },
+      {
+        "kana": "転ぶ (ころぶ )",
+        "translationId": "jatuh, terjatuh"
+      },
+      {
+        "kana": "回転 (かいてん )",
+        "translationId": "rotasi, perputaran"
+      },
+      {
+        "kana": "自転車 (じてんしゃ )",
+        "translationId": "sepeda"
+      },
+      {
+        "kana": "運転 (うんてん )",
+        "translationId": "mengemudi, pengoperasian"
+      },
+      {
+        "kana": "運転手 (うんてんしゅ )",
+        "translationId": "pengemudi, sopir"
+      }
+    ]
+  },
+  "族": {
+    "meaningId": [
+      "keluarga"
+    ],
+    "examplesId": [
+      {
+        "kana": "家族 (かぞく )",
+        "translationId": "keluarga"
+      },
+      {
+        "kana": "民族 (みんぞく )",
+        "translationId": "suku bangsa, ras"
+      },
+      {
+        "kana": "氏族 (しぞく)",
+        "translationId": "klan, marga"
+      },
+      {
+        "kana": "貴族 (きぞく )",
+        "translationId": "bangsawan, aristokrat"
+      },
+      {
+        "kana": "閥族 (ばつぞく)",
+        "translationId": "klik, faksi keluarga"
+      }
+    ]
+  },
+  "進": {
+    "meaningId": [
+      "maju",
+      "melanjutkan"
+    ],
+    "examplesId": [
+      {
+        "kana": "行進 (こうしん )",
+        "translationId": "pawai, parade"
+      },
+      {
+        "kana": "進む (すすむ )",
+        "translationId": "maju"
+      },
+      {
+        "kana": "進める (すすめる )",
+        "translationId": "memajukan, mempromosikan"
+      },
+      {
+        "kana": "進学 (しんがく )",
+        "translationId": "melanjutkan ke universitas"
+      },
+      {
+        "kana": "進行 (しんこう )",
+        "translationId": "kemajuan, perjalanan"
+      },
+      {
+        "kana": "進出 (しんしゅつ )",
+        "translationId": "kemajuan, langkah ke depan"
+      }
+    ]
+  },
+  "理": {
+    "meaningId": [
+      "logika",
+      "alasan"
+    ],
+    "examplesId": [
+      {
+        "kana": "真理 (しんり )",
+        "translationId": "kebenaran"
+      },
+      {
+        "kana": "地理 (ちり )",
+        "translationId": "geografi"
+      },
+      {
+        "kana": "代理 (だいり )",
+        "translationId": "perwakilan, kuasa"
+      },
+      {
+        "kana": "料理 (りょうり )",
+        "translationId": "masakan, memasak"
+      },
+      {
+        "kana": "理由 (りゆう )",
+        "translationId": "alasan, motif"
+      },
+      {
+        "kana": "理科 (りか )",
+        "translationId": "sains"
+      }
+    ]
+  },
+  "野": {
+    "meaningId": [
+      "wilayah",
+      "lapangan"
+    ],
+    "examplesId": [
+      {
+        "kana": "分野 (ぶんや )",
+        "translationId": "bidang, ranah"
+      },
+      {
+        "kana": "野菜 (やさい )",
+        "translationId": "sayuran"
+      },
+      {
+        "kana": "平野 (へいや )",
+        "translationId": "dataran, padang terbuka"
+      },
+      {
+        "kana": "野球 (やきゅう )",
+        "translationId": "bisbol"
+      },
+      {
+        "kana": "野原 (のはら )",
+        "translationId": "padang, lapangan"
+      },
+      {
+        "kana": "野党 (やとう )",
+        "translationId": "partai oposisi"
+      }
+    ]
+  },
+  "問": {
+    "meaningId": [
+      "pertanyaan"
+    ],
+    "examplesId": [
+      {
+        "kana": "学問 (がくもん )",
+        "translationId": "ilmu pengetahuan, kajian"
+      },
+      {
+        "kana": "問答 (もんどう )",
+        "translationId": "tanya jawab"
+      },
+      {
+        "kana": "質問 (しつもん )",
+        "translationId": "pertanyaan"
+      },
+      {
+        "kana": "問題 (もんだい )",
+        "translationId": "masalah, soal"
+      },
+      {
+        "kana": "訪問 (ほうもん )",
+        "translationId": "kunjungan"
+      },
+      {
+        "kana": "疑問 (ぎもん )",
+        "translationId": "pertanyaan, keraguan"
+      }
+    ]
+  },
+  "都": {
+    "meaningId": [
+      "metropolis"
+    ],
+    "examplesId": [
+      {
+        "kana": "都会 (とかい )",
+        "translationId": "kota besar"
+      },
+      {
+        "kana": "都合 (つごう )",
+        "translationId": "keadaan, kemudahan"
+      },
+      {
+        "kana": "都市 (とし )",
+        "translationId": "kota, perkotaan"
+      },
+      {
+        "kana": "都心 (としん )",
+        "translationId": "pusat kota"
+      },
+      {
+        "kana": "首都 (しゅと )",
+        "translationId": "ibu kota"
+      },
+      {
+        "kana": "京都 (きょうと)",
+        "translationId": "Kyoto"
+      }
+    ]
+  },
+  "堂": {
+    "meaningId": [
+      "aula",
+      "ruang umum"
+    ],
+    "examplesId": [
+      {
+        "kana": "堂々 (どうどう )",
+        "translationId": "megah, agung"
+      },
+      {
+        "kana": "食堂 (しょくどう )",
+        "translationId": "kantin, ruang makan"
+      },
+      {
+        "kana": "講堂 (こうどう )",
+        "translationId": "aula"
+      },
+      {
+        "kana": "殿堂 (でんどう)",
+        "translationId": "istana, kuil"
+      }
+    ]
+  },
+  "動": {
+    "meaningId": [
+      "bergerak"
+    ],
+    "examplesId": [
+      {
+        "kana": "行動 (こうどう )",
+        "translationId": "tindakan, perilaku"
+      },
+      {
+        "kana": "自動車 (じどうしゃ )",
+        "translationId": "mobil"
+      },
+      {
+        "kana": "動作 (どうさ )",
+        "translationId": "gerakan, perilaku"
+      },
+      {
+        "kana": "動物 (どうぶつ )",
+        "translationId": "hewan"
+      },
+      {
+        "kana": "動力 (どうりょく )",
+        "translationId": "tenaga, tenaga penggerak"
+      },
+      {
+        "kana": "動かす (うごかす )",
+        "translationId": "menggerakkan, mengoperasikan"
+      }
+    ]
+  },
+  "悪": {
+    "meaningId": [
+      "buruk",
+      "salah",
+      "jahat"
+    ],
+    "examplesId": [
+      {
+        "kana": "悪い (わるい )",
+        "translationId": "buruk, jelek"
+      },
+      {
+        "kana": "悪口 (わるくち )",
+        "translationId": "hinaan, makian"
+      },
+      {
+        "kana": "意地悪 (いじわる )",
+        "translationId": "jahil, dengki"
+      },
+      {
+        "kana": "悪化 (あっか )",
+        "translationId": "memburuk, kemerosotan"
+      },
+      {
+        "kana": "善し悪し (よしあし)",
+        "translationId": "baik atau buruk"
+      },
+      {
+        "kana": "善悪 (ぜんあく)",
+        "translationId": "baik dan jahat"
+      }
+    ]
+  },
+  "強": {
+    "meaningId": [
+      "kuat"
+    ],
+    "examplesId": [
+      {
+        "kana": "勉強 (べんきょう )",
+        "translationId": "belajar"
+      },
+      {
+        "kana": "心強い (こころづよい )",
+        "translationId": "menenangkan, meyakinkan"
+      },
+      {
+        "kana": "強い (つよい )",
+        "translationId": "kuat"
+      },
+      {
+        "kana": "強いる (しいる )",
+        "translationId": "memaksa"
+      },
+      {
+        "kana": "強める (つよめる )",
+        "translationId": "memperkuat, menekankan"
+      },
+      {
+        "kana": "強力 (きょうりょく )",
+        "translationId": "ampuh, kuat"
+      }
+    ]
+  },
+  "教": {
+    "meaningId": [
+      "mengajar"
+    ],
+    "examplesId": [
+      {
+        "kana": "教える (おしえる )",
+        "translationId": "mengajar, memberi tahu"
+      },
+      {
+        "kana": "教わる (おそわる )",
+        "translationId": "diajarkan, belajar dari"
+      },
+      {
+        "kana": "教員 (きょういん )",
+        "translationId": "staf pengajar"
+      },
+      {
+        "kana": "教会 (きょうかい )",
+        "translationId": "gereja"
+      },
+      {
+        "kana": "教室 (きょうしつ )",
+        "translationId": "ruang kelas"
+      },
+      {
+        "kana": "キリスト教 (キリストきょう )",
+        "translationId": "Kekristenan"
+      }
+    ]
+  },
+  "産": {
+    "meaningId": [
+      "melahirkan",
+      "menghasilkan"
+    ],
+    "examplesId": [
+      {
+        "kana": "産地 (さんち )",
+        "translationId": "daerah penghasil"
+      },
+      {
+        "kana": "産物 (さんぶつ )",
+        "translationId": "produk, hasil"
+      },
+      {
+        "kana": "国産 (こくさん )",
+        "translationId": "produk dalam negeri"
+      },
+      {
+        "kana": "生産 (せいさん )",
+        "translationId": "produksi, pembuatan"
+      },
+      {
+        "kana": "土産 (みやげ )",
+        "translationId": "oleh-oleh"
+      },
+      {
+        "kana": "出産 (しゅっさん )",
+        "translationId": "kelahiran, persalinan"
+      }
+    ]
+  },
+  "黒": {
+    "meaningId": [
+      "hitam"
+    ],
+    "examplesId": [
+      {
+        "kana": "真っ黒 (まっくろ )",
+        "translationId": "hitam pekat"
+      },
+      {
+        "kana": "黒い (くろい )",
+        "translationId": "hitam, gelap"
+      },
+      {
+        "kana": "黒板 (こくばん )",
+        "translationId": "papan tulis hitam"
+      },
+      {
+        "kana": "漆黒 (しっこく)",
+        "translationId": "hitam pekat"
+      }
+    ]
+  },
+  "菜": {
+    "meaningId": [
+      "sayuran"
+    ],
+    "examplesId": [
+      {
+        "kana": "白菜 (はくさい )",
+        "translationId": "sawi putih"
+      },
+      {
+        "kana": "野菜 (やさい )",
+        "translationId": "sayuran"
+      }
+    ]
+  },
+  "終": {
+    "meaningId": [
+      "akhir",
+      "selesai"
+    ],
+    "examplesId": [
+      {
+        "kana": "終える (おえる )",
+        "translationId": "menyelesaikan, menamatkan"
+      },
+      {
+        "kana": "終わり (おわり )",
+        "translationId": "akhir"
+      },
+      {
+        "kana": "終わる (おわる )",
+        "translationId": "berakhir, selesai"
+      },
+      {
+        "kana": "終始 (しゅうし )",
+        "translationId": "awal dan akhir"
+      },
+      {
+        "kana": "始終 (しじゅう )",
+        "translationId": "terus-menerus"
+      },
+      {
+        "kana": "終点 (しゅうてん )",
+        "translationId": "perhentian terakhir (kereta)"
+      }
+    ]
+  },
+  "習": {
+    "meaningId": [
+      "belajar"
+    ],
+    "examplesId": [
+      {
+        "kana": "自習 (じしゅう )",
+        "translationId": "belajar mandiri"
+      },
+      {
+        "kana": "学習 (がくしゅう )",
+        "translationId": "belajar, pembelajaran"
+      },
+      {
+        "kana": "習う (ならう )",
+        "translationId": "belajar"
+      },
+      {
+        "kana": "予習 (よしゅう )",
+        "translationId": "persiapan pelajaran"
+      },
+      {
+        "kana": "復習 (ふくしゅう )",
+        "translationId": "mengulang pelajaran"
+      },
+      {
+        "kana": "習慣 (しゅうかん )",
+        "translationId": "kebiasaan, adat"
+      }
+    ]
+  },
+  "集": {
+    "meaningId": [
+      "mengumpulkan",
+      "berkumpul"
+    ],
+    "examplesId": [
+      {
+        "kana": "集中 (しゅうちゅう )",
+        "translationId": "konsentrasi"
+      },
+      {
+        "kana": "集まり (あつまり )",
+        "translationId": "perkumpulan, pertemuan"
+      },
+      {
+        "kana": "集まる (あつまる )",
+        "translationId": "berkumpul"
+      },
+      {
+        "kana": "集める (あつめる )",
+        "translationId": "mengumpulkan"
+      },
+      {
+        "kana": "集合 (しゅうごう )",
+        "translationId": "berkumpul, perkumpulan"
+      },
+      {
+        "kana": "集団 (しゅうだん )",
+        "translationId": "kelompok, massa"
+      }
+    ]
+  },
+  "場": {
+    "meaningId": [
+      "lokasi",
+      "tempat"
+    ],
+    "examplesId": [
+      {
+        "kana": "出場 (しゅつじょう )",
+        "translationId": "partisipasi, penampilan"
+      },
+      {
+        "kana": "立場 (たちば )",
+        "translationId": "posisi, sudut pandang"
+      },
+      {
+        "kana": "会場 (かいじょう )",
+        "translationId": "tempat pertemuan, lokasi acara"
+      },
+      {
+        "kana": "場合 (ばあい )",
+        "translationId": "kasus, situasi"
+      },
+      {
+        "kana": "場所 (ばしょ )",
+        "translationId": "tempat, lokasi"
+      },
+      {
+        "kana": "売り場 (うりば )",
+        "translationId": "tempat penjualan"
+      }
+    ]
+  },
+  "寒": {
+    "meaningId": [
+      "dingin"
+    ],
+    "examplesId": [
+      {
+        "kana": "寒い (さむい )",
+        "translationId": "dingin (cuaca)"
+      },
+      {
+        "kana": "寒さ (さむさ )",
+        "translationId": "dinginnya, hawa dingin"
+      },
+      {
+        "kana": "寒暖計 (かんだんけい )",
+        "translationId": "termometer"
+      }
+    ]
+  },
+  "軽": {
+    "meaningId": [
+      "ringan",
+      "remeh"
+    ],
+    "examplesId": [
+      {
+        "kana": "気軽 (きがる )",
+        "translationId": "santai, ringan hati"
+      },
+      {
+        "kana": "軽い (かるい )",
+        "translationId": "ringan"
+      },
+      {
+        "kana": "軽蔑 (けいべつ )",
+        "translationId": "menghina, mencemooh"
+      },
+      {
+        "kana": "手軽 (てがる )",
+        "translationId": "mudah, sederhana"
+      },
+      {
+        "kana": "軽快 (けいかい )",
+        "translationId": "ringan, kasual"
+      },
+      {
+        "kana": "軽率 (けいそつ )",
+        "translationId": "ceroboh, gegabah"
+      }
+    ]
+  },
+  "運": {
+    "meaningId": [
+      "membawa",
+      "menggerakkan",
+      "keberuntungan"
+    ],
+    "examplesId": [
+      {
+        "kana": "運ぶ (はこぶ )",
+        "translationId": "membawa, mengangkut"
+      },
+      {
+        "kana": "運転 (うんてん )",
+        "translationId": "mengemudi, pengoperasian"
+      },
+      {
+        "kana": "運転手 (うんてんしゅ )",
+        "translationId": "pengemudi, sopir"
+      },
+      {
+        "kana": "運動 (うんどう )",
+        "translationId": "gerakan, olahraga"
+      },
+      {
+        "kana": "運動会 (うんどうかい )",
+        "translationId": "pesta olahraga, hari olahraga"
+      },
+      {
+        "kana": "運動場 (うんどうじょう )",
+        "translationId": "lapangan olahraga"
+      }
+    ]
+  },
+  "開": {
+    "meaningId": [
+      "buka"
+    ],
+    "examplesId": [
+      {
+        "kana": "開始 (かいし )",
+        "translationId": "permulaan, awal"
+      },
+      {
+        "kana": "開く (あく )",
+        "translationId": "terbuka (mis. pintu)"
+      },
+      {
+        "kana": "開く (ひらく )",
+        "translationId": "membuka (acara, festival)"
+      },
+      {
+        "kana": "開ける (あける )",
+        "translationId": "membuka (pintu)"
+      },
+      {
+        "kana": "開会 (かいかい )",
+        "translationId": "pembukaan rapat"
+      },
+      {
+        "kana": "開発 (かいはつ )",
+        "translationId": "pembangunan, pengembangan"
+      }
+    ]
+  },
+  "飯": {
+    "meaningId": [
+      "makanan",
+      "nasi matang"
+    ],
+    "examplesId": [
+      {
+        "kana": "夕飯 (ゆうはん )",
+        "translationId": "makan malam"
+      },
+      {
+        "kana": "昼飯 (ひるめし )",
+        "translationId": "makan siang"
+      },
+      {
+        "kana": "朝飯 (あさめし )",
+        "translationId": "sarapan"
+      },
+      {
+        "kana": "御飯 (ごはん )",
+        "translationId": "nasi, makanan"
+      },
+      {
+        "kana": "朝御飯 (あさごはん )",
+        "translationId": "sarapan"
+      },
+      {
+        "kana": "晩飯 (ばんめし )",
+        "translationId": "makan malam"
+      }
+    ]
+  },
+  "答": {
+    "meaningId": [
+      "jawaban"
+    ],
+    "examplesId": [
+      {
+        "kana": "答え (こたえ )",
+        "translationId": "jawaban, balasan"
+      },
+      {
+        "kana": "答える (こたえる )",
+        "translationId": "menjawab, membalas"
+      },
+      {
+        "kana": "問答 (もんどう )",
+        "translationId": "tanya jawab"
+      },
+      {
+        "kana": "回答 (かいとう )",
+        "translationId": "jawaban, balasan"
+      },
+      {
+        "kana": "解答 (かいとう )",
+        "translationId": "jawaban, solusi"
+      },
+      {
+        "kana": "答案 (とうあん )",
+        "translationId": "lembar jawaban ujian"
+      }
+    ]
+  },
+  "森": {
+    "meaningId": [
+      "hutan",
+      "rimba"
+    ],
+    "examplesId": [
+      {
+        "kana": "森林 (しんりん)",
+        "translationId": "hutan"
+      }
+    ]
+  },
+  "暑": {
+    "meaningId": [
+      "panas"
+    ],
+    "examplesId": [
+      {
+        "kana": "暑い (あつい )",
+        "translationId": "panas (cuaca)"
+      },
+      {
+        "kana": "蒸し暑い (むしあつい )",
+        "translationId": "lembap, gerah"
+      },
+      {
+        "kana": "猛暑 (もうしょ)",
+        "translationId": "panas terik, gelombang panas"
+      }
+    ]
+  },
+  "朝": {
+    "meaningId": [
+      "pagi"
+    ],
+    "examplesId": [
+      {
+        "kana": "朝食 (ちょうしょく )",
+        "translationId": "sarapan"
+      },
+      {
+        "kana": "朝日 (あさひ )",
+        "translationId": "matahari pagi"
+      },
+      {
+        "kana": "朝飯 (あさめし )",
+        "translationId": "sarapan"
+      },
+      {
+        "kana": "毎朝 (まいあさ )",
+        "translationId": "setiap pagi"
+      },
+      {
+        "kana": "今朝 (けさ )",
+        "translationId": "pagi ini"
+      },
+      {
+        "kana": "朝刊 (ちょうかん )",
+        "translationId": "koran pagi"
+      }
+    ]
+  },
+  "貸": {
+    "meaningId": [
+      "meminjamkan"
+    ],
+    "examplesId": [
+      {
+        "kana": "貸し (かし )",
+        "translationId": "pinjaman, peminjaman"
+      },
+      {
+        "kana": "貸し間 (かしま )",
+        "translationId": "kamar untuk disewakan"
+      },
+      {
+        "kana": "貸し出し (かしだし )",
+        "translationId": "peminjaman"
+      },
+      {
+        "kana": "貸す (かす )",
+        "translationId": "meminjamkan, menyewakan"
+      },
+      {
+        "kana": "賃貸 (ちんたい )",
+        "translationId": "sewa, persewaan"
+      }
+    ]
+  },
+  "着": {
+    "meaningId": [
+      "memakai"
+    ],
+    "examplesId": [
+      {
+        "kana": "着物 (きもの )",
+        "translationId": "kimono"
+      },
+      {
+        "kana": "着々 (ちゃくちゃく )",
+        "translationId": "secara mantap"
+      },
+      {
+        "kana": "着く (つく )",
+        "translationId": "tiba, sampai"
+      },
+      {
+        "kana": "着せる (きせる )",
+        "translationId": "memakaikan baju"
+      },
+      {
+        "kana": "着る (きる )",
+        "translationId": "memakai (baju)"
+      },
+      {
+        "kana": "下着 (したぎ )",
+        "translationId": "pakaian dalam"
+      }
+    ]
+  },
+  "短": {
+    "meaningId": [
+      "pendek"
+    ],
+    "examplesId": [
+      {
+        "kana": "短い (みじかい )",
+        "translationId": "pendek"
+      },
+      {
+        "kana": "短気 (たんき )",
+        "translationId": "pemarah, mudah marah"
+      },
+      {
+        "kana": "短所 (たんしょ )",
+        "translationId": "kekurangan, kelemahan"
+      },
+      {
+        "kana": "短歌 (たんか )",
+        "translationId": "tanka, puisi 31 suku kata"
+      },
+      {
+        "kana": "短期 (たんき )",
+        "translationId": "jangka pendek"
+      },
+      {
+        "kana": "短縮 (たんしゅく )",
+        "translationId": "pemendekan, penyingkatan"
+      }
+    ]
+  },
+  "働": {
+    "meaningId": [
+      "bekerja"
+    ],
+    "examplesId": [
+      {
+        "kana": "働き (はたらき )",
+        "translationId": "kerja, pekerjaan"
+      },
+      {
+        "kana": "働く (はたらく )",
+        "translationId": "bekerja"
+      },
+      {
+        "kana": "労働 (ろうどう )",
+        "translationId": "tenaga kerja, kerja kasar"
+      },
+      {
+        "kana": "労働者 (ろうどうしゃ )",
+        "translationId": "buruh, pekerja"
+      },
+      {
+        "kana": "稼働 (かどう)",
+        "translationId": "pengoperasian (mesin)"
+      }
+    ]
+  },
+  "楽": {
+    "meaningId": [
+      "menyenangkan",
+      "musik"
+    ],
+    "examplesId": [
+      {
+        "kana": "楽しい (たのしい )",
+        "translationId": "menyenangkan"
+      },
+      {
+        "kana": "楽しみ (たのしみ )",
+        "translationId": "kesenangan, kegembiraan"
+      },
+      {
+        "kana": "楽しむ (たのしむ )",
+        "translationId": "menikmati"
+      },
+      {
+        "kana": "音楽 (おんがく )",
+        "translationId": "musik"
+      },
+      {
+        "kana": "邦楽 (ほうがく)",
+        "translationId": "musik Jepang"
+      },
+      {
+        "kana": "弦楽 (げんがく)",
+        "translationId": "musik dawai"
+      }
+    ]
+  },
+  "暗": {
+    "meaningId": [
+      "gelap"
+    ],
+    "examplesId": [
+      {
+        "kana": "真っ暗 (まっくら )",
+        "translationId": "gelap gulita"
+      },
+      {
+        "kana": "暗示 (あんじ )",
+        "translationId": "petunjuk, sugesti"
+      },
+      {
+        "kana": "暗殺 (あんさつ )",
+        "translationId": "pembunuhan, penghilangan nyawa"
+      },
+      {
+        "kana": "暗記 (あんき )",
+        "translationId": "menghafal"
+      },
+      {
+        "kana": "薄暗い (うすぐらい )",
+        "translationId": "remang-remang, suram"
+      }
+    ]
+  },
+  "意": {
+    "meaningId": [
+      "ide",
+      "pikiran"
+    ],
+    "examplesId": [
+      {
+        "kana": "生意気 (なまいき )",
+        "translationId": "kurang ajar, sok"
+      },
+      {
+        "kana": "不意 (ふい )",
+        "translationId": "tiba-tiba, tak terduga"
+      },
+      {
+        "kana": "意外 (いがい )",
+        "translationId": "tak terduga, mengejutkan"
+      },
+      {
+        "kana": "意図 (いと )",
+        "translationId": "niat, maksud"
+      },
+      {
+        "kana": "意地悪 (いじわる )",
+        "translationId": "jahil, dengki"
+      },
+      {
+        "kana": "意味 (いみ )",
+        "translationId": "arti, makna"
+      }
+    ]
+  },
+  "遠": {
+    "meaningId": [
+      "jauh"
+    ],
+    "examplesId": [
+      {
+        "kana": "遠い (とおい )",
+        "translationId": "jauh"
+      },
+      {
+        "kana": "遠く (とおく )",
+        "translationId": "jauh, di kejauhan"
+      },
+      {
+        "kana": "遠ざかる (とおざかる )",
+        "translationId": "menjauh"
+      },
+      {
+        "kana": "遠足 (えんそく )",
+        "translationId": "tamasya, darmawisata"
+      },
+      {
+        "kana": "永遠 (えいえん )",
+        "translationId": "keabadian"
+      },
+      {
+        "kana": "遠慮 (えんりょ )",
+        "translationId": "sungkan, menahan diri"
+      }
+    ]
+  },
+  "漢": {
+    "meaningId": [
+      "Tionghoa"
+    ],
+    "examplesId": [
+      {
+        "kana": "漢字 (かんじ )",
+        "translationId": "karakter Tionghoa, kanji"
+      },
+      {
+        "kana": "漢方薬 (かんぽうやく)",
+        "translationId": "obat herbal Tionghoa"
+      },
+      {
+        "kana": "珍紛漢紛 (ちんぷんかんぷん)",
+        "translationId": "bahasa yang tak dimengerti"
+      },
+      {
+        "kana": "痴漢 (ちかん)",
+        "translationId": "pelecehan, mesum"
+      }
+    ]
+  },
+  "業": {
+    "meaningId": [
+      "pekerjaan",
+      "industri"
+    ],
+    "examplesId": [
+      {
+        "kana": "工業 (こうぎょう )",
+        "translationId": "industri"
+      },
+      {
+        "kana": "作業 (さぎょう )",
+        "translationId": "pekerjaan, operasi"
+      },
+      {
+        "kana": "事業 (じぎょう )",
+        "translationId": "proyek, usaha, bisnis"
+      },
+      {
+        "kana": "失業 (しつぎょう )",
+        "translationId": "pengangguran"
+      },
+      {
+        "kana": "卒業 (そつぎょう )",
+        "translationId": "kelulusan"
+      },
+      {
+        "kana": "商業 (しょうぎょう )",
+        "translationId": "perdagangan, bisnis"
+      }
+    ]
+  },
+  "試": {
+    "meaningId": [
+      "mencoba"
+    ],
+    "examplesId": [
+      {
+        "kana": "試し (ためし )",
+        "translationId": "percobaan, uji coba"
+      },
+      {
+        "kana": "試す (ためす )",
+        "translationId": "mencoba, menguji"
+      },
+      {
+        "kana": "試み (こころみ )",
+        "translationId": "percobaan, eksperimen"
+      },
+      {
+        "kana": "試みる (こころみる )",
+        "translationId": "mencoba, menguji"
+      },
+      {
+        "kana": "試合 (しあい )",
+        "translationId": "pertandingan, laga"
+      },
+      {
+        "kana": "試験 (しけん )",
+        "translationId": "ujian, tes"
+      }
+    ]
+  },
+  "銀": {
+    "meaningId": [
+      "perak"
+    ],
+    "examplesId": [
+      {
+        "kana": "銀行 (ぎんこう )",
+        "translationId": "bank"
+      },
+      {
+        "kana": "銀色 (ぎんいろ)",
+        "translationId": "warna perak"
+      }
+    ]
+  },
+  "歌": {
+    "meaningId": [
+      "lagu",
+      "menyanyi"
+    ],
+    "examplesId": [
+      {
+        "kana": "短歌 (たんか )",
+        "translationId": "tanka, puisi 31 suku kata"
+      },
+      {
+        "kana": "歌う (うたう )",
+        "translationId": "menyanyi"
+      },
+      {
+        "kana": "歌手 (かしゅ )",
+        "translationId": "penyanyi"
+      },
+      {
+        "kana": "和歌 (わか )",
+        "translationId": "waka (puisi Jepang)"
+      },
+      {
+        "kana": "歌舞伎 (かぶき )",
+        "translationId": "kabuki, drama klasik"
+      },
+      {
+        "kana": "詩歌 (しいか)",
+        "translationId": "puisi Jepang dan Tionghoa"
+      }
+    ]
+  },
+  "説": {
+    "meaningId": [
+      "menjelaskan"
+    ],
+    "examplesId": [
+      {
+        "kana": "学説 (がくせつ )",
+        "translationId": "teori"
+      },
+      {
+        "kana": "説く (とく )",
+        "translationId": "menjelaskan, menganjurkan"
+      },
+      {
+        "kana": "説明 (せつめい )",
+        "translationId": "penjelasan"
+      },
+      {
+        "kana": "小説 (しょうせつ )",
+        "translationId": "novel"
+      },
+      {
+        "kana": "小説家 (しょうせつか )",
+        "translationId": "novelis"
+      },
+      {
+        "kana": "伝説 (でんせつ )",
+        "translationId": "legenda"
+      }
+    ]
+  },
+  "質": {
+    "meaningId": [
+      "zat",
+      "kualitas",
+      "materi"
+    ],
+    "examplesId": [
+      {
+        "kana": "品質 (ひんしつ )",
+        "translationId": "kualitas"
+      },
+      {
+        "kana": "物質 (ぶっしつ )",
+        "translationId": "bahan, zat"
+      },
+      {
+        "kana": "気質 (きしつ )",
+        "translationId": "watak, karakter"
+      },
+      {
+        "kana": "本質 (ほんしつ )",
+        "translationId": "esensi, hakikat"
+      },
+      {
+        "kana": "質問 (しつもん )",
+        "translationId": "pertanyaan"
+      },
+      {
+        "kana": "性質 (せいしつ )",
+        "translationId": "sifat, watak"
+      }
+    ]
+  },
+  "館": {
+    "meaningId": [
+      "gedung"
+    ],
+    "examplesId": [
+      {
+        "kana": "映画館 (えいがかん )",
+        "translationId": "bioskop"
+      },
+      {
+        "kana": "図書館 (としょかん )",
+        "translationId": "perpustakaan"
+      },
+      {
+        "kana": "大使館 (たいしかん )",
+        "translationId": "kedutaan besar"
+      },
+      {
+        "kana": "旅館 (りょかん )",
+        "translationId": "penginapan tradisional Jepang"
+      },
+      {
+        "kana": "美術館 (びじゅつかん )",
+        "translationId": "museum seni"
+      },
+      {
+        "kana": "領事館 (りょうじかん )",
+        "translationId": "konsulat"
+      }
+    ]
+  },
+  "親": {
+    "meaningId": [
+      "orang tua"
+    ],
+    "examplesId": [
+      {
+        "kana": "父親 (ちちおや )",
+        "translationId": "ayah"
+      },
+      {
+        "kana": "不親切 (ふしんせつ )",
+        "translationId": "tidak ramah, tidak baik"
+      },
+      {
+        "kana": "親しい (したしい )",
+        "translationId": "akrab, dekat"
+      },
+      {
+        "kana": "親しみ (したしみ )",
+        "translationId": "keakraban, kasih sayang"
+      },
+      {
+        "kana": "親子 (おやこ )",
+        "translationId": "orang tua dan anak"
+      },
+      {
+        "kana": "親戚 (しんせき )",
+        "translationId": "kerabat, saudara"
+      }
+    ]
+  },
+  "頭": {
+    "meaningId": [
+      "kepala"
+    ],
+    "examplesId": [
+      {
+        "kana": "先頭 (せんとう )",
+        "translationId": "kepala, pemimpin, terdepan"
+      },
+      {
+        "kana": "到頭 (とうとう )",
+        "translationId": "akhirnya"
+      },
+      {
+        "kana": "頭痛 (ずつう )",
+        "translationId": "sakit kepala"
+      },
+      {
+        "kana": "没頭 (ぼっとう)",
+        "translationId": "menenggelamkan diri, larut"
+      },
+      {
+        "kana": "冒頭 (ぼうとう)",
+        "translationId": "permulaan, awal"
+      },
+      {
+        "kana": "膝頭 (ひざがしら)",
+        "translationId": "tempurung lutut"
+      }
+    ]
+  },
+  "薬": {
+    "meaningId": [
+      "obat"
+    ],
+    "examplesId": [
+      {
+        "kana": "目薬 (めぐすり )",
+        "translationId": "obat tetes mata"
+      },
+      {
+        "kana": "薬品 (やくひん )",
+        "translationId": "obat-obatan, bahan kimia"
+      },
+      {
+        "kana": "漢方薬 (かんぽうやく)",
+        "translationId": "obat herbal Tionghoa"
+      },
+      {
+        "kana": "薬局 (やっきょく )",
+        "translationId": "apotek"
+      },
+      {
+        "kana": "胃薬 (いぐすり)",
+        "translationId": "obat lambung"
+      },
+      {
+        "kana": "薬缶 (やかん )",
+        "translationId": "ketel"
+      }
+    ]
+  },
+  "曜": {
+    "meaningId": [
+      "hari kerja"
+    ],
+    "examplesId": [
+      {
+        "kana": "木曜 (もくよう )",
+        "translationId": "Kamis"
+      },
+      {
+        "kana": "曜日 (ようび )",
+        "translationId": "hari dalam seminggu"
+      },
+      {
+        "kana": "金曜 (きんよう )",
+        "translationId": "Jumat"
+      },
+      {
+        "kana": "土曜 (どよう )",
+        "translationId": "Sabtu"
+      },
+      {
+        "kana": "月曜 (げつよう )",
+        "translationId": "Senin"
+      },
+      {
+        "kana": "日曜 (にちよう )",
+        "translationId": "Minggu"
+      }
+    ]
+  },
+  "題": {
+    "meaningId": [
+      "topik",
+      "subjek"
+    ],
+    "examplesId": [
+      {
+        "kana": "題名 (だいめい )",
+        "translationId": "judul"
+      },
+      {
+        "kana": "話題 (わだい )",
+        "translationId": "topik, bahasan"
+      },
+      {
+        "kana": "問題 (もんだい )",
+        "translationId": "masalah, soal"
+      },
+      {
+        "kana": "宿題 (しゅくだい )",
+        "translationId": "pekerjaan rumah"
+      },
+      {
+        "kana": "課題 (かだい )",
+        "translationId": "tugas, tema"
+      },
+      {
+        "kana": "議題 (ぎだい )",
+        "translationId": "agenda, topik diskusi"
+      }
+    ]
+  },
+  "顔": {
+    "meaningId": [
+      "wajah"
+    ],
+    "examplesId": [
+      {
+        "kana": "顔つき (かおつき )",
+        "translationId": "raut wajah"
+      },
+      {
+        "kana": "顔色 (かおいろ )",
+        "translationId": "rona wajah"
+      },
+      {
+        "kana": "笑顔 (えがお )",
+        "translationId": "wajah tersenyum"
+      },
+      {
+        "kana": "横顔 (よこがお )",
+        "translationId": "wajah dari samping"
+      }
+    ]
+  },
+  "験": {
+    "meaningId": [
+      "uji"
+    ],
+    "examplesId": [
+      {
+        "kana": "試験 (しけん )",
+        "translationId": "ujian, tes"
+      },
+      {
+        "kana": "体験 (たいけん )",
+        "translationId": "pengalaman pribadi"
+      },
+      {
+        "kana": "実験 (じっけん )",
+        "translationId": "eksperimen"
+      },
+      {
+        "kana": "受験 (じゅけん )",
+        "translationId": "mengikuti ujian"
+      },
+      {
+        "kana": "経験 (けいけん )",
+        "translationId": "pengalaman"
+      }
+    ]
+  }
+}

@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { BookOpen } from "lucide-react"
 import KanjiDetail from "@/components/kanji-detail"
 import { useResponsiveCols, TW_BREAKPOINTS } from "@/lib/use-cols"
+import { useTranslation } from "@/lib/i18n/use-translation"
+import { getKanjiMeaning } from "@/data/kanji-data"
 import type { Kanji } from "@/data/kanji-data"
 
 export interface KanjiWithLevel extends Kanji {
@@ -41,6 +43,7 @@ const ROW_ESTIMATE = 120
  * the same character from different (deduped) JLPT entries — defensively safe.
  */
 export function VirtualizedKanjiGrid({ items, selected, onSelect }: Props) {
+  const { t, locale } = useTranslation()
   const cols = useResponsiveCols(
     [
       { minWidth: TW_BREAKPOINTS.md, cols: 2 },
@@ -91,13 +94,23 @@ export function VirtualizedKanjiGrid({ items, selected, onSelect }: Props) {
           >
             {rowItems.map((kanji, i) => {
               const isSelected = selected?.kanji === kanji.kanji
+              const meaning = getKanjiMeaning(kanji, locale).join(", ")
+              const levelSuffix = kanji._level
+                ? t("kanjiList.card.levelSuffix", { level: kanji._level })
+                : ""
+              const action = isSelected
+                ? t("kanjiList.card.hideDetails")
+                : t("kanjiList.card.viewDetails")
               return (
                 <Fragment key={`${kanji.kanji}-${startIdx + i}`}>
                   <button
                     type="button"
-                    aria-label={`${kanji.kanji}, ${kanji.meaning.join(", ")}${
-                      kanji._level ? `, JLPT ${kanji._level}` : ""
-                    }. ${isSelected ? "Hide details." : "View details."}`}
+                    aria-label={t("kanjiList.card.aria", {
+                      kanji: kanji.kanji,
+                      meaning,
+                      levelSuffix,
+                      action,
+                    })}
                     aria-pressed={isSelected}
                     onClick={() => onSelect(isSelected ? null : kanji)}
                     className={`block w-full text-left border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
@@ -110,7 +123,7 @@ export function VirtualizedKanjiGrid({ items, selected, onSelect }: Props) {
                       {kanji.kanji}
                     </div>
                     <p className="text-xs sm:text-sm font-medium text-sumi text-center line-clamp-1">
-                      {kanji.meaning.join(", ")}
+                      {meaning}
                     </p>
                     <p className="text-[10px] text-sumi/70 text-center mt-1.5 flex items-center gap-1.5 justify-center">
                       {kanji._level && (

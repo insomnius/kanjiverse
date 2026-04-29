@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink } from "lucide-react"
 import dataLicenses from "@/data/data-licenses.json"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface DataSource {
   id: string
@@ -22,22 +23,23 @@ interface DataLicensesFile {
 const sources = (dataLicenses as DataLicensesFile).sources
 
 function CreditsPage() {
+  const { t } = useTranslation()
   return (
     <div className="py-6 sm:py-8 px-4">
       <div className="max-w-3xl mx-auto">
         <header className="mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            Credits
+            {t("credits.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            The data and typography this app stands on, with full attribution.
+            {t("credits.subtitle")}
           </p>
         </header>
 
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium">
-              Data sources
+              {t("credits.sources.title")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -54,7 +56,7 @@ function CreditsPage() {
                   </div>
                   <p className="text-sm text-sumi/80 mb-1.5">{s.description}</p>
                   <p className="text-xs text-sumi/70">
-                    <span className="font-display italic">Attribution:</span>{" "}
+                    <span className="font-display italic">{t("credits.attribution.label")}</span>{" "}
                     {s.attribution}
                   </p>
                   {s.url && (
@@ -63,10 +65,10 @@ function CreditsPage() {
                         href={s.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`${s.id} upstream source (opens in new tab)`}
+                        aria-label={t("credits.source.aria", { id: s.id })}
                         className="inline-flex items-center gap-1 text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
                       >
-                        Source
+                        {t("credits.source.label")}
                         <ExternalLink aria-hidden="true" className="h-3 w-3" />
                       </a>
                     </p>
@@ -85,15 +87,15 @@ function CreditsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium">
-              About licenses on this page
+              {t("credits.about.title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-sumi/80">
             <p>
-              This site bundles or runtime-fetches each of the data sources above. Permissive licenses (MIT, ISC, Apache, BSD, OFL, CC0, CC&nbsp;BY) only require attribution, which this page provides. Share-alike licenses (CC&nbsp;BY-SA) additionally require that any redistributed derivative of the data file remain under the same license — our shipped <code className="font-mono text-xs">data/kanji-radicals.json</code> stays CC&nbsp;BY-SA&nbsp;4.0.
+              {t("credits.about.body.before")} <code className="font-mono text-xs">data/kanji-radicals.json</code> {t("credits.about.body.after")}
             </p>
             <p className="font-display italic text-xs text-sumi/70">
-              The site source itself is private; this page exists to satisfy attribution obligations and answer &ldquo;where did this data come from?&rdquo; for curious users.
+              {t("credits.about.note")}
             </p>
           </CardContent>
         </Card>

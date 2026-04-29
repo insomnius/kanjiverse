@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { kanjiData, type Kanji } from "@/data/kanji-data"
+import { kanjiData, getKanjiMeaning, type Kanji } from "@/data/kanji-data"
 import { findSimilarKanji, type SimilarKanjiResult } from "@/lib/similar-kanji"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface SimilarKanjiProps {
   /** The character whose visual neighbours we should surface. */
@@ -29,6 +30,7 @@ const allKanjiByChar: Record<string, Kanji> = (() => {
  * never open the Similar tab.
  */
 export function SimilarKanji({ char, count = 6 }: SimilarKanjiProps) {
+  const { t, locale } = useTranslation()
   const [results, setResults] = useState<SimilarKanjiResult[] | null>(null)
 
   useEffect(() => {
@@ -48,7 +50,7 @@ export function SimilarKanji({ char, count = 6 }: SimilarKanjiProps) {
         className="grid grid-cols-2 sm:grid-cols-3 gap-3"
         role="status"
         aria-live="polite"
-        aria-label="Loading similar kanji"
+        aria-label={t("similarKanji.loading.aria")}
       >
         {Array.from({ length: count }).map((_, i) => (
           <div
@@ -63,7 +65,7 @@ export function SimilarKanji({ char, count = 6 }: SimilarKanjiProps) {
   if (results.length === 0) {
     return (
       <p className="text-sm text-sumi/70 italic text-center py-4" role="status">
-        No similar-kanji data available for this character.
+        {t("similarKanji.empty")}
       </p>
     )
   }
@@ -72,7 +74,7 @@ export function SimilarKanji({ char, count = 6 }: SimilarKanjiProps) {
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {results.map(({ char: similarChar }) => {
         const k = allKanjiByChar[similarChar]
-        const meanings = k ? k.meaning.join(", ") : ""
+        const meanings = k ? getKanjiMeaning(k, locale).join(", ") : ""
         return (
           <Link
             key={similarChar}

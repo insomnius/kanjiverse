@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Twitter, Facebook, MessageCircle, Link as LinkIcon, Check, Share2, Instagram } from "lucide-react"
 import { useState } from "react"
 import { InstagramShareDialog } from "@/components/instagram-share-dialog"
+import { useTranslation, translate } from "@/lib/i18n/use-translation"
+import type { Locale } from "@/lib/progress/store"
 
 const SHARE_BASE = "https://kanji.insomnius.dev/share"
 
@@ -29,22 +31,22 @@ function buildShareUrl(props: ShareButtonsProps): string {
   return qs ? `${SHARE_BASE}?${qs}` : SHARE_BASE
 }
 
-function buildShareText(props: ShareButtonsProps): string {
+function buildShareText(props: ShareButtonsProps, locale: Locale): string {
   const parts: string[] = []
   if (props.streak > 0) {
-    parts.push(`${props.streak}-day kanji streak 🔥`)
+    parts.push(translate(locale, "share.text.streak", { streak: props.streak }))
   } else if (props.answered > 0) {
-    parts.push(`Learning Japanese kanji`)
+    parts.push(translate(locale, "share.text.learning"))
   } else {
-    return `I'm learning Japanese kanji on Kanji by Insomnius — free, in-browser, no account.`
+    return translate(locale, "share.text.generic")
   }
 
   const supplements: string[] = []
-  if (props.answered > 0) supplements.push(`${props.answered} answered`)
-  if (props.answered > 0 && props.accuracy >= 50) supplements.push(`${props.accuracy}% accuracy`)
+  if (props.answered > 0) supplements.push(translate(locale, "share.text.answered", { count: props.answered }))
+  if (props.answered > 0 && props.accuracy >= 50) supplements.push(translate(locale, "share.text.accuracy", { percent: props.accuracy }))
   if (supplements.length) parts.push(`(${supplements.join(" · ")})`)
 
-  parts.push(`Tracking on Kanji by Insomnius — free & in-browser.`)
+  parts.push(translate(locale, "share.text.tracking"))
   return parts.join(" ")
 }
 
@@ -61,11 +63,12 @@ function openInPopup(url: string) {
 }
 
 export function ShareButtons(props: ShareButtonsProps) {
+  const { t, locale } = useTranslation()
   const [copied, setCopied] = useState(false)
   const [copyAnnounce, setCopyAnnounce] = useState("")
   const [igDialogOpen, setIgDialogOpen] = useState(false)
   const shareUrl = buildShareUrl(props)
-  const shareText = buildShareText(props)
+  const shareText = buildShareText(props, locale)
 
   const handleTwitter = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
@@ -82,7 +85,7 @@ export function ShareButtons(props: ShareButtonsProps) {
   const handleNativeShare = async () => {
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title: "Kanji by Insomnius", text: shareText, url: shareUrl })
+        await navigator.share({ title: t("share.title"), text: shareText, url: shareUrl })
       } catch {
         // User cancelled or share failed — silent
       }
@@ -94,13 +97,13 @@ export function ShareButtons(props: ShareButtonsProps) {
     try {
       await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
       setCopied(true)
-      setCopyAnnounce("Link copied to clipboard")
+      setCopyAnnounce(t("share.copy.success"))
       setTimeout(() => {
         setCopied(false)
         setCopyAnnounce("")
       }, 1500)
     } catch {
-      setCopyAnnounce("Couldn't copy. Your browser may have blocked clipboard access.")
+      setCopyAnnounce(t("share.copy.failure"))
     }
   }
 
@@ -115,31 +118,31 @@ export function ShareButtons(props: ShareButtonsProps) {
       </div>
       <div>
         <p className="font-display italic text-xs text-sumi/70 uppercase tracking-wider mb-2">
-          Share a link
+          {t("share.section.link")}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <Button variant="outline" onClick={handleTwitter} className="gap-2 justify-center">
             <Twitter aria-hidden="true" className="h-4 w-4" />
-            Twitter / X
+            {t("share.button.twitter")}
           </Button>
           <Button variant="outline" onClick={handleFacebook} className="gap-2 justify-center">
             <Facebook aria-hidden="true" className="h-4 w-4" />
-            Facebook
+            {t("share.button.facebook")}
           </Button>
           <Button variant="outline" onClick={handleThreads} className="gap-2 justify-center">
             <MessageCircle aria-hidden="true" className="h-4 w-4" />
-            Threads
+            {t("share.button.threads")}
           </Button>
           <Button variant="outline" onClick={handleCopyLink} className="gap-2 justify-center">
             {copied ? (
               <>
                 <Check aria-hidden="true" className="h-4 w-4 text-green-700" />
-                Copied
+                {t("share.button.copied")}
               </>
             ) : (
               <>
                 <LinkIcon aria-hidden="true" className="h-4 w-4" />
-                Copy link
+                {t("share.button.copyLink")}
               </>
             )}
           </Button>
@@ -148,7 +151,7 @@ export function ShareButtons(props: ShareButtonsProps) {
 
       <div>
         <p className="font-display italic text-xs text-sumi/70 uppercase tracking-wider mb-2">
-          Share an image
+          {t("share.section.image")}
         </p>
         <Button
           variant="outline"
@@ -156,10 +159,10 @@ export function ShareButtons(props: ShareButtonsProps) {
           className="w-full gap-2 justify-center border-vermilion/30 hover:bg-vermilion/5"
         >
           <Instagram aria-hidden="true" className="h-4 w-4 text-vermilion-deep" />
-          Generate image for Instagram…
+          {t("share.button.instagram")}
         </Button>
         <p className="font-display italic text-xs text-sumi/70 mt-2">
-          Picks square or story format. Image works for Instagram, plus any photo-sharing platform.
+          {t("share.image.note")}
         </p>
       </div>
 
@@ -167,10 +170,10 @@ export function ShareButtons(props: ShareButtonsProps) {
         <div>
           <Button variant="outline" onClick={handleNativeShare} className="w-full gap-2 justify-center">
             <Share2 aria-hidden="true" className="h-4 w-4" />
-            Share via system…
+            {t("share.button.system")}
           </Button>
           <p className="font-display italic text-xs text-sumi/70 mt-2 text-center">
-            Opens your device's share sheet — Instagram, WhatsApp, Messages, and more.
+            {t("share.system.note")}
           </p>
         </div>
       )}
@@ -190,7 +193,7 @@ export function ShareButtons(props: ShareButtonsProps) {
 
       {!props.hasData && (
         <p className="font-display italic text-xs text-sumi/70">
-          You haven't taken any quizzes yet — the share post will be a generic invitation. Take a quiz first to share real numbers.
+          {t("share.empty")}
         </p>
       )}
     </div>

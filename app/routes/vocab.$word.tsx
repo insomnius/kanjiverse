@@ -1,13 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
-import { vocabularyData } from '@/data/vocabulary-data'
+import { vocabularyData, getVocabMeaning, type VocabItem } from '@/data/vocabulary-data'
 import VocabDetail from '@/components/vocab-detail'
-
-interface VocabItem {
-  word: string
-  meaning: string
-  romaji: string
-}
+import { useTranslation } from '@/lib/i18n/use-translation'
 
 const findVocabAcrossLevels = (word: string): { vocab: VocabItem; level: string } | null => {
   for (const level of Object.keys(vocabularyData) as Array<keyof typeof vocabularyData>) {
@@ -21,6 +16,8 @@ function VocabWordPage() {
   const { word } = Route.useParams()
   const decoded = decodeURIComponent(word)
   const result = findVocabAcrossLevels(decoded)
+  const { t, locale } = useTranslation()
+  const localizedMeaning = result ? getVocabMeaning(result.vocab, locale) : ""
 
   return (
     <div className="max-w-3xl mx-auto py-2 sm:py-4">
@@ -29,15 +26,15 @@ function VocabWordPage() {
         className="inline-flex items-center gap-2 text-sm font-display italic text-sumi/70 hover:text-vermilion-deep mb-6 transition-colors"
       >
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-        Back to Vocabulary
+        {t("page.vocab.back")}
       </Link>
 
       {result ? (
         <>
           <h1 className="sr-only">
-            <span lang="ja">{result.vocab.word}</span> — {result.vocab.meaning} — JLPT {result.level} vocabulary
+            <span lang="ja">{result.vocab.word}</span> — {localizedMeaning} — {t("page.vocab.h1.suffix", { level: result.level })}
           </h1>
-          <h2 className="sr-only">Word details</h2>
+          <h2 className="sr-only">{t("page.vocab.h2")}</h2>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
@@ -62,9 +59,9 @@ function VocabWordPage() {
       ) : (
         <div className="text-center py-16">
           <p lang="ja" className="text-5xl font-bold text-sumi/30 mb-4">{decoded}</p>
-          <h1 className="font-display text-2xl text-sumi mb-3">Word not found</h1>
+          <h1 className="font-display text-2xl text-sumi mb-3">{t("page.vocab.notFound.title")}</h1>
           <p className="font-display italic text-sumi/70 max-w-md mx-auto">
-            We don't have data for this word in our vocabulary set.
+            {t("page.vocab.notFound.body")}
           </p>
         </div>
       )}

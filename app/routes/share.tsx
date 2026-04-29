@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Card, CardContent } from "@/components/ui/card"
 import { Flame, ArrowRight, Sparkles } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface ShareSearch {
   name?: string
@@ -13,6 +14,7 @@ interface ShareSearch {
 
 function ShareView() {
   const search = Route.useSearch()
+  const { t } = useTranslation()
   const name = search.name?.trim() ?? null
   const streak = search.streak ?? 0
   const activeDays = search.days ?? 0
@@ -22,15 +24,15 @@ function ShareView() {
   const hasData = answered > 0
 
   const heroLine = name
-    ? `${name}'s Japanese learning streak`
-    : "A Japanese learning streak"
+    ? t("share.hero.named", { name })
+    : t("share.hero.anonymous")
 
   return (
     <div className="py-8 sm:py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <header className="text-center mb-8">
           <p className="font-display italic text-sm text-vermilion-deep tracking-wider uppercase mb-2">
-            Shared progress
+            {t("share.eyebrow")}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
             {heroLine}
@@ -51,15 +53,15 @@ function ShareView() {
                 </p>
               </div>
               <p className="font-display italic text-sumi/70 text-xl mt-3">
-                day{streak === 1 ? "" : "s"} streak
+                {streak === 1 ? t("share.streak.singular") : t("share.streak.plural")}
               </p>
             </div>
 
             {/* Stats grid */}
             <div className="grid grid-cols-3 gap-4 sm:gap-6 mb-8">
-              <Stat label="Active days" value={activeDays} suffix="/ 365" />
-              <Stat label="Answered" value={answered} />
-              <Stat label="Accuracy" value={accuracy} suffix="%" />
+              <Stat label={t("share.stat.activeDays")} value={activeDays} suffix="/ 365" />
+              <Stat label={t("share.stat.answered")} value={answered} />
+              <Stat label={t("share.stat.accuracy")} value={accuracy} suffix="%" />
             </div>
 
             {/* Brand mark */}
@@ -77,9 +79,9 @@ function ShareView() {
           <p className="text-center font-display italic text-sm text-sumi/70 mb-8">
             <Sparkles aria-hidden="true" className="inline h-4 w-4 mr-1 -mt-0.5" />
             {minutes < 60
-              ? `${minutes} min studied`
-              : `${Math.floor(minutes / 60)}h ${minutes % 60}m studied`}
-            {hasData && ` · started studying recently`}
+              ? t("share.minutes.studied", { n: minutes })
+              : t("share.hoursMinutes.studied", { h: Math.floor(minutes / 60), m: minutes % 60 })}
+            {hasData && ` ${t("share.startedRecently")}`}
           </p>
         )}
 
@@ -88,11 +90,11 @@ function ShareView() {
             to="/quiz"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-sumi text-cream hover:bg-vermilion-deep transition-colors font-display text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
           >
-            Start your own kanji journey
+            {t("share.cta.start")}
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Link>
           <p className="mt-3 font-display italic text-xs text-sumi/70">
-            Free · No account · Lives in your browser
+            {t("share.cta.tagline")}
           </p>
         </div>
       </div>

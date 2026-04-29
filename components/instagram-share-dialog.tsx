@@ -17,6 +17,7 @@ import {
   type ImageFormat,
   type StatsImageData,
 } from "@/lib/share/generate-stats-image"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface InstagramShareDialogProps {
   open: boolean
@@ -25,6 +26,7 @@ interface InstagramShareDialogProps {
 }
 
 export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShareDialogProps) {
+  const { t } = useTranslation()
   const [format, setFormat] = useState<ImageFormat>("square")
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [generating, setGenerating] = useState(false)
@@ -54,7 +56,7 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
       })
       .catch((err) => {
         if (cancelled) return
-        setError(err instanceof Error ? err.message : "Couldn't generate image.")
+        setError(err instanceof Error ? err.message : t("share.ig.error.generic"))
       })
       .finally(() => {
         if (!cancelled) setGenerating(false)
@@ -99,11 +101,11 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
     try {
       await navigator.share({
         files: [file],
-        title: "My Kanji by Insomnius progress",
+        title: t("share.ig.share.title"),
         text:
           data.streak > 0
-            ? `${data.streak}-day kanji streak 🔥 — kanji.insomnius.dev`
-            : "Learning Japanese kanji on kanji.insomnius.dev",
+            ? t("share.ig.share.streak", { streak: data.streak })
+            : t("share.ig.share.fallback"),
       })
     } catch {
       // User cancelled — silent
@@ -116,14 +118,14 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
         <div className="flex items-start justify-between p-6 pb-3">
           <div className="flex-1">
             <DialogTitle className="font-display text-xl text-sumi font-medium">
-              Share to Instagram
+              {t("share.ig.title")}
             </DialogTitle>
             <DialogDescription className="font-display italic text-sumi/70 text-sm mt-1">
-              Pick a format, then share via your device or download to upload manually.
+              {t("share.ig.description")}
             </DialogDescription>
           </div>
           <DialogClose asChild>
-            <Button variant="ghost" size="icon" aria-label="Close">
+            <Button variant="ghost" size="icon" aria-label={t("share.ig.close")}>
               <X aria-hidden="true" className="h-5 w-5" />
             </Button>
           </DialogClose>
@@ -135,19 +137,19 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
             type="single"
             value={format}
             onValueChange={(value) => { if (value) setFormat(value as ImageFormat) }}
-            aria-label="Image format"
+            aria-label={t("share.ig.format.aria")}
             className="flex justify-center gap-2"
           >
             {([
-              { value: "square", label: "Square", caption: "Feed post · 1080×1080" },
-              { value: "story", label: "Story", caption: "Story · 1080×1920" },
+              { value: "square", label: t("share.ig.format.square"), caption: t("share.ig.format.square.caption") },
+              { value: "story", label: t("share.ig.format.story"), caption: t("share.ig.format.story.caption") },
             ] as const).map(({ value, label, caption }) => {
               const isActive = format === value
               return (
                 <ToggleGroupItem
                   key={value}
                   value={value}
-                  aria-label={`${label} — ${caption}`}
+                  aria-label={t("share.ig.format.option.aria", { label, caption })}
                   className="group flex-1 flex flex-col items-center min-h-[44px] px-4 pt-2 pb-1.5 rounded-none data-[state=on]:bg-transparent"
                 >
                   <span
@@ -184,14 +186,14 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
             {previewUrl && !generating && (
               <img
                 src={previewUrl}
-                alt={`Preview of ${format} share image`}
+                alt={t("share.ig.preview.alt", { format })}
                 className="w-full h-full object-contain"
               />
             )}
             {generating && (
               <div className="absolute inset-0 flex items-center justify-center bg-cream-deep/50">
                 <Loader2 aria-hidden="true" className="h-6 w-6 text-sumi/70 animate-spin motion-reduce:animate-none" />
-                <span className="sr-only">Generating image…</span>
+                <span className="sr-only">{t("share.ig.generating")}</span>
               </div>
             )}
             {error && (
@@ -210,7 +212,7 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
                 className="w-full gap-2"
               >
                 <Share2 aria-hidden="true" className="h-4 w-4" />
-                Share via system…
+                {t("share.ig.action.share")}
               </Button>
             )}
             <Button
@@ -220,13 +222,10 @@ export function InstagramShareDialog({ open, onOpenChange, data }: InstagramShar
               className="w-full gap-2"
             >
               <Download aria-hidden="true" className="h-4 w-4" />
-              Download image
+              {t("share.ig.action.download")}
             </Button>
             <p className="font-display italic text-xs text-sumi/70 text-center pt-1">
-              Instagram doesn't accept link uploads.{" "}
-              {canShareFiles
-                ? "Use system share to send it to Instagram, then post or add to story."
-                : "Download the image, then upload it manually in the Instagram app."}
+              {canShareFiles ? t("share.ig.note.share") : t("share.ig.note.download")}
             </p>
           </div>
         </div>

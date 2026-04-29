@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
-import { kanjiData } from '@/data/kanji-data'
+import { kanjiData, getKanjiMeaning } from '@/data/kanji-data'
 import KanjiDetail from '@/components/kanji-detail'
+import { useTranslation } from '@/lib/i18n/use-translation'
 
 const findKanjiAcrossLevels = (char: string) => {
   for (const level of Object.keys(kanjiData) as Array<keyof typeof kanjiData>) {
@@ -15,6 +16,8 @@ function KanjiCharacterPage() {
   const { char } = Route.useParams()
   const decoded = decodeURIComponent(char)
   const kanji = findKanjiAcrossLevels(decoded)
+  const { t, locale } = useTranslation()
+  const localizedMeaning = kanji ? getKanjiMeaning(kanji, locale) : []
 
   return (
     <div className="max-w-3xl mx-auto py-2 sm:py-4">
@@ -23,7 +26,7 @@ function KanjiCharacterPage() {
         className="inline-flex items-center gap-2 text-sm font-display italic text-sumi/70 hover:text-vermilion-deep mb-6 transition-colors"
       >
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-        Back to Kanji
+        {t("page.kanji.back")}
       </Link>
 
       {kanji ? (
@@ -31,9 +34,9 @@ function KanjiCharacterPage() {
           {/* sr-only h1 satisfies axe page-has-heading-one without disrupting the visual
               layout; the big kanji glyph in KanjiDetail is the visible heading. */}
           <h1 className="sr-only">
-            <span lang="ja">{kanji.kanji}</span> — {kanji.meaning.join(", ")} — JLPT {kanji.jlptLevel} kanji
+            <span lang="ja">{kanji.kanji}</span> — {localizedMeaning.join(", ")} — {t("page.kanji.h1.suffix", { level: kanji.jlptLevel })}
           </h1>
-          <h2 className="sr-only">Character details</h2>
+          <h2 className="sr-only">{t("page.kanji.h2")}</h2>
           <script
             type="application/ld+json"
             // React 19 hoists scripts; this provides Google with structured data
@@ -59,9 +62,9 @@ function KanjiCharacterPage() {
       ) : (
         <div className="text-center py-16">
           <p lang="ja" className="text-6xl font-bold text-sumi/30 mb-4">{decoded}</p>
-          <h1 className="font-display text-2xl text-sumi mb-3">Kanji not found</h1>
+          <h1 className="font-display text-2xl text-sumi mb-3">{t("page.kanji.notFound.title")}</h1>
           <p className="font-display italic text-sumi/70 max-w-md mx-auto">
-            We don't have data for this character in the JLPT N1–N5 set.
+            {t("page.kanji.notFound.body")}
           </p>
         </div>
       )}

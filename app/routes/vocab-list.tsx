@@ -1,41 +1,41 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { useMemo, useRef, useState } from "react"
-import { vocabularyData } from "@/data/vocabulary-data"
+import { vocabularyData, type VocabItem } from "@/data/vocabulary-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Search, BookOpen, Book, X } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import VocabDetail from "@/components/vocab-detail"
 import { SegmentedControl } from "@/components/segmented-control"
-import { JLPT_LEVELS } from "@/components/level-selector"
+import { useJlptLevels } from "@/components/level-selector"
 import { VirtualizedVocabGrid } from "@/components/virtualized-vocab-grid"
 import { useDeferredSearch } from "@/lib/use-deferred-search"
 import { useSearchHotkey } from "@/lib/use-search-hotkey"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
-interface VocabItem {
-  word: string;
-  meaning: string;
-  romaji: string;
+function DetailEmptyState() {
+  const { t } = useTranslation()
+  return (
+    <Card className="border-dashed border-sumi/20 bg-white/40">
+      <CardContent className="py-20 text-center">
+        <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
+          言葉
+        </p>
+        <p className="font-display italic text-base text-sumi/70 mb-2">
+          {t("vocabList.empty.headline")}
+        </p>
+        <p className="text-xs text-sumi/70 max-w-[26ch] mx-auto leading-relaxed">
+          {t("vocabList.empty.body")}
+        </p>
+      </CardContent>
+    </Card>
+  )
 }
 
-const DetailEmptyState = () => (
-  <Card className="border-dashed border-sumi/20 bg-white/40">
-    <CardContent className="py-20 text-center">
-      <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
-        言葉
-      </p>
-      <p className="font-display italic text-base text-sumi/70 mb-2">
-        Pick a word to study its meaning
-      </p>
-      <p className="text-xs text-sumi/70 max-w-[26ch] mx-auto leading-relaxed">
-        Tap any word on the left to see its reading and the kanji it's built from.
-      </p>
-    </CardContent>
-  </Card>
-)
-
 function VocabListPage() {
+  const { t } = useTranslation()
+  const jlptLevels = useJlptLevels()
   const search = useDeferredSearch("")
   const [selectedVocab, setSelectedVocab] = useState<{ vocab: VocabItem; level: string } | null>(null)
   const [activeLevel, setActiveLevel] = useState<string>("N5")
@@ -58,6 +58,7 @@ function VocabListPage() {
       (v) =>
         v.word.includes(trimmed) ||
         v.meaning.toLowerCase().includes(lower) ||
+        (v.meaningId?.toLowerCase().includes(lower) ?? false) ||
         v.romaji.toLowerCase().includes(lower),
     )
   }, [activeLevel, trimmed])
@@ -67,19 +68,19 @@ function VocabListPage() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            JLPT Vocabulary
+            {t("vocabList.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            Browse Japanese vocabulary by JLPT level — readings, meanings, and the kanji that compose them.
+            {t("vocabList.subtitle")}
           </p>
-          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+          <nav aria-label={t("kanjiList.related.aria")} className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
             <Link to="/kanji-list" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
               <Book aria-hidden="true" className="h-3.5 w-3.5" />
-              Browse kanji instead
+              {t("nav.kanji")}
             </Link>
             <Link to="/quiz" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
               <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-              Quiz this vocabulary
+              {t("kanjiList.related.quiz")}
             </Link>
           </nav>
         </header>
@@ -89,9 +90,9 @@ function VocabListPage() {
           <Input
             ref={searchInputRef}
             type="search"
-            aria-label="Search vocabulary by word, meaning, or pronunciation"
+            aria-label={t("vocabList.search.aria")}
             aria-keyshortcuts="/"
-            placeholder="Search word, meaning, or pronunciation…"
+            placeholder={t("vocabList.search.placeholder")}
             value={search.value}
             onChange={(e) => search.setValue(e.target.value)}
             onCompositionStart={search.onCompositionStart}
@@ -108,7 +109,7 @@ function VocabListPage() {
                 search.clear()
                 setSelectedVocab(null)
               }}
-              aria-label="Clear search (Escape)"
+              aria-label={t("vocabList.search.clear.aria")}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
             >
               <X aria-hidden="true" className="h-4 w-4" />
@@ -125,7 +126,7 @@ function VocabListPage() {
 
         <div className="mb-6 sm:mb-8">
           <SegmentedControl
-            items={JLPT_LEVELS}
+            items={jlptLevels}
             value={activeLevel}
             onChange={(v) => {
               setActiveLevel(v)
@@ -140,16 +141,16 @@ function VocabListPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="font-display text-xl text-sumi font-medium">
-                  JLPT {activeLevel} Vocabulary <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
+                  {t("vocabList.level.title", { level: activeLevel })} <span className="text-sumi/70 font-normal italic">({filtered.length})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {filtered.length === 0 ? (
                   <div className="py-16 text-center" role="status">
                     <p className="font-display italic text-lg text-sumi/70 mb-2">
-                      No vocabulary matches &ldquo;{trimmed}&rdquo; at JLPT {activeLevel}
+                      {t("vocabList.results.noMatches", { term: trimmed })}
                     </p>
-                    <p className="text-sm text-sumi/70">Try a different level, or clear the search.</p>
+                    <p className="text-sm text-sumi/70">{t("vocabList.results.tryHint")}</p>
                   </div>
                 ) : (
                   <VirtualizedVocabGrid

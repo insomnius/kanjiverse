@@ -5,19 +5,23 @@ import LevelSelector from "@/components/level-selector"
 import KanjiQuiz from "@/components/kanji-quiz"
 import VocabQuiz from "@/components/vocab-quiz"
 import { QuizMeter } from "@/components/quiz-meter"
+import { JpTtsInstallCard } from "@/components/jp-tts-install-card"
+import { QuizTour } from "@/components/quiz-tour"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { kanjiData } from "@/data/kanji-data"
-import { vocabularyData } from "@/data/vocabulary-data"
+import { vocabularyData, getVocabMeaning } from "@/data/vocabulary-data"
 import type { Kanji } from "@/data/kanji-data"
 import {
-  getItemMasteryMap,
-  applyAnswerToMasteryMap,
-  pickWeightedExcluding,
-  type ItemMastery,
+  getItemReviewMap,
+  applyAnswerToReviewMap,
+  pickReviewQueue,
+  type ItemReview,
 } from "@/lib/progress/use-progress"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 function JapaneseLearningApp() {
+  const { t, locale } = useTranslation()
   const [currentKanji, setCurrentKanji] = useState<Kanji | null>(null)
   const [currentVocab, setCurrentVocab] = useState<{
     word: string
@@ -28,18 +32,26 @@ function JapaneseLearningApp() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [selectedLevel, setSelectedLevel] = useState("N5")
 
-  // Mastery maps live in refs (no re-renders needed when they update). We hydrate on
-  // mount and keep them current via applyAnswerToMasteryMap as the user answers.
-  const kanjiMasteryRef = useRef<Map<string, ItemMastery>>(new Map())
-  const vocabMasteryRef = useRef<Map<string, ItemMastery>>(new Map())
+  // SM-2 review state lives in refs (no re-render needed when it updates). We hydrate on
+  // mount from IDB and keep it current via applyAnswerToReviewMap as the user answers,
+  // so pickReviewQueue's tier-1 (due) and tier-2 (unseen) decisions reflect the
+  // session's most recent state without an IDB round-trip per pick.
+  const kanjiReviewsRef = useRef<Map<string, ItemReview>>(new Map())
+  const vocabReviewsRef = useRef<Map<string, ItemReview>>(new Map())
+
+  // Tour anchors. Refs (not selectors) so we can detect missing elements when
+  // the user is on the vocab tab and the kanji speaker isn't mounted.
+  const levelAnchorRef = useRef<HTMLDivElement | null>(null)
+  const tabsAnchorRef = useRef<HTMLDivElement | null>(null)
+  const speakAnchorRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
-    void getItemMasteryMap("kanji").then((m) => {
-      if (!cancelled) kanjiMasteryRef.current = m
+    void getItemReviewMap("kanji").then((m) => {
+      if (!cancelled) kanjiReviewsRef.current = m
     })
-    void getItemMasteryMap("vocab").then((m) => {
-      if (!cancelled) vocabMasteryRef.current = m
+    void getItemReviewMap("vocab").then((m) => {
+      if (!cancelled) vocabReviewsRef.current = m
     })
     return () => {
       cancelled = true
@@ -49,26 +61,32 @@ function JapaneseLearningApp() {
   useEffect(() => {
     generateNewKanji(selectedLevel, null)
     generateNewVocab(selectedLevel, null)
-  }, [selectedLevel])
+    // Re-generate when locale flips so the active vocab card immediately shows
+    // the right-language options instead of the old set.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLevel, locale])
 
   const generateNewKanji = (selectedLevel: string, excludeKey: string | null) => {
     const levelData = kanjiData[selectedLevel as keyof typeof kanjiData]
-    const next = pickWeightedExcluding(levelData, (k) => k.kanji, excludeKey, {
-      mastery: kanjiMasteryRef.current,
+    const next = pickReviewQueue(levelData, (k) => k.kanji, {
+      reviews: kanjiReviewsRef.current,
+      excludeKey,
     })
     setCurrentKanji(next)
   }
 
   const generateNewVocab = (selectedLevel: string, excludeKey: string | null) => {
-    const levelData = vocabularyData[selectedLevel as keyof typeof vocabularyData]
-    const correctVocab = pickWeightedExcluding(levelData, (v) => v.word, excludeKey, {
-      mastery: vocabMasteryRef.current,
+    const levelData = vocabularyData[selectedLevel]
+    const correctVocab = pickReviewQueue(levelData, (v) => v.word, {
+      reviews: vocabReviewsRef.current,
+      excludeKey,
     })
 
-    let options = [correctVocab.meaning]
+    const correctMeaning = getVocabMeaning(correctVocab, locale)
+    let options = [correctMeaning]
     while (options.length < 4) {
       const randomVocabIndex = Math.floor(Math.random() * levelData.length)
-      const randomOption = levelData[randomVocabIndex].meaning
+      const randomOption = getVocabMeaning(levelData[randomVocabIndex], locale)
       if (!options.includes(randomOption)) {
         options.push(randomOption)
       }
@@ -78,7 +96,7 @@ function JapaneseLearningApp() {
 
     setCurrentVocab({
       word: correctVocab.word,
-      meaning: correctVocab.meaning,
+      meaning: correctMeaning,
       romaji: correctVocab.romaji,
       options,
     })
@@ -86,7 +104,7 @@ function JapaneseLearningApp() {
 
   const handleKanjiAnswer = (isCorrect: boolean) => {
     if (currentKanji) {
-      applyAnswerToMasteryMap(kanjiMasteryRef.current, currentKanji.kanji, isCorrect)
+      applyAnswerToReviewMap(kanjiReviewsRef.current, "kanji", currentKanji.kanji, isCorrect)
     }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
@@ -97,7 +115,7 @@ function JapaneseLearningApp() {
 
   const handleVocabAnswer = (isCorrect: boolean) => {
     if (currentVocab) {
-      applyAnswerToMasteryMap(vocabMasteryRef.current, currentVocab.word, isCorrect)
+      applyAnswerToReviewMap(vocabReviewsRef.current, "vocab", currentVocab.word, isCorrect)
     }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
@@ -113,23 +131,33 @@ function JapaneseLearningApp() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      <JpTtsInstallCard />
+
       <div className="mb-8">
-        <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi text-center mb-6 tracking-tight">Japanese Learning Quiz</h1>
-        <LevelSelector selectedLevel={selectedLevel} onLevelChange={handleLevelChange} />
+        <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi text-center mb-6 tracking-tight">{t("quiz.title")}</h1>
+        <div ref={levelAnchorRef}>
+          <LevelSelector selectedLevel={selectedLevel} onLevelChange={handleLevelChange} />
+        </div>
       </div>
 
       <QuizMeter sessionCorrect={score.correct} sessionTotal={score.total} />
 
       <Tabs defaultValue="kanji" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-8" aria-label="Quiz type">
-          <TabsTrigger value="kanji" className="font-display">Kanji Quiz</TabsTrigger>
-          <TabsTrigger value="vocabulary" className="font-display">Vocabulary Quiz</TabsTrigger>
+        <TabsList ref={tabsAnchorRef} className="grid w-full grid-cols-2 mb-8" aria-label={t("quiz.tabs.aria")}>
+          <TabsTrigger value="kanji" className="font-display">{t("quiz.tabs.kanji")}</TabsTrigger>
+          <TabsTrigger value="vocabulary" className="font-display">{t("quiz.tabs.vocab")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="kanji">
           <Card>
             <CardContent className="pt-6">
-              {currentKanji && <KanjiQuiz kanji={currentKanji} onAnswer={handleKanjiAnswer} />}
+              {currentKanji && (
+                <KanjiQuiz
+                  kanji={currentKanji}
+                  onAnswer={handleKanjiAnswer}
+                  speakButtonRef={speakAnchorRef}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -151,6 +179,14 @@ function JapaneseLearningApp() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <QuizTour
+        anchors={{
+          level: levelAnchorRef,
+          tabs: tabsAnchorRef,
+          speak: speakAnchorRef,
+        }}
+      />
     </div>
   )
 }

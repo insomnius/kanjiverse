@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import { kanaData } from '@/data/kana-data'
 import KanaDetail from '@/components/kana-detail'
+import { useTranslation } from '@/lib/i18n/use-translation'
 
 type Script = "hiragana" | "katakana"
 
@@ -45,6 +46,7 @@ function KanaCharacterPage() {
   const { char } = Route.useParams()
   const decoded = decodeURIComponent(char)
   const lookup = findKana(decoded)
+  const { t } = useTranslation()
 
   return (
     <div className="max-w-3xl mx-auto py-2 sm:py-4">
@@ -53,15 +55,15 @@ function KanaCharacterPage() {
         className="inline-flex items-center gap-2 text-sm font-display italic text-sumi/70 hover:text-vermilion-deep mb-6 transition-colors"
       >
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-        Back to Kana
+        {t("page.kana.back")}
       </Link>
 
       {lookup ? (
         <>
           <h1 className="sr-only">
-            <span lang="ja">{lookup.kana}</span> ({lookup.romaji}) — {lookup.script === "hiragana" ? "Hiragana" : "Katakana"}
+            <span lang="ja">{lookup.kana}</span> ({lookup.romaji}) — {lookup.script === "hiragana" ? t("kanaRef.script.hiragana") : t("kanaRef.script.katakana")}
           </h1>
-          <h2 className="sr-only">Kana details</h2>
+          <h2 className="sr-only">{t("page.kana.h2")}</h2>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
@@ -86,9 +88,9 @@ function KanaCharacterPage() {
       ) : (
         <div className="text-center py-16">
           <p lang="ja" className="text-6xl font-bold text-sumi/30 mb-4">{decoded}</p>
-          <h1 className="font-display text-2xl text-sumi mb-3">Kana not found</h1>
+          <h1 className="font-display text-2xl text-sumi mb-3">{t("page.kana.notFound.title")}</h1>
           <p className="font-display italic text-sumi/70 max-w-md mx-auto">
-            We don't have data for this character in the hiragana or katakana tables.
+            {t("page.kana.notFound.body")}
           </p>
         </div>
       )}

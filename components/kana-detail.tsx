@@ -10,6 +10,7 @@ import { Link } from "@tanstack/react-router"
 import { kanaData } from "@/data/kana-data"
 import { MasteryBadge } from "@/components/mastery-badge"
 import { SpeakButton } from "@/components/speak-button"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface KanaDetailProps {
   kana: string
@@ -39,6 +40,7 @@ const findCounterpart = (
 }
 
 export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: KanaDetailProps) {
+  const { t } = useTranslation()
   const counterpart = findCounterpart(kana, romaji, script)
   const otherScript = script === "hiragana" ? "katakana" : "hiragana"
 
@@ -65,7 +67,7 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
               </div>
               <SpeakButton
                 text={kana}
-                label={`Speak ${kana} in Japanese`}
+                label={t("speak.aria.kana", { value: kana })}
                 className="-mb-1"
               />
             </div>
@@ -74,7 +76,7 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
                 <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium italic">
                   {romaji}
                 </CardTitle>
-                <Badge>{script === "hiragana" ? "Hiragana" : "Katakana"}</Badge>
+                <Badge>{script === "hiragana" ? t("kanaDetail.script.hiragana") : t("kanaDetail.script.katakana")}</Badge>
                 <MasteryBadge type="kana" itemKey={kana} />
               </div>
               <CardDescription className="font-display italic text-sumi/70 text-base">
@@ -87,7 +89,7 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
               variant="ghost"
               size="icon"
               onClick={onClose}
-              aria-label="Close kana details"
+              aria-label={t("kanaDetail.close.aria")}
               className="shrink-0 -mt-1 -mr-1"
             >
               <X aria-hidden="true" className="h-5 w-5" />
@@ -100,7 +102,7 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
             params={{ char: kana }}
             className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors w-fit"
           >
-            Open as full page
+            {t("kanaDetail.openFullPage")}
             <ExternalLink aria-hidden="true" className="h-3 w-3" />
           </Link>
         )}
@@ -109,13 +111,13 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
         <Separator className="mb-4" />
         <div>
           <h3 className="font-display text-base text-sumi font-semibold mb-3">
-            {script === "hiragana" ? "Katakana" : "Hiragana"} counterpart
+            {script === "hiragana" ? t("kanaDetail.counterpart.katakana") : t("kanaDetail.counterpart.hiragana")}
           </h3>
           {counterpart ? (
             <div className="flex items-center gap-4 p-4 bg-cream-deep rounded-md">
               <span lang="ja" className="text-5xl font-bold text-sumi leading-none">{counterpart}</span>
               <div className="text-sm">
-                <p className="font-medium text-sumi">Same sound, different script</p>
+                <p className="font-medium text-sumi">{t("kanaDetail.sameSound")}</p>
                 <p className="text-xs text-sumi/70 mt-1">
                   <span lang="ja">{kana}</span> ({script}) ↔ <span lang="ja">{counterpart}</span> ({otherScript})
                 </p>
@@ -123,7 +125,7 @@ export default function KanaDetail({ kana, romaji, script, rowLabel, onClose }: 
             </div>
           ) : (
             <p className="text-sm text-sumi/70 italic p-4 bg-cream-deep rounded-md">
-              No direct counterpart in the {otherScript} table.
+              {t("kanaDetail.noCounterpart", { script: otherScript })}
             </p>
           )}
         </div>

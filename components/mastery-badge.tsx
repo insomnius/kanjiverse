@@ -5,6 +5,7 @@ import { Sparkles, Target } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { ItemMastery, QuizType } from "@/lib/progress/use-progress"
 import { getItemMastery } from "@/lib/progress/use-progress"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface MasteryBadgeProps {
   type: QuizType
@@ -23,6 +24,7 @@ const MASTERED_MIN_ATTEMPTS = 3 // need a few attempts before "mastered" is mean
  * item — keeps the UI quiet for first-time visitors.
  */
 export function MasteryBadge({ type, itemKey, size = "default" }: MasteryBadgeProps) {
+  const { t } = useTranslation()
   const [mastery, setMastery] = useState<ItemMastery | null>(null)
 
   useEffect(() => {
@@ -50,8 +52,10 @@ export function MasteryBadge({ type, itemKey, size = "default" }: MasteryBadgePr
       role="status"
       aria-label={
         isMastered
-          ? `Mastered: ${mastery.correct} of ${mastery.count} correct (${accuracy} percent)`
-          : `Seen ${mastery.count} time${mastery.count === 1 ? "" : "s"}, ${mastery.correct} correct (${accuracy} percent)`
+          ? t("mastery.aria.mastered", { correct: mastery.correct, count: mastery.count, accuracy })
+          : mastery.count === 1
+            ? t("mastery.aria.seen.singular", { count: mastery.count, correct: mastery.correct, accuracy })
+            : t("mastery.aria.seen.plural", { count: mastery.count, correct: mastery.correct, accuracy })
       }
       className={cn(
         "inline-flex items-center gap-1 rounded-full border font-display tabular-nums",

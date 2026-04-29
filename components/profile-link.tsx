@@ -3,16 +3,18 @@
 import { Link } from "@tanstack/react-router"
 import { User } from "lucide-react"
 import { useProgress } from "@/lib/progress/use-progress"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 export function ProfileLink() {
   const { profile } = useProgress()
+  const { t } = useTranslation()
   const name = profile?.displayName ?? null
   const initial = name ? name[0]?.toUpperCase() : null
 
   return (
     <Link
       to="/profile"
-      aria-label={name ? `Profile: ${name}` : "Set your name"}
+      aria-label={name ? t("nav.profile.aria.named", { name }) : t("nav.profile.aria.set")}
       className="group flex items-center justify-center w-9 h-9 rounded-full text-sumi/70 hover:text-sumi transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
     >
       {initial ? (

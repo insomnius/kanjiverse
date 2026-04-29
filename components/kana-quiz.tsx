@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { AlertCircle, CheckCircle } from "lucide-react"
+import { SpeakButton } from "@/components/speak-button"
 import { recordAnswer, isSoundEnabled, useProgress } from "@/lib/progress/use-progress"
 import { playCorrect, playIncorrect } from "@/lib/sounds"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface KanaQuizProps {
   kana: string
@@ -22,6 +24,7 @@ const Kbd = ({ children }: { children: React.ReactNode }) => (
 
 export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: KanaQuizProps) {
   const { profile } = useProgress()
+  const { t } = useTranslation()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; message: string } | null>(null)
   const [isChecking, setIsChecking] = useState(false)
@@ -44,7 +47,9 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
 
     setFeedback({
       isCorrect,
-      message: isCorrect ? "Correct!" : `Incorrect. The correct answer is "${romaji}".`,
+      message: isCorrect
+        ? t("quiz.kana.feedback.correct")
+        : t("quiz.kana.feedback.incorrect", { romaji }),
     })
 
     setTimeout(() => {
@@ -89,14 +94,17 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
     <div className="flex flex-col items-center">
       {/* SR-only hotkey hint, announced once on render */}
       <p className="sr-only">
-        Tip: press number keys 1 through {options.length} to choose an answer, then press Enter to submit.
+        {t("quiz.vocab.srHint", { count: options.length })}
       </p>
 
       <div className="mb-8">
         {/* No aria-label here — it would override the visible kana and lose lang="ja" pronunciation. The instruction line below conveys script context. */}
         <p lang="ja" className="text-8xl font-bold mb-2 text-center text-sumi leading-none">{kana}</p>
+        <div className="flex justify-center mb-1">
+          <SpeakButton text={kana} label={t("speak.aria.kana", { value: kana })} />
+        </div>
         <p className="text-sm text-center text-sumi/70">
-          Select the correct {kanaType === "hiragana" ? "hiragana" : "katakana"} pronunciation
+          {kanaType === "hiragana" ? t("quiz.kana.instruction.hiragana") : t("quiz.kana.instruction.katakana")}
         </p>
       </div>
 
@@ -112,7 +120,7 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
               }`}
               onClick={() => handleOptionSelect(option)}
               disabled={isChecking}
-              aria-label={`Option ${index + 1}: ${option}`}
+              aria-label={t("quiz.kana.option.aria", { index: index + 1, value: option })}
             >
               <span aria-hidden="true">
                 <Kbd>{index + 1}</Kbd>
@@ -124,12 +132,12 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
       </div>
 
       <Button onClick={handleSubmit} className="w-full max-w-md" disabled={!selectedOption || isChecking}>
-        Check Answer
+        {t("quiz.kana.checkAnswer")}
       </Button>
 
       {!feedback && (
         <p className="font-display italic text-sm text-sumi/70 text-center mt-3" aria-hidden="true">
-          Press <Kbd>1</Kbd>{options.length > 1 ? <>–<Kbd>{options.length}</Kbd></> : null} to choose, <Kbd>Enter</Kbd> to submit
+          {t("quiz.kbdHint.before")} <Kbd>1</Kbd>{options.length > 1 ? <>–<Kbd>{options.length}</Kbd></> : null} {t("quiz.kbdHint.middle")} <Kbd>Enter</Kbd> {t("quiz.kbdHint.after")}
         </p>
       )}
 
@@ -141,7 +149,7 @@ export default function KanaQuiz({ kana, romaji, options, kanaType, onAnswer }: 
             <AlertCircle aria-hidden="true" className="mr-2 h-5 w-5 text-red-600" />
           )}
           <span className={feedback.isCorrect ? "text-green-600" : "text-red-600"}>
-            <span className="sr-only">{feedback.isCorrect ? "Correct: " : "Incorrect: "}</span>{feedback.message}
+            <span className="sr-only">{feedback.isCorrect ? t("quiz.feedback.sr.correct") : t("quiz.feedback.sr.incorrect")}</span>{feedback.message}
           </span>
         </div>
       )}

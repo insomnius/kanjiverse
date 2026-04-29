@@ -8,10 +8,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  getItemMasteryMap,
-  applyAnswerToMasteryMap,
-  pickWeightedExcluding,
-  type ItemMastery,
+  getItemReviewMap,
+  applyAnswerToReviewMap,
+  pickReviewQueue,
+  type ItemReview,
 } from "@/lib/progress/use-progress"
 
 // Helper function to flatten kana data for easier access
@@ -31,14 +31,15 @@ const flattenKanaData = (type: "hiragana" | "katakana", sections: string[]) => {
   return result
 }
 
-// Generate a new kana question. Stealth-SRS picker: weighted away from items the
-// user just got right, weighted toward recently-missed ones. Falls back to uniform
-// random when the mastery map is empty (first session).
+// Generate a new kana question. SM-2 review queue: tier 1 surfaces due items
+// (oldest first), tier 2 introduces unseen items up to the daily new-card cap,
+// tier 3 falls back to weighted random over future-due items so the quiz never
+// dead-ends. Falls back to uniform random when the review map is empty (first session).
 const generateNewKana = (
   activeTab: "hiragana" | "katakana",
   difficulty: "basic" | "all",
   setCurrentKana: (kana: { kana: string; romaji: string; options: string[] }) => void,
-  mastery: Map<string, ItemMastery>,
+  reviews: Map<string, ItemReview>,
   excludeKana: string | null,
 ) => {
   const sections = difficulty === "basic" ? ["basic"] : ["basic", "dakuten", "combinations"]
@@ -47,7 +48,10 @@ const generateNewKana = (
   }
 
   const kanaList = flattenKanaData(activeTab, sections)
-  const selectedKana = pickWeightedExcluding(kanaList, (k) => k.kana, excludeKana, { mastery })
+  const selectedKana = pickReviewQueue(kanaList, (k) => k.kana, {
+    reviews,
+    excludeKey: excludeKana,
+  })
 
   // Generate options (including the correct answer)
   let options = [selectedKana.romaji]
@@ -76,12 +80,12 @@ function KanaQuizPage() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [activeTab, setActiveTab] = useState<"hiragana" | "katakana">("hiragana")
   const [difficulty, setDifficulty] = useState<"basic" | "all">("basic")
-  const masteryRef = useRef<Map<string, ItemMastery>>(new Map())
+  const reviewsRef = useRef<Map<string, ItemReview>>(new Map())
 
   useEffect(() => {
     let cancelled = false
-    void getItemMasteryMap("kana").then((m) => {
-      if (!cancelled) masteryRef.current = m
+    void getItemReviewMap("kana").then((m) => {
+      if (!cancelled) reviewsRef.current = m
     })
     return () => {
       cancelled = true
@@ -90,18 +94,18 @@ function KanaQuizPage() {
 
   // Initialize and handle tab changes
   useEffect(() => {
-    generateNewKana(activeTab, difficulty, setCurrentKana, masteryRef.current, null)
+    generateNewKana(activeTab, difficulty, setCurrentKana, reviewsRef.current, null)
   }, [activeTab, difficulty])
 
   const handleAnswer = (isCorrect: boolean) => {
     if (currentKana) {
-      applyAnswerToMasteryMap(masteryRef.current, currentKana.kana, isCorrect)
+      applyAnswerToReviewMap(reviewsRef.current, "kana", currentKana.kana, isCorrect)
     }
     setScore((prev) => ({
       correct: isCorrect ? prev.correct + 1 : prev.correct,
       total: prev.total + 1,
     }))
-    generateNewKana(activeTab, difficulty, setCurrentKana, masteryRef.current, currentKana?.kana ?? null)
+    generateNewKana(activeTab, difficulty, setCurrentKana, reviewsRef.current, currentKana?.kana ?? null)
   }
 
   const handleDifficultyChange = (level: string) => {

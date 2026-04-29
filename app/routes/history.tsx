@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft } from "lucide-react"
 import { ContributionCalendar } from "@/components/contribution-calendar"
 import { useProgress, getRecentSessions, type Session } from "@/lib/progress/use-progress"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: "short",
@@ -27,15 +28,16 @@ function timeAgo(ms: number): string {
   return relativeFormatter.format(diffDay, "day")
 }
 
-const TYPE_LABELS: Record<Session["type"], string> = {
-  kanji: "Kanji",
-  vocab: "Vocabulary",
-  kana: "Kana",
-}
-
 function HistoryPage() {
   const { recentDailyTotals } = useProgress()
   const [sessions, setSessions] = useState<Session[] | null>(null)
+  const { t } = useTranslation()
+
+  const TYPE_LABELS: Record<Session["type"], string> = {
+    kanji: t("history.type.kanji"),
+    vocab: t("history.type.vocab"),
+    kana: t("history.type.kana"),
+  }
 
   useEffect(() => {
     void getRecentSessions(30).then(setSessions)
@@ -49,25 +51,25 @@ function HistoryPage() {
           className="inline-flex items-center gap-2 text-sm font-display italic text-sumi/70 hover:text-vermilion-deep mb-6 transition-colors"
         >
           <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-          Back to Profile
+          {t("history.backToProfile")}
         </Link>
 
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            Your activity
+            {t("history.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            Every day you've answered a question, painted a little gold.
+            {t("history.subtitle")}
           </p>
         </header>
 
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium">
-              Last 52 weeks
+              {t("history.calendar.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Hover, focus, or tap any cell to see that day's count.
+              {t("history.calendar.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -78,20 +80,20 @@ function HistoryPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium">
-              Recent sessions
+              {t("history.sessions.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Each session ends after 5 minutes of inactivity.
+              {t("history.sessions.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {sessions === null ? (
               <p className="font-display italic text-sm text-sumi/70 text-center py-8">
-                Loading…
+                {t("history.sessions.loading")}
               </p>
             ) : sessions.length === 0 ? (
               <p className="font-display italic text-sm text-sumi/70 text-center py-8">
-                No sessions yet. Take a quiz and your history will appear here.
+                {t("history.sessions.empty")}
               </p>
             ) : (
               <ul className="divide-y divide-sumi/10">
@@ -124,7 +126,7 @@ function HistoryPage() {
                           <span className="text-sm text-sumi/70 font-normal italic ml-1">{accuracy}%</span>
                         </p>
                         <p className="text-[10px] text-sumi/70">
-                          {durationMin < 1 ? "< 1 min" : `${durationMin} min`}
+                          {durationMin < 1 ? t("history.sessions.duration.short") : t("history.sessions.duration.minutes", { n: durationMin })}
                         </p>
                       </div>
                     </li>

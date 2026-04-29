@@ -8,11 +8,13 @@ import { Search, BookOpen, Pencil, PenLine, X } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import KanjiDetail from "@/components/kanji-detail"
 import { SegmentedControl } from "@/components/segmented-control"
-import { JLPT_LEVELS } from "@/components/level-selector"
+import { useJlptLevels } from "@/components/level-selector"
 import { VirtualizedKanjiGrid, type KanjiWithLevel } from "@/components/virtualized-kanji-grid"
 import { useDeferredSearch } from "@/lib/use-deferred-search"
 import { useSearchHotkey } from "@/lib/use-search-hotkey"
+import { useTranslation } from "@/lib/i18n/use-translation"
 import type { Kanji } from "@/data/kanji-data"
+import type { Locale } from "@/lib/progress/use-progress"
 
 const ALL_KANJI_LEVELS: string[] = Object.keys(kanjiData)
 const ALL_KANJI_FLAT: KanjiWithLevel[] = ALL_KANJI_LEVELS.flatMap((lvl) =>
@@ -20,11 +22,15 @@ const ALL_KANJI_FLAT: KanjiWithLevel[] = ALL_KANJI_LEVELS.flatMap((lvl) =>
 )
 const LEVEL_RANK: Record<string, number> = { N5: 0, N4: 1, N3: 2, N2: 3, N1: 4 }
 
-function matchesSearch(k: Kanji, term: string): boolean {
+function matchesSearch(k: Kanji, term: string, locale: Locale): boolean {
   const lower = term.toLowerCase()
+  // Always also check English meanings — search should match either language
+  // so a user typing "water" in ID locale still finds 水, and vice versa.
+  const localizedMeanings = locale === "id" && k.meaningId ? k.meaningId : k.meaning
   return (
     k.kanji.includes(term) ||
     k.meaning.some((m) => m.toLowerCase().includes(lower)) ||
+    localizedMeanings.some((m) => m.toLowerCase().includes(lower)) ||
     k.romaji.toLowerCase().includes(lower) ||
     k.onReading.toLowerCase().includes(lower) ||
     k.onReadingRomaji.toLowerCase().includes(lower) ||
@@ -33,23 +39,28 @@ function matchesSearch(k: Kanji, term: string): boolean {
   )
 }
 
-const DetailEmptyState = () => (
-  <Card className="border-dashed border-sumi/20 bg-white/40">
-    <CardContent className="py-20 text-center">
-      <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
-        漢字
-      </p>
-      <p className="font-display italic text-base text-sumi/70 mb-2">
-        Pick a kanji to start studying
-      </p>
-      <p className="text-xs text-sumi/70 max-w-[24ch] mx-auto leading-relaxed">
-        Tap any character on the left to see its readings, strokes, and example words.
-      </p>
-    </CardContent>
-  </Card>
-)
+function DetailEmptyState() {
+  const { t } = useTranslation()
+  return (
+    <Card className="border-dashed border-sumi/20 bg-white/40">
+      <CardContent className="py-20 text-center">
+        <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
+          漢字
+        </p>
+        <p className="font-display italic text-base text-sumi/70 mb-2">
+          {t("kanjiList.empty.headline")}
+        </p>
+        <p className="text-xs text-sumi/70 max-w-[24ch] mx-auto leading-relaxed">
+          {t("kanjiList.empty.body")}
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
 
 function KanjiListPage() {
+  const { t, locale } = useTranslation()
+  const jlptLevels = useJlptLevels()
   const search = useDeferredSearch("")
   const [selectedKanji, setSelectedKanji] = useState<Kanji | null>(null)
   const [activeLevel, setActiveLevel] = useState<string>("N5")
@@ -71,9 +82,9 @@ function KanjiListPage() {
   const searchResults = useMemo<KanjiWithLevel[]>(() => {
     if (!isSearching) return []
     return ALL_KANJI_FLAT
-      .filter((k) => matchesSearch(k, trimmed))
+      .filter((k) => matchesSearch(k, trimmed, locale))
       .sort((a, b) => (LEVEL_RANK[a._level ?? ""] ?? 9) - (LEVEL_RANK[b._level ?? ""] ?? 9))
-  }, [trimmed, isSearching])
+  }, [trimmed, isSearching, locale])
 
   const levelItems = useMemo<KanjiWithLevel[]>(
     () => kanjiData[activeLevel as keyof typeof kanjiData] as KanjiWithLevel[],
@@ -85,32 +96,32 @@ function KanjiListPage() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            JLPT Kanji
+            {t("kanjiList.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            Browse every kanji from N5 (beginner) to N1 (advanced).
+            {t("kanjiList.subtitle")}
           </p>
-          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+          <nav aria-label={t("kanjiList.related.aria")} className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
             <Link
               to="/draw-search"
               className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
             >
               <PenLine aria-hidden="true" className="h-3.5 w-3.5" />
-              Don't know the character? Find by drawing
+              {t("kanjiList.related.draw")}
             </Link>
             <Link
               to="/draw"
               className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
             >
               <Pencil aria-hidden="true" className="h-3.5 w-3.5" />
-              Practice stroke order
+              {t("kanjiList.related.practice")}
             </Link>
             <Link
               to="/quiz"
               className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
             >
               <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-              Take a quiz
+              {t("kanjiList.related.quiz")}
             </Link>
           </nav>
         </header>
@@ -120,9 +131,9 @@ function KanjiListPage() {
           <Input
             ref={searchInputRef}
             type="search"
-            aria-label="Search kanji by character, meaning, or pronunciation"
+            aria-label={t("kanjiList.search.aria")}
             aria-keyshortcuts="/"
-            placeholder="Search kanji, meaning, or pronunciation…"
+            placeholder={t("kanjiList.search.placeholder")}
             value={search.value}
             onChange={(e) => search.setValue(e.target.value)}
             onCompositionStart={search.onCompositionStart}
@@ -139,7 +150,7 @@ function KanjiListPage() {
                 search.clear()
                 setSelectedKanji(null)
               }}
-              aria-label="Clear search (Escape)"
+              aria-label={t("kanjiList.search.clear.aria")}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-sumi/60 hover:text-vermilion-deep hover:bg-sumi/5 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2"
             >
               <X aria-hidden="true" className="h-4 w-4" />
@@ -160,16 +171,16 @@ function KanjiListPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="font-display text-xl text-sumi font-medium">
-                    Search results <span className="text-sumi/70 font-normal italic">({searchResults.length})</span>
+                    {t("kanjiList.results.title")} <span className="text-sumi/70 font-normal italic">({searchResults.length})</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {searchResults.length === 0 ? (
                     <div className="py-16 text-center" role="status">
                       <p className="font-display italic text-lg text-sumi/70 mb-2">
-                        No kanji match &ldquo;{trimmed}&rdquo;
+                        {t("kanjiList.results.noMatches", { term: trimmed })}
                       </p>
-                      <p className="text-sm text-sumi/70">Try a meaning, on/kun reading, or the kanji itself.</p>
+                      <p className="text-sm text-sumi/70">{t("kanjiList.results.tryHint")}</p>
                     </div>
                   ) : (
                     <VirtualizedKanjiGrid
@@ -196,7 +207,7 @@ function KanjiListPage() {
           <>
             <div className="mb-6 sm:mb-8">
               <SegmentedControl
-                items={JLPT_LEVELS}
+                items={jlptLevels}
                 value={activeLevel}
                 onChange={(v) => {
                   setActiveLevel(v)
@@ -211,7 +222,7 @@ function KanjiListPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="font-display text-xl text-sumi font-medium">
-                      JLPT {activeLevel} Kanji <span className="text-sumi/70 font-normal italic">({levelItems.length})</span>
+                      {t("kanjiList.level.title", { level: activeLevel })} <span className="text-sumi/70 font-normal italic">({levelItems.length})</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>

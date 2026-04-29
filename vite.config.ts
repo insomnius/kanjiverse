@@ -175,6 +175,7 @@ export default defineConfig(async () => {
           if (id.includes("raw-kanji-data.json")) return "kanji-data"
           if (id.includes("vocabulary-data")) return "vocabulary-data"
           if (id.includes("kana-data")) return "kana-data"
+          if (id.includes("kana-stroke-data.json")) return "kana-stroke-data"
           if (id.includes("kanji-stroke-features.json")) return "kanji-stroke-features"
           if (id.includes("kanji-stroke-counts.json")) return "kanji-stroke-counts"
           if (id.includes("kanji-radicals.json")) return "kanji-radicals"

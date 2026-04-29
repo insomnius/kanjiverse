@@ -14,6 +14,8 @@ import { SpeakButton } from "@/components/speak-button"
 import { SimilarKanji } from "@/components/similar-kanji"
 import { RadicalBreakdown } from "@/components/radical-breakdown"
 import type { Kanji } from "@/data/kanji-data"
+import { getKanjiMeaning, getExampleTranslation } from "@/data/kanji-data"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface KanjiDetailProps {
   kanji: Kanji
@@ -22,7 +24,9 @@ interface KanjiDetailProps {
 }
 
 export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
+  const { locale, t } = useTranslation()
   const [showAllExamples, setShowAllExamples] = useState(false)
+  const meanings = getKanjiMeaning(kanji, locale)
 
   const displayExamples = showAllExamples ? kanji.examples || [] : (kanji.examples || []).slice(0, 4)
   const hiddenExamplesCount = (kanji.examples?.length || 0) - displayExamples.length
@@ -51,14 +55,14 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
               </div>
               <SpeakButton
                 text={kanji.kanji}
-                label={`Speak ${kanji.kanji} in Japanese`}
+                label={t("speak.aria.kanji", { value: kanji.kanji })}
                 className="-mb-1"
               />
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
                 <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium">
-                  {kanji.meaning.join(', ')}
+                  {meanings.join(', ')}
                 </CardTitle>
                 <Badge>{kanji.jlptLevel || "N5"}</Badge>
                 <MasteryBadge type="kanji" itemKey={kanji.kanji} />
@@ -75,7 +79,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
               variant="ghost"
               size="icon"
               onClick={onClose}
-              aria-label="Close kanji details"
+              aria-label={t("kanjiDetail.close.aria")}
               className="shrink-0 -mt-1 -mr-1"
             >
               <X aria-hidden="true" className="h-5 w-5" />
@@ -89,7 +93,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
               params={{ char: kanji.kanji }}
               className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
             >
-              Open as full page
+              {t("kanjiDetail.openFullPage")}
               <ExternalLink aria-hidden="true" className="h-3 w-3" />
             </Link>
           )}
@@ -98,25 +102,25 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             search={{ char: kanji.kanji }}
             className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
           >
-            Practice writing this kanji
+            {t("kanjiDetail.practiceWriting")}
             <ExternalLink aria-hidden="true" className="h-3 w-3" />
           </Link>
         </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="readings">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto" aria-label="Kanji details">
-            <TabsTrigger value="readings" className="font-display min-h-[36px]">Readings</TabsTrigger>
-            <TabsTrigger value="strokes" className="font-display min-h-[36px]">Strokes</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto" aria-label={t("kanjiDetail.tabs.aria")}>
+            <TabsTrigger value="readings" className="font-display min-h-[36px]">{t("kanjiDetail.tabs.readings")}</TabsTrigger>
+            <TabsTrigger value="strokes" className="font-display min-h-[36px]">{t("kanjiDetail.tabs.strokes")}</TabsTrigger>
             <TabsTrigger value="examples" className="font-display min-h-[36px]">
-              Examples
+              {t("kanjiDetail.tabs.examples")}
               <span className="ml-1.5 text-xs tabular-nums opacity-70">{kanji.examples?.length || 0}</span>
             </TabsTrigger>
-            <TabsTrigger value="similar" className="font-display min-h-[36px]">Similar</TabsTrigger>
+            <TabsTrigger value="similar" className="font-display min-h-[36px]">{t("kanjiDetail.tabs.similar")}</TabsTrigger>
           </TabsList>
           <TabsContent value="readings" className="space-y-4 mt-4">
             <div>
-              <h3 className="font-display text-base text-sumi font-semibold mb-2">On Reading (<span lang="ja">音読み</span>)</h3>
+              <h3 className="font-display text-base text-sumi font-semibold mb-2">{t("kanjiDetail.onReading")} (<span lang="ja">音読み</span>)</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 bg-cream-deep rounded-md flex items-start justify-between gap-2">
                   <div>
@@ -126,7 +130,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
                   {kanji.onReading && (
                     <SpeakButton
                       text={kanji.onReading}
-                      label={`Speak on reading ${kanji.onReading}`}
+                      label={t("kanjiDetail.speakOnReading", { value: kanji.onReading })}
                       className="-mt-1 -mr-1"
                     />
                   )}
@@ -135,7 +139,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             </div>
             <Separator />
             <div>
-              <h3 className="font-display text-base text-sumi font-semibold mb-2">Kun Reading (<span lang="ja">訓読み</span>)</h3>
+              <h3 className="font-display text-base text-sumi font-semibold mb-2">{t("kanjiDetail.kunReading")} (<span lang="ja">訓読み</span>)</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 bg-cream-deep rounded-md flex items-start justify-between gap-2">
                   <div>
@@ -145,7 +149,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
                   {kanji.kunReading && (
                     <SpeakButton
                       text={kanji.kunReading}
-                      label={`Speak kun reading ${kanji.kunReading}`}
+                      label={t("kanjiDetail.speakKunReading", { value: kanji.kunReading })}
                       className="-mt-1 -mr-1"
                     />
                   )}
@@ -154,7 +158,7 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
             </div>
             <Separator />
             <div>
-              <h3 className="font-display text-base text-sumi font-semibold mb-2">Parts</h3>
+              <h3 className="font-display text-base text-sumi font-semibold mb-2">{t("kanjiDetail.parts")}</h3>
               <RadicalBreakdown char={kanji.kanji} />
             </div>
           </TabsContent>
@@ -172,12 +176,12 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
                           <p lang="ja" className="text-lg font-bold">{example.kana}</p>
                           <SpeakButton
                             text={example.kana}
-                            label={`Speak example: ${example.kana}`}
+                            label={t("kanjiDetail.speakExample", { value: example.kana })}
                             className="-mt-1 -mr-1 shrink-0"
                           />
                         </div>
                         <p className="text-sm text-sumi/70 mb-2">{example.KanaRomaji}</p>
-                        <p className="text-md">{example.translation}</p>
+                        <p className="text-md">{getExampleTranslation(example, locale)}</p>
                       </CardContent>
                     </Card>
                   ))}
@@ -185,25 +189,25 @@ export default function KanjiDetail({ kanji, onClose }: KanjiDetailProps) {
 
                 {hiddenExamplesCount > 0 && (
                   <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => setShowAllExamples(true)}>
-                    <span>+ {hiddenExamplesCount} more examples</span>
+                    <span>{t("kanjiDetail.moreExamples", { count: hiddenExamplesCount })}</span>
                     <ChevronDown aria-hidden="true" className="h-4 w-4" />
                   </Button>
                 )}
 
                 {showAllExamples && kanji.examples.length > 4 && (
                   <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => setShowAllExamples(false)}>
-                    <span>Show fewer examples</span>
+                    <span>{t("kanjiDetail.fewerExamples")}</span>
                     <ChevronUp aria-hidden="true" className="h-4 w-4" />
                   </Button>
                 )}
               </div>
             ) : (
-              <p className="text-center text-sumi/70 py-8">No examples available</p>
+              <p className="text-center text-sumi/70 py-8">{t("kanjiDetail.noExamples")}</p>
             )}
           </TabsContent>
           <TabsContent value="similar" className="mt-4">
             <p className="font-display italic text-sm text-sumi/70 mb-3">
-              Visually-similar kanji from the JLPT N1–N5 set, ranked by stroke shape.
+              {t("kanjiDetail.similarBlurb")}
             </p>
             <SimilarKanji char={kanji.kanji} />
           </TabsContent>

@@ -3,6 +3,16 @@
 // BroadcastChannel for cross-tab sync.
 
 import * as db from "./db"
+import { geoDefaultLocale } from "../geo-detect"
+import {
+  nextReview,
+  qualityFromCorrect,
+  deriveFromAnswerHistory,
+  type ItemReview,
+  type ReviewQuality,
+} from "./sm2"
+
+export type { ItemReview, ReviewQuality } from "./sm2"
 
 export type QuizType = "kanji" | "vocab" | "kana"
 
@@ -26,6 +36,23 @@ export interface Profile {
    *  reports a Japanese voice, so this flag never matters on systems that wouldn't
    *  speak anyway (Linux without a JP voice, etc.). Additive field. */
   ttsEnabled?: boolean
+  /** IDs of one-time onboardings the user has completed or dismissed
+   *  (e.g. "quiz-tour-v1", "jp-tts-install-v1"). Suppresses re-showing first-run
+   *  guidance on subsequent visits. Additive field — old backups without this load
+   *  fine via `?? []`. */
+  onboardingSeen?: string[]
+  /** Active UI + quiz-data locale. Defaults to "en" when undefined. The data
+   *  layer falls back to English when an ID translation is missing for a given
+   *  entry, so partial translations don't crash the quiz. Additive field. */
+  locale?: Locale
+}
+
+export type Locale = "en" | "id"
+export const DEFAULT_LOCALE: Locale = "en"
+export const SUPPORTED_LOCALES: Locale[] = ["en", "id"]
+
+export function getActiveLocale(profile: Profile | null): Locale {
+  return profile?.locale ?? DEFAULT_LOCALE
 }
 
 export const DEFAULT_SOUND_ENABLED = true
@@ -127,6 +154,7 @@ interface State {
 const LS_NAME = "kbi-display-name"
 const LS_STREAK = "kbi-streak"
 const LS_STREAK_LAST_DATE = "kbi-streak-last-date"
+const LS_LOCALE = "kbi-locale"
 
 function safeLocalStorageGet(key: string): string | null {
   try { return localStorage.getItem(key) } catch { return null }
@@ -179,8 +207,23 @@ function computeStreak(dailyTotals: Record<string, DailyTotal>): number {
 // ---- State ----
 let state: State = {
   profile: (() => {
-    const cached = safeLocalStorageGet(LS_NAME)
-    return cached ? { id: "me", displayName: cached, createdAt: 0 } : null
+    const cachedName = safeLocalStorageGet(LS_NAME)
+    const cachedLocale = safeLocalStorageGet(LS_LOCALE) as Locale | null
+    // First-paint geo fallback: if we don't have a persisted locale yet but the
+    // Cloudflare cookie says "ID", surface Indonesian immediately so the SPA
+    // shell doesn't flash English before hydration. The geo signal is only
+    // consulted when nothing is cached.
+    const geoLocale = cachedLocale ? null : geoDefaultLocale()
+    if (!cachedName && !cachedLocale && !geoLocale) return null
+    const effectiveLocale = cachedLocale && SUPPORTED_LOCALES.includes(cachedLocale)
+      ? cachedLocale
+      : geoLocale
+    return {
+      id: "me",
+      displayName: cachedName,
+      createdAt: 0,
+      ...(effectiveLocale ? { locale: effectiveLocale } : {}),
+    }
   })(),
   todayTotal: null,
   streak: (() => {
@@ -229,10 +272,28 @@ let lastActivityAt = 0
 // ---- Hydration from IndexedDB ----
 async function hydrate(): Promise<void> {
   try {
-    const [profile, dailyAll] = await Promise.all([
+    const [loadedProfile, dailyAll] = await Promise.all([
       db.get<Profile>("profile", "me"),
       db.getAll<DailyTotal>("dailyTotals"),
     ])
+
+    let profile: Profile | null = loadedProfile ?? null
+
+    // First-visit geo default: when the user hasn't chosen a locale yet and
+    // Cloudflare says they're connecting from Indonesia, persist "id" so the
+    // preference survives even if the user later visits from a different
+    // country (or without the CF header at all).
+    if (!profile?.locale) {
+      const geo = geoDefaultLocale()
+      if (geo && geo !== DEFAULT_LOCALE) {
+        profile = {
+          ...(profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
+          id: "me",
+          locale: geo,
+        }
+        try { await db.put("profile", profile) } catch { /* IDB may fail in private mode */ }
+      }
+    }
 
     const cutoff = localDateKey(addDays(new Date(), -365))
     const recentDailyTotals: Record<string, DailyTotal> = {}
@@ -245,7 +306,7 @@ async function hydrate(): Promise<void> {
     const streak = computeStreak(recentDailyTotals)
 
     state = {
-      profile: profile ?? null,
+      profile,
       todayTotal,
       streak,
       recentDailyTotals,
@@ -255,6 +316,7 @@ async function hydrate(): Promise<void> {
 
     // Refresh localStorage mirror
     safeLocalStorageSet(LS_NAME, profile?.displayName ?? null)
+    safeLocalStorageSet(LS_LOCALE, profile?.locale ?? null)
     safeLocalStorageSet(LS_STREAK, String(streak))
     if (todayTotal && todayTotal.questionsAnswered > 0) {
       safeLocalStorageSet(LS_STREAK_LAST_DATE, todayKey)
@@ -406,11 +468,45 @@ export async function setTtsEnabled(enabled: boolean): Promise<void> {
   broadcast()
 }
 
+export function hasSeenOnboarding(profile: Profile | null, id: string): boolean {
+  return (profile?.onboardingSeen ?? []).includes(id)
+}
+
+export async function setLocale(locale: Locale): Promise<void> {
+  const newProfile: Profile = {
+    ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
+    id: "me",
+    locale,
+  }
+  await db.put("profile", newProfile)
+  state = { ...state, profile: newProfile }
+  safeLocalStorageSet(LS_LOCALE, locale)
+  notify()
+  broadcast()
+}
+
+export async function markOnboardingSeen(id: string): Promise<void> {
+  const existing = state.profile?.onboardingSeen ?? []
+  if (existing.includes(id)) return
+  const newProfile: Profile = {
+    ...(state.profile ?? { id: "me", displayName: null, createdAt: Date.now() }),
+    id: "me",
+    onboardingSeen: [...existing, id],
+  }
+  await db.put("profile", newProfile)
+  state = { ...state, profile: newProfile }
+  notify()
+  broadcast()
+}
+
 export async function recordAnswer(
   type: QuizType,
   itemKey: string,
   isCorrect: boolean,
   level?: string | null,
+  /** Explicit SM-2 quality. Defaults to good/again derived from `isCorrect`.
+   *  The flashcard review UI (/review) passes "easy" for the third button. */
+  quality?: ReviewQuality,
 ): Promise<void> {
   const now = Date.now()
 
@@ -440,6 +536,20 @@ export async function recordAnswer(
     answeredAt: now,
   }
   void db.put("answers", answer)
+
+  // ---- SM-2 update ----
+  // Every answer feeds the review state, even from the legacy quiz pages,
+  // so reviewing in /review and quizzing through the existing pages share
+  // one schedule. Prior state read is best-effort; missing → fresh card.
+  const reviewKey = `${type}:${itemKey}`
+  const reviewQuality: ReviewQuality = quality ?? qualityFromCorrect(isCorrect)
+  try {
+    const prev = (await db.get<ItemReview>("itemReview", reviewKey)) ?? null
+    const updated = nextReview(prev, reviewKey, reviewQuality, now)
+    void db.put("itemReview", updated)
+  } catch {
+    // IDB unavailable (private mode, etc.) — quiz keeps working without SM-2.
+  }
 
   // Write-through aggregate for fast calendar reads later
   const todayKey = localDateKey()
@@ -474,11 +584,12 @@ export async function recordAnswer(
     const thresholds = milestone.kind === "streak" ? STREAK_MILESTONES : ANSWERED_MILESTONES
     const newIds = dismissBelowAndIncluding(thresholds, milestone.value, shown, milestone.kind)
     const existingIds = state.profile?.milestonesShown ?? []
+    // Spread the existing profile first so additive optional fields (soundEnabled, ttsEnabled,
+    // onboardingSeen, dailyGoal) survive a milestone write — explicit field-by-field assembly
+    // silently dropped them before.
     nextProfile = {
+      ...(state.profile ?? { displayName: null, createdAt: now }),
       id: "me",
-      displayName: state.profile?.displayName ?? null,
-      createdAt: state.profile?.createdAt ?? now,
-      ...(state.profile?.dailyGoal !== undefined && { dailyGoal: state.profile.dailyGoal }),
       milestonesShown: [...existingIds, ...newIds],
     }
     void db.put("profile", nextProfile)
@@ -501,8 +612,9 @@ export async function recordAnswer(
 }
 
 export async function reset(): Promise<void> {
-  await db.clearAll(["profile", "sessions", "answers", "dailyTotals"])
+  await db.clearAll(["profile", "sessions", "answers", "dailyTotals", "itemReview"])
   safeLocalStorageSet(LS_NAME, null)
+  safeLocalStorageSet(LS_LOCALE, null)
   safeLocalStorageSet(LS_STREAK, null)
   safeLocalStorageSet(LS_STREAK_LAST_DATE, null)
   activeSession = null
@@ -521,8 +633,7 @@ export async function reset(): Promise<void> {
 
 // ---- Per-item mastery (used by detail pages + SRS-style picker) ----
 
-/** Aggregate answers for a single item. Cheap O(n) full-scan over `answers`; for repeat
- *  reads in a single render pass, prefer `getItemMasteryMap` once and look up locally. */
+/** Aggregate answers for a single item. Cheap O(n) full-scan over `answers`. */
 export async function getItemMastery(type: QuizType, itemKey: string): Promise<ItemMastery> {
   const target = `${type}:${itemKey}`
   try {
@@ -546,45 +657,44 @@ export async function getItemMastery(type: QuizType, itemKey: string): Promise<I
   }
 }
 
-/** Build the full per-item aggregate map for one quiz type in one pass. Keys are the item
- *  identifier without the "type:" prefix (e.g. `漢` rather than `kanji:漢`). */
-export async function getItemMasteryMap(type: QuizType): Promise<Map<string, ItemMastery>> {
-  const map = new Map<string, ItemMastery>()
+// ---- SM-2 review state (public API) ----
+
+/** Map of all SM-2 review rows for one quiz type, keyed by the bare item identifier
+ *  (no `type:` prefix) so callers can look up by the same key the data files use. */
+export async function getItemReviewMap(type: QuizType): Promise<Map<string, ItemReview>> {
+  const map = new Map<string, ItemReview>()
   const prefix = `${type}:`
   try {
-    const all = await db.getAll<Answer>("answers")
-    for (const a of all) {
-      if (!a.itemKey.startsWith(prefix)) continue
-      const key = a.itemKey.slice(prefix.length)
-      const existing = map.get(key) ?? { count: 0, correct: 0, lastSeenAt: null, lastIsCorrect: null }
-      existing.count += 1
-      if (a.isCorrect) existing.correct += 1
-      if (existing.lastSeenAt === null || a.answeredAt > existing.lastSeenAt) {
-        existing.lastSeenAt = a.answeredAt
-        existing.lastIsCorrect = a.isCorrect
-      }
-      map.set(key, existing)
+    const all = await db.getAll<ItemReview>("itemReview")
+    for (const r of all) {
+      if (!r.itemKey.startsWith(prefix)) continue
+      map.set(r.itemKey.slice(prefix.length), r)
     }
   } catch {
-    // IDB unavailable — return empty map; consumers fall back to uniform random pick.
+    // IDB unavailable — return empty map; callers degrade to "everything is new".
   }
   return map
 }
 
-/** Update an in-memory mastery map after `recordAnswer` writes a new answer. The caller
- *  passes its working map; we mutate-in-place and return the same reference for ergonomic chaining. */
-export function applyAnswerToMasteryMap(
-  map: Map<string, ItemMastery>,
+/** Update an in-memory review map after `recordAnswer` writes a new review. Mirrors
+ *  the shape of `applyAnswerToMasteryMap`: callers keep one map for the lifetime
+ *  of the page and mutate it locally so `pickReviewQueue` reflects what just happened
+ *  without an IDB round-trip per answer.
+ *
+ *  The map's keys are bare item identifiers (no `type:` prefix), matching what
+ *  `getItemReviewMap(type)` returns. */
+export function applyAnswerToReviewMap(
+  map: Map<string, ItemReview>,
+  type: QuizType,
   itemKey: string,
   isCorrect: boolean,
   answeredAt: number = Date.now(),
-): Map<string, ItemMastery> {
-  const existing = map.get(itemKey) ?? { count: 0, correct: 0, lastSeenAt: null, lastIsCorrect: null }
-  existing.count += 1
-  if (isCorrect) existing.correct += 1
-  existing.lastSeenAt = answeredAt
-  existing.lastIsCorrect = isCorrect
-  map.set(itemKey, existing)
+  quality?: ReviewQuality,
+): Map<string, ItemReview> {
+  const reviewKey = `${type}:${itemKey}`
+  const prev = map.get(itemKey) ?? null
+  const reviewQuality: ReviewQuality = quality ?? qualityFromCorrect(isCorrect)
+  map.set(itemKey, nextReview(prev, reviewKey, reviewQuality, answeredAt))
   return map
 }
 
@@ -596,22 +706,14 @@ export function applyAnswerToMasteryMap(
 // FULL SCHEMA SPECIFICATION + MIGRATION POLICY: see docs/BACKUP_SCHEMA.md
 // Treat that file as the contract for backwards compatibility.
 
-const CURRENT_SCHEMA_VERSION = 1
+const CURRENT_SCHEMA_VERSION = 2
 const EXPORT_APP_TAG = "kanji-by-insomnius"
 const SUPPORTS_COMPRESSION = typeof CompressionStream !== "undefined"
 
-// Migration map: from-version -> upgrade function.
-// Each migration is a pure function that takes payload at version N and returns
-// payload at version N+1. Importing a vK file into a vN app chains migrations[K], migrations[K+1], …
-// Empty for now (only v1 exists). When schema changes, add entries here and document
-// in docs/BACKUP_SCHEMA.md. Never remove entries — old user backups must keep importing.
-const migrations: Record<number, (payload: AnyBackup) => AnyBackup> = {
-  // 1: (v1) => ({ ...v1, version: 2, /* new fields with defaults */ }),
-}
-
-// Discriminated-by-version payload shape — narrowed by `version` field.
-// Versioned interfaces are conservative aliases; the structural fields
-// match the BackupV1 shape in docs/BACKUP_SCHEMA.md.
+// Discriminated-by-version payload shapes — narrowed by `version` field.
+// Structural fields mirror docs/BACKUP_SCHEMA.md. Each Vn interface is the
+// frozen shape of files exported when CURRENT_SCHEMA_VERSION was n; never
+// mutate them, just add a new VN+1 + a migration N→N+1 below.
 interface BackupV1 {
   version: 1
   app: typeof EXPORT_APP_TAG
@@ -622,7 +724,41 @@ interface BackupV1 {
   dailyTotals: DailyTotal[]
 }
 
-type AnyBackup = BackupV1 // | BackupV2 | ... — extend as schema evolves
+interface BackupV2 extends Omit<BackupV1, "version"> {
+  version: 2
+  /** SM-2 review state per item. v1 backups synthesize this from answer history
+   *  on import (see migrations[1]) so existing users get sensibly-scheduled cards
+   *  rather than every learned item flooding back into the "new" bucket. */
+  itemReview: ItemReview[]
+}
+
+type AnyBackup = BackupV1 | BackupV2
+
+// Migration map: from-version -> upgrade function.
+// Each migration is a pure function that takes payload at version N and returns
+// payload at version N+1. Importing a vK file into a vN app chains migrations[K], migrations[K+1], …
+// Never remove entries — old user backups must keep importing.
+const migrations: Record<number, (payload: AnyBackup) => AnyBackup> = {
+  1: (payload): BackupV2 => {
+    const v1 = payload as BackupV1
+    // Group answers by itemKey, then replay each per-item history through
+    // nextReview() to derive the same SM-2 state the user would have if
+    // the algorithm had always been on. Empty/orphan items are skipped.
+    const byItem = new Map<string, Array<{ isCorrect: boolean; answeredAt: number }>>()
+    for (const a of v1.answers) {
+      if (!a.itemKey) continue
+      const list = byItem.get(a.itemKey) ?? []
+      list.push({ isCorrect: a.isCorrect, answeredAt: a.answeredAt })
+      byItem.set(a.itemKey, list)
+    }
+    const itemReview: ItemReview[] = []
+    for (const [itemKey, history] of byItem) {
+      const derived = deriveFromAnswerHistory(itemKey, history)
+      if (derived) itemReview.push(derived)
+    }
+    return { ...v1, version: 2, itemReview }
+  },
+}
 
 function migrateToCurrent(payload: AnyBackup): AnyBackup {
   let current = payload
@@ -638,8 +774,9 @@ function migrateToCurrent(payload: AnyBackup): AnyBackup {
 
 export type ProgressCallback = (phase: string, done: number, total: number) => void
 
-// Legacy alias — use BackupV1 directly going forward.
-type ExportPayload = BackupV1
+// Alias to whatever the current export shape is. When CURRENT_SCHEMA_VERSION
+// bumps, point this at the new BackupVN.
+type ExportPayload = BackupV2
 
 export interface BackupBlob {
   blob: Blob
@@ -660,22 +797,24 @@ async function gunzipBlob(blob: Blob): Promise<string> {
 
 export async function exportData(onProgress?: ProgressCallback): Promise<BackupBlob> {
   onProgress?.("Reading from storage", 0, 1)
-  const [profile, sessions, answers, dailyTotals] = await Promise.all([
+  const [profile, sessions, answers, dailyTotals, itemReview] = await Promise.all([
     db.get<Profile>("profile", "me"),
     db.getAll<Session>("sessions"),
     db.getAll<Answer>("answers"),
     db.getAll<DailyTotal>("dailyTotals"),
+    db.getAll<ItemReview>("itemReview"),
   ])
 
   onProgress?.("Serializing", 0.4, 1)
   const payload: ExportPayload = {
-    version: CURRENT_SCHEMA_VERSION,
+    version: 2,
     app: EXPORT_APP_TAG,
     exportedAt: new Date().toISOString(),
     profile: profile ?? null,
     sessions,
     answers,
     dailyTotals,
+    itemReview,
   }
   // Minified — no pretty-print whitespace. Gzip will eat the difference anyway,
   // but smaller raw means smaller heap during pack.
@@ -750,23 +889,28 @@ export async function importData(file: File, onProgress?: ProgressCallback): Pro
   }
 
   // Migrate older versions up to current. See docs/BACKUP_SCHEMA.md.
-  let p: AnyBackup
+  let migrated: AnyBackup
   try {
-    p = migrateToCurrent(parsed as AnyBackup)
+    migrated = migrateToCurrent(parsed as AnyBackup)
   } catch (err) {
     return { ok: false, reason: err instanceof Error ? err.message : "Migration failed." }
   }
+  // After migrateToCurrent, payload is at CURRENT_SCHEMA_VERSION (= BackupV2).
+  const p = migrated as BackupV2
 
   if (!Array.isArray(p.sessions) || !Array.isArray(p.answers) || !Array.isArray(p.dailyTotals)) {
     return { ok: false, reason: "Backup is missing required tables." }
   }
+  // itemReview is optional in older imports — they get an empty array post-migration.
+  const itemReview: ItemReview[] = Array.isArray(p.itemReview) ? p.itemReview : []
 
   // ---- Restore with chunked writes + progress ----
   onProgress?.("Wiping existing data", 0.3, 1)
-  await db.clearAll(["profile", "sessions", "answers", "dailyTotals"])
+  await db.clearAll(["profile", "sessions", "answers", "dailyTotals", "itemReview"])
 
   const profileCount = p.profile ? 1 : 0
-  const totalItems = profileCount + p.sessions.length + p.answers.length + p.dailyTotals.length
+  const totalItems =
+    profileCount + p.sessions.length + p.answers.length + p.dailyTotals.length + itemReview.length
   let written = 0
 
   const reportRestore = () => {
@@ -785,11 +929,18 @@ export async function importData(file: File, onProgress?: ProgressCallback): Pro
     onChunkComplete: (n) => { written = profileCount + n; reportRestore() },
   })
   await db.putMany("answers", p.answers, {
-    onChunkComplete: (n) => { written = profileCount + p.sessions!.length + n; reportRestore() },
+    onChunkComplete: (n) => { written = profileCount + p.sessions.length + n; reportRestore() },
   })
   await db.putMany("dailyTotals", p.dailyTotals, {
     onChunkComplete: (n) => {
-      written = profileCount + p.sessions!.length + p.answers!.length + n
+      written = profileCount + p.sessions.length + p.answers.length + n
+      reportRestore()
+    },
+  })
+  await db.putMany("itemReview", itemReview, {
+    onChunkComplete: (n) => {
+      written =
+        profileCount + p.sessions.length + p.answers.length + p.dailyTotals.length + n
       reportRestore()
     },
   })

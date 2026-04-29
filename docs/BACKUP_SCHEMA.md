@@ -30,7 +30,80 @@ If `app !== "kanji-by-insomnius"` → reject with "This backup file isn't from K
 If `version > CURRENT_SCHEMA_VERSION` → reject with "Backup is from a newer app version; please update."
 If `version < CURRENT_SCHEMA_VERSION` → run migrations to upgrade in-memory before writing.
 
-## Version 1 (current)
+## Version 2 (current)
+
+```ts
+interface BackupV2 extends Omit<BackupV1, "version"> {
+  version: 2
+
+  /** SM-2 spaced-repetition state per item. v1 backups synthesize this from
+   *  answer history on import (see migration v1→v2 below). */
+  itemReview: Array<{
+    /** Composite key matching answers[].itemKey: "<type>:<value>". */
+    itemKey: string
+    /** SM-2 ease factor. Defaults to 2.5; floor of 1.3. */
+    easeFactor: number
+    /** Days until next review at the most recent grading. 0 = "in learning" (sub-day). */
+    interval: number
+    /** Successful repetitions in a row. Resets to 0 on a lapse. */
+    repetitions: number
+    /** Total times missed after at least one success. */
+    lapses: number
+    /** Wall-clock ms when this item is next due. */
+    dueAt: number
+    /** Wall-clock ms of the most recent review. */
+    lastReviewedAt: number
+  }>
+}
+```
+
+### What changed v1 → v2
+
+Adds the `itemReview` table — SM-2 review state per item used by the new
+`/review` flashcard route AND the existing kanji / vocab / kana
+quizzes' `pickReviewQueue` picker. Three-tier scheduling: (1) due items first,
+(2) unseen items capped at the daily new-card limit, (3) weighted random over
+not-yet-due items so quiz pages never dead-end.
+
+### Migration v1 → v2
+
+Synthesizes `itemReview` rows by replaying each existing answer's
+correct/incorrect history through `nextReview()`:
+
+```ts
+1: (v1) => {
+  const byItem = new Map<string, Array<{ isCorrect: boolean; answeredAt: number }>>()
+  for (const a of v1.answers) {
+    const list = byItem.get(a.itemKey) ?? []
+    list.push({ isCorrect: a.isCorrect, answeredAt: a.answeredAt })
+    byItem.set(a.itemKey, list)
+  }
+  const itemReview = []
+  for (const [itemKey, history] of byItem) {
+    const derived = deriveFromAnswerHistory(itemKey, history)
+    if (derived) itemReview.push(derived)
+  }
+  return { ...v1, version: 2, itemReview }
+}
+```
+
+This means an existing user upgrading from v1 sees their already-mastered items
+sensibly scheduled (days/weeks out) instead of all flooding back into the "new"
+bucket on first open. **If the SM-2 derivation logic ever changes, ship a v3
+migration that replaces the rows; never silently mutate the v1→v2 derivation.**
+
+### Storage layout addition (v2, IndexedDB)
+
+| Object store | Key | Indexes |
+|---|---|---|
+| `itemReview` | `itemKey` | `dueAt` |
+
+The IDB schema bumps from version 1 to 2 in the same release; the
+`onupgradeneeded` handler in `lib/progress/db.ts` is forward-compatible (it
+only creates stores that don't already exist), so existing users get the new
+store added without losing the others.
+
+## Version 1 (legacy)
 
 ```ts
 interface BackupV1 {

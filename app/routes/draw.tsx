@@ -8,22 +8,17 @@ import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { ArrowRight, ExternalLink, Shuffle } from "lucide-react"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
-import { kanjiData } from "@/data/kanji-data"
+import { kanjiData, getKanjiMeaning } from "@/data/kanji-data"
 import {
-  getItemMasteryMap,
-  pickWeightedExcluding,
-  type ItemMastery,
+  getItemReviewMap,
+  pickReviewQueue,
+  type ItemReview,
 } from "@/lib/progress/use-progress"
-
-const LEVELS = [
-  { value: "N5", label: "Beginner" },
-  { value: "N4", label: "Elementary" },
-  { value: "N3", label: "Intermediate" },
-  { value: "N2", label: "Upper-int." },
-  { value: "N1", label: "Advanced" },
-]
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 type JLPTLevel = "N5" | "N4" | "N3" | "N2" | "N1"
+
+const LEVEL_VALUES: JLPTLevel[] = ["N5", "N4", "N3", "N2", "N1"]
 
 interface DrawSearch {
   /** Optional deep-link target — when present we boot into "focused" mode locked to this kanji
@@ -40,6 +35,7 @@ function findKanjiAcrossLevels(char: string): { level: JLPTLevel; index: number 
 }
 
 function DrawPage() {
+  const { t, locale } = useTranslation()
   const search = Route.useSearch()
   const focusChar = search.char ?? null
   const focusLocation = useMemo(() => (focusChar ? findKanjiAcrossLevels(focusChar) : null), [focusChar])
@@ -49,15 +45,25 @@ function DrawPage() {
   const [seen, setSeen] = useState(0)
   /** Focused mode locks the page to one kanji until user hits "Random" or changes level. */
   const [focusLocked, setFocusLocked] = useState<boolean>(focusLocation !== null)
-  const masteryRef = useRef<Map<string, ItemMastery>>(new Map())
+  const reviewsRef = useRef<Map<string, ItemReview>>(new Map())
 
   const levelKanji = kanjiData[level]
   const current = levelKanji[currentIndex]
 
+  const levels = LEVEL_VALUES.map((value) => ({
+    value,
+    label: t(`level.${value.toLowerCase()}.description` as
+      | "level.n5.description"
+      | "level.n4.description"
+      | "level.n3.description"
+      | "level.n2.description"
+      | "level.n1.description"),
+  }))
+
   useEffect(() => {
     let cancelled = false
-    void getItemMasteryMap("kanji").then((m) => {
-      if (!cancelled) masteryRef.current = m
+    void getItemReviewMap("kanji").then((m) => {
+      if (!cancelled) reviewsRef.current = m
     })
     return () => {
       cancelled = true
@@ -69,8 +75,8 @@ function DrawPage() {
   // ?char= deep-link sticks until the user explicitly hits "Random next".
   useEffect(() => {
     if (focusLocked) return
-    const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, null, {
-      mastery: masteryRef.current,
+    const next = pickReviewQueue(levelKanji, (k) => k.kanji, {
+      reviews: reviewsRef.current,
     })
     setCurrentIndex(levelKanji.indexOf(next))
     setSeen(0)
@@ -78,8 +84,9 @@ function DrawPage() {
 
   const handleNext = () => {
     setFocusLocked(false)
-    const next = pickWeightedExcluding(levelKanji, (k) => k.kanji, current?.kanji ?? null, {
-      mastery: masteryRef.current,
+    const next = pickReviewQueue(levelKanji, (k) => k.kanji, {
+      reviews: reviewsRef.current,
+      excludeKey: current?.kanji ?? null,
     })
     setCurrentIndex(levelKanji.indexOf(next))
     setSeen((prev) => prev + 1)
@@ -90,22 +97,22 @@ function DrawPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
-            Draw Kanji
+            {t("draw.page.heading")}
           </h1>
           <p className="font-display italic text-sm text-sumi/70" role="status" aria-live="polite" aria-atomic="true">
-            <span className="font-semibold not-italic text-sumi">{seen}</span> kanji practiced this session
+            <span className="font-semibold not-italic text-sumi">{seen}</span> {t("draw.page.sessionCount")}
           </p>
         </div>
 
         <p className="font-display italic text-base text-sumi/70 mb-6 max-w-xl">
-          Pick a JLPT level, watch the strokes, then trace each one yourself with mouse or finger. Hints appear after two misses.
+          {t("draw.page.intro")}
         </p>
 
         <Card className="mb-6">
           <CardContent className="pt-6">
             <fieldset>
               <legend className="font-display italic text-base text-sumi/70 mb-4 text-center w-full tracking-wide">
-                Select your level
+                {t("level.legend")}
               </legend>
               <ToggleGroup
                 type="single"
@@ -116,16 +123,16 @@ function DrawPage() {
                     setFocusLocked(false)
                   }
                 }}
-                aria-label="JLPT level"
+                aria-label={t("level.aria")}
                 className="flex justify-center flex-wrap gap-x-1 sm:gap-x-2"
               >
-                {LEVELS.map(({ value, label }) => {
+                {levels.map(({ value, label }) => {
                   const isActive = level === value
                   return (
                     <ToggleGroupItem
                       key={value}
                       value={value}
-                      aria-label={`${value} — ${label}`}
+                      aria-label={t("draw.page.levelItemAria", { value, label })}
                       className="group flex flex-col items-center min-h-[44px] min-w-[56px] sm:min-w-[72px] px-3 sm:px-4 pt-2 pb-1.5 rounded-none data-[state=on]:bg-transparent"
                     >
                       <span
@@ -166,21 +173,21 @@ function DrawPage() {
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3 flex-wrap">
                     <CardTitle className="font-display text-2xl sm:text-3xl text-sumi font-medium">
-                      {current.meaning.join(", ")}
+                      {getKanjiMeaning(current, locale).join(", ")}
                     </CardTitle>
                     <Badge>{level}</Badge>
                   </div>
                   <CardDescription className="font-display italic text-sumi/70 text-base">
-                    On: <span lang="ja" className="not-italic text-sumi">{current.onReading}</span>
+                    {t("draw.page.onLabel")} <span lang="ja" className="not-italic text-sumi">{current.onReading}</span>
                     {" · "}
-                    Kun: <span lang="ja" className="not-italic text-sumi">{current.kunReading}</span>
+                    {t("draw.page.kunLabel")} <span lang="ja" className="not-italic text-sumi">{current.kunReading}</span>
                   </CardDescription>
                   <Link
                     to="/kanji/$char"
                     params={{ char: current.kanji }}
                     className="inline-flex items-center gap-1 text-xs font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none"
                   >
-                    Open full details
+                    {t("draw.page.openDetails")}
                     <ExternalLink aria-hidden="true" className="h-3 w-3" />
                   </Link>
                 </div>
@@ -194,11 +201,11 @@ function DrawPage() {
                   {focusLocked ? (
                     <>
                       <Shuffle aria-hidden="true" className="h-4 w-4" />
-                      Pick a random kanji
+                      {t("draw.page.pickRandom")}
                     </>
                   ) : (
                     <>
-                      Next kanji
+                      {t("draw.page.nextKanji")}
                       <ArrowRight aria-hidden="true" className="h-4 w-4" />
                     </>
                   )}

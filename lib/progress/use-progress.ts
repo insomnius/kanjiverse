@@ -19,6 +19,12 @@ export {
   isSoundEnabled,
   setTtsEnabled,
   isTtsEnabled,
+  hasSeenOnboarding,
+  markOnboardingSeen,
+  setLocale,
+  getActiveLocale,
+  DEFAULT_LOCALE,
+  SUPPORTED_LOCALES,
   recordAnswer,
   reset,
   getTotals,
@@ -27,8 +33,8 @@ export {
   importData,
   getRecentSessions,
   getItemMastery,
-  getItemMasteryMap,
-  applyAnswerToMasteryMap,
+  getItemReviewMap,
+  applyAnswerToReviewMap,
   dismissMilestone,
   EMPTY_MASTERY,
   STREAK_MILESTONES,
@@ -40,9 +46,9 @@ export {
   MAX_DAILY_GOAL,
 } from "./store"
 
-export { srsWeight, pickWeighted, pickWeightedExcluding } from "./srs"
+export { srsWeight, pickWeighted, pickReviewQueue } from "./srs"
 
 export type {
   Profile, Session, DailyTotal, QuizType, ProgressCallback, BackupBlob, ImportResult,
-  ItemMastery, Milestone,
+  ItemMastery, ItemReview, ReviewQuality, Milestone, Locale,
 } from "./store"

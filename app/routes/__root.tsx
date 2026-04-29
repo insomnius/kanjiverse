@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { createRootRoute, HeadContent, Link, Outlet, ScrollRestoration } from '@tanstack/react-router'
 import { MainNav } from '@/components/navigation/main-nav'
 import { MilestoneToast } from '@/components/milestone-toast'
+import { useTranslation } from '@/lib/i18n/use-translation'
 // Vite resolves these to content-hashed URLs at build time. Importing as `?url` lets us preload
 // them with the right hash baked in — the alternative (declaring them in index.html) goes stale
 // every build.
@@ -48,7 +50,21 @@ export const Route = createRootRoute({
       { name: 'twitter:image:alt', content: 'Kanji by Insomnius — the 漢字 mark' },
     ],
   }),
-  component: () => (
+  component: RootComponent,
+})
+
+function RootComponent() {
+  const { locale, t } = useTranslation()
+
+  // Sync <html lang> to active locale so screen readers + spell-checkers and
+  // any user-style sheets respond correctly when the user toggles ID.
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = locale
+    }
+  }, [locale])
+
+  return (
     <>
       <HeadContent />
       {/* React 19 hoists these <link>s to <head>. They start the woff2 fetch in parallel with
@@ -60,7 +76,7 @@ export const Route = createRootRoute({
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:shadow focus:ring-2 focus:ring-vermilion"
       >
-        Skip to main content
+        {t("nav.skipToMain")}
       </a>
       <MainNav />
       <MilestoneToast />
@@ -73,7 +89,7 @@ export const Route = createRootRoute({
             href="https://insomnius.dev"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Built by Insomnius — visit insomnius.dev (opens in new tab)"
+            aria-label={t("footer.builtBy.aria")}
             className="group inline-flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
           >
             <img
@@ -86,26 +102,23 @@ export const Route = createRootRoute({
               className="h-6 w-6 rounded-sm"
             />
             <span className="font-display italic text-sm text-sumi/70 group-hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
-              Built by{" "}
-              <span className="not-italic font-medium text-sumi group-hover:text-vermilion-deep">
-                Insomnius
-              </span>
+              {t("footer.builtBy")}
             </span>
           </a>
           <div className="flex flex-col sm:items-end gap-1">
             <p className="font-display italic text-xs text-sumi/70 text-center sm:text-right">
-              Free · No tracking · Lives in your browser
+              {t("footer.tagline")}
             </p>
             <Link
               to="/credits"
               className="font-display italic text-xs text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
             >
-              Credits & data sources
+              {t("footer.credits")}
             </Link>
           </div>
         </div>
       </footer>
       <ScrollRestoration />
     </>
-  ),
-})
+  )
+}

@@ -4,11 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2, Volume2, VolumeX, Mic, MicOff } from "lucide-react"
+import { Trash2, Check, Download, Upload, ArrowRight, Flame, CalendarCheck, Target, Clock, Zap, Share2, Volume2, VolumeX, Mic, MicOff, Languages } from "lucide-react"
 import { playCorrect } from "@/lib/sounds"
 import { hasJapaneseVoice, isTtsSupported, speakJapanese, subscribeVoices } from "@/lib/tts"
 import { ContributionCalendar } from "@/components/contribution-calendar"
 import { ShareButtons } from "@/components/share-buttons"
+import { JpVoiceInstallInstructions } from "@/components/jp-voice-install-instructions"
+import { LocaleSwitcher } from "@/components/locale-switcher"
+import { useTranslation } from "@/lib/i18n/use-translation"
 import {
   useProgress, setDisplayName, setDailyGoal, setSoundEnabled, isSoundEnabled,
   setTtsEnabled, isTtsEnabled,
@@ -19,15 +22,22 @@ import {
 
 // ---- Helpers ----
 
-function formatDuration(ms: number): { primary: string; helper: string } {
+type TFn = (key: any, vars?: Record<string, string | number>) => string
+
+function formatDuration(ms: number, t: TFn): { primary: string; helper: string } {
   const minutes = Math.round(ms / 60_000)
-  if (minutes < 1) return { primary: "< 1 min", helper: "Just getting started." }
-  if (minutes < 60) return { primary: `${minutes} min`, helper: minutes === 1 ? "1 minute studied so far." : `${minutes} minutes studied total.` }
+  if (minutes < 1) return { primary: t("profile.duration.lessThanMinute"), helper: t("profile.duration.lessThanMinute.helper") }
+  if (minutes < 60) return {
+    primary: `${minutes} min`,
+    helper: minutes === 1 ? t("profile.duration.minutes.helper.singular") : t("profile.duration.minutes.helper.plural", { n: minutes }),
+  }
   const hours = Math.floor(minutes / 60)
   const remMin = minutes % 60
   return {
     primary: `${hours}h ${remMin}m`,
-    helper: hours === 1 ? `1 hour ${remMin} min studied total.` : `${hours} hours ${remMin} min studied total.`,
+    helper: hours === 1
+      ? t("profile.duration.hours.helper.singular", { min: remMin })
+      : t("profile.duration.hours.helper.plural", { n: hours, min: remMin }),
   }
 }
 
@@ -75,7 +85,7 @@ interface MetricCardProps {
   label: string
   value: React.ReactNode
   helper: string
-  bar?: { value: number; max: number; tone: "vermilion" | "gold" }
+  bar?: { value: number; max: number; tone: "vermilion" | "gold"; ariaLabel: string }
 }
 
 function MetricCard({ icon, label, value, helper, bar }: MetricCardProps) {
@@ -88,7 +98,7 @@ function MetricCard({ icon, label, value, helper, bar }: MetricCardProps) {
       <p className="font-display text-3xl font-medium text-sumi tabular-nums leading-none">
         {value}
       </p>
-      {bar && <ProgressBar value={bar.value} max={bar.max} tone={bar.tone} label={`${label} progress`} />}
+      {bar && <ProgressBar value={bar.value} max={bar.max} tone={bar.tone} label={bar.ariaLabel} />}
       <p className="font-display italic text-xs text-sumi/70 leading-snug">{helper}</p>
     </div>
   )
@@ -97,6 +107,7 @@ function MetricCard({ icon, label, value, helper, bar }: MetricCardProps) {
 // ---- Page ----
 
 function ProfilePage() {
+  const { t } = useTranslation()
   const { profile, streak, todayTotal, recentDailyTotals } = useProgress()
   const currentGoal = getDailyGoal(profile ?? null)
   const [nameInput, setNameInput] = useState(profile?.displayName ?? "")
@@ -118,7 +129,7 @@ function ProfilePage() {
 
   const handleBackup = async () => {
     setImportStatus(null)
-    setProgress({ kind: "backup", phase: "Starting", pct: 0 })
+    setProgress({ kind: "backup", phase: t("profile.backup.starting"), pct: 0 })
     try {
       const result = await exportData((phase, done, total) => {
         setProgress({ kind: "backup", phase, pct: total === 0 ? 0 : (done / total) * 100 })
@@ -148,13 +159,13 @@ function ProfilePage() {
 
   const confirmImport = async () => {
     if (!pendingImportFile) return
-    setProgress({ kind: "import", phase: "Starting", pct: 0 })
+    setProgress({ kind: "import", phase: t("profile.backup.starting"), pct: 0 })
     try {
       const result = await importData(pendingImportFile, (phase, done, total) => {
         setProgress({ kind: "import", phase, pct: total === 0 ? 0 : (done / total) * 100 })
       })
       if (result.ok) {
-        setImportStatus({ kind: "ok", message: "Imported. Your progress has been restored." })
+        setImportStatus({ kind: "ok", message: t("profile.backup.imported") })
       } else {
         setImportStatus({ kind: "error", message: result.reason })
       }
@@ -211,7 +222,7 @@ function ProfilePage() {
     ? Math.round((totals.correct / totals.questionsAnswered) * 100)
     : 0
   const wrong = totals.questionsAnswered - totals.correct
-  const duration = formatDuration(totals.durationMs)
+  const duration = formatDuration(totals.durationMs, t)
   const avgPerActiveDay = totals.activeDays > 0
     ? Math.round(totals.questionsAnswered / totals.activeDays)
     : 0
@@ -242,34 +253,34 @@ function ProfilePage() {
   // Streak prose
   const streakHelper = streak === 0
     ? hasData
-      ? "Start a fresh streak today — answer one question."
-      : "Take your first quiz to start a streak."
+      ? t("profile.progress.streak.helper.zero.fresh")
+      : t("profile.progress.streak.helper.zero.first")
     : streak === 1
-      ? "First day! Come back tomorrow to keep it going."
-      : `${streak} days in a row — answer one today to extend.`
+      ? t("profile.progress.streak.helper.first")
+      : t("profile.progress.streak.helper.continue", { n: streak })
 
   return (
     <div className="py-6 sm:py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            Profile
+            {t("profile.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            Your name and progress live in your browser. Nothing leaves your device — no account, no server.
+            {t("profile.subtitle")}
           </p>
         </header>
 
         {/* ---------- Name ---------- */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-display text-xl text-sumi font-medium">Name</CardTitle>
+            <CardTitle className="font-display text-xl text-sumi font-medium">{t("profile.name.title")}</CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Pick a name to be greeted by. Skip it if you'd rather not.
+              {t("profile.name.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Label htmlFor="display-name" className="sr-only">Display name</Label>
+            <Label htmlFor="display-name" className="sr-only">{t("profile.name.label")}</Label>
             <form
               className="flex gap-2"
               onSubmit={(e) => { e.preventDefault(); void handleSave() }}
@@ -278,13 +289,13 @@ function ProfilePage() {
                 id="display-name"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Your name"
+                placeholder={t("profile.name.placeholder")}
                 maxLength={32}
                 autoComplete="nickname"
                 className="bg-white/70 border-sumi/15"
               />
               <Button type="submit" disabled={!canSave} className="min-w-[5rem]">
-                {savedJustNow ? (<><Check aria-hidden="true" className="mr-1 h-4 w-4" /> Saved</>) : "Save"}
+                {savedJustNow ? (<><Check aria-hidden="true" className="mr-1 h-4 w-4" /> {t("profile.name.saved")}</>) : t("profile.name.save")}
               </Button>
             </form>
           </CardContent>
@@ -295,14 +306,14 @@ function ProfilePage() {
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium flex items-center gap-2">
               <Target aria-hidden="true" className="h-4 w-4 text-gold-deep" />
-              Daily goal
+              {t("profile.goal.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              How many questions you want to answer each day. The session strip on quiz pages tracks your progress.
+              {t("profile.goal.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Label htmlFor="daily-goal" className="sr-only">Daily goal</Label>
+            <Label htmlFor="daily-goal" className="sr-only">{t("profile.goal.label")}</Label>
             <form
               className="flex gap-2 items-center"
               onSubmit={(e) => { e.preventDefault(); void handleSaveGoal() }}
@@ -318,11 +329,11 @@ function ProfilePage() {
                 className="bg-white/70 border-sumi/15 max-w-[7rem] text-center tabular-nums font-display text-lg"
               />
               <span className="font-display italic text-sumi/70 text-sm">
-                question{goalInput === 1 ? "" : "s"} per day
+                {goalInput === 1 ? t("profile.goal.unit.singular") : t("profile.goal.unit.plural")}
               </span>
               <div className="flex-1" />
               <Button type="submit" disabled={!canSaveGoal} className="min-w-[5rem]">
-                {goalSavedJustNow ? (<><Check aria-hidden="true" className="mr-1 h-4 w-4" /> Saved</>) : "Save"}
+                {goalSavedJustNow ? (<><Check aria-hidden="true" className="mr-1 h-4 w-4" /> {t("profile.name.saved")}</>) : t("profile.name.save")}
               </Button>
             </form>
 
@@ -330,7 +341,7 @@ function ProfilePage() {
             <div className="rounded-md border border-sumi/10 bg-cream-deep/40 p-3">
               <div className="flex items-baseline justify-between mb-2">
                 <span className="font-display italic text-sm text-sumi/70">
-                  {goalHit ? "Today's goal reached" : "Correct today"}
+                  {goalHit ? t("profile.goal.reached") : t("profile.goal.correctToday")}
                 </span>
                 <span className="font-display tabular-nums text-sm text-sumi">
                   <span className="font-semibold">{todayCorrectForGoal}</span>
@@ -346,10 +357,29 @@ function ProfilePage() {
                 />
               </div>
               <p className="font-display italic text-xs text-sumi/70 mt-2">
-                Only correct answers count toward the goal.
-                {currentGoal !== DEFAULT_DAILY_GOAL && ` Default is ${DEFAULT_DAILY_GOAL}.`}
+                {t("profile.goal.note.before")}
+                {currentGoal !== DEFAULT_DAILY_GOAL && ` ${t("profile.goal.note.default", { value: DEFAULT_DAILY_GOAL })}`}
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* ---------- Language ---------- */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="font-display text-xl text-sumi font-medium flex items-center gap-2">
+              <Languages aria-hidden="true" className="h-4 w-4 text-vermilion-deep" />
+              {t("profile.language.title")}
+            </CardTitle>
+            <CardDescription className="font-display italic text-sumi/70">
+              {t("profile.language.description")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LocaleSwitcher variant="stacked" />
+            <p className="font-display italic text-xs text-sumi/70 mt-3">
+              {t("profile.language.note")}
+            </p>
           </CardContent>
         </Card>
 
@@ -362,10 +392,10 @@ function ProfilePage() {
               ) : (
                 <VolumeX aria-hidden="true" className="h-4 w-4 text-sumi/55" />
               )}
-              Quiz sounds
+              {t("profile.sound.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              A soft chime on a correct answer, a low thud on an incorrect one, and a brighter tone for milestone celebrations.
+              {t("profile.sound.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -385,12 +415,12 @@ function ProfilePage() {
                 {isSoundEnabled(profile ?? null) ? (
                   <>
                     <Volume2 aria-hidden="true" className="h-4 w-4" />
-                    Sounds on
+                    {t("profile.sound.on")}
                   </>
                 ) : (
                   <>
                     <VolumeX aria-hidden="true" className="h-4 w-4" />
-                    Sounds off
+                    {t("profile.sound.off")}
                   </>
                 )}
               </Button>
@@ -402,12 +432,12 @@ function ProfilePage() {
                   onClick={() => playCorrect()}
                   className="text-sumi/70"
                 >
-                  Preview the correct chime
+                  {t("profile.sound.preview")}
                 </Button>
               )}
             </div>
             <p className="font-display italic text-xs text-sumi/70 mt-3">
-              Sounds also respect your system's reduced-motion preference — we won't play anything if you've asked the OS to keep things still.
+              {t("profile.sound.note")}
             </p>
           </CardContent>
         </Card>
@@ -421,21 +451,24 @@ function ProfilePage() {
               ) : (
                 <MicOff aria-hidden="true" className="h-4 w-4 text-sumi/55" />
               )}
-              Japanese pronunciation
+              {t("profile.tts.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Tap the speaker icon next to a kanji, vocab word, or kana to hear it spoken using your device's Japanese voice. Nothing is sent to a server.
+              {t("profile.tts.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {!isTtsSupported() ? (
               <p className="font-display italic text-xs text-sumi/70">
-                Your browser doesn't expose the Web Speech API. Pronunciation buttons won't appear in detail panels.
+                {t("profile.tts.unsupported")}
               </p>
             ) : !voiceAvailable ? (
-              <p className="font-display italic text-xs text-sumi/70">
-                No Japanese voice is installed on this device, so pronunciation buttons stay hidden. On Linux, install <code className="font-mono not-italic text-sumi">espeak-ng</code> with a Japanese voice; on Android, add a Japanese voice in <span className="not-italic">Settings → Accessibility → Text-to-speech</span>.
-              </p>
+              <div>
+                <p className="font-display italic text-xs text-sumi/70 mb-3">
+                  {t("profile.tts.noVoice")}
+                </p>
+                <JpVoiceInstallInstructions />
+              </div>
             ) : (
               <div className="flex flex-wrap items-center gap-3">
                 <Button
@@ -453,12 +486,12 @@ function ProfilePage() {
                   {isTtsEnabled(profile ?? null) ? (
                     <>
                       <Mic aria-hidden="true" className="h-4 w-4" />
-                      Pronunciation on
+                      {t("profile.tts.on")}
                     </>
                   ) : (
                     <>
                       <MicOff aria-hidden="true" className="h-4 w-4" />
-                      Pronunciation off
+                      {t("profile.tts.off")}
                     </>
                   )}
                 </Button>
@@ -470,13 +503,13 @@ function ProfilePage() {
                     onClick={() => speakJapanese("こんにちは")}
                     className="text-sumi/70"
                   >
-                    Preview <span lang="ja" className="ml-1">こんにちは</span>
+                    {t("profile.tts.preview")} <span lang="ja" className="ml-1">こんにちは</span>
                   </Button>
                 )}
               </div>
             )}
             <p className="font-display italic text-xs text-sumi/70 mt-3">
-              Pronunciation also respects your system's reduced-motion preference.
+              {t("profile.tts.note")}
             </p>
           </CardContent>
         </Card>
@@ -484,9 +517,9 @@ function ProfilePage() {
         {/* ---------- Activity (calendar) ---------- */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-display text-xl text-sumi font-medium">Activity</CardTitle>
+            <CardTitle className="font-display text-xl text-sumi font-medium">{t("profile.activity.title")}</CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Every day you've answered a question, painted a little gold. Hover, focus, or tap any cell for that day's count.
+              {t("profile.activity.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -496,7 +529,7 @@ function ProfilePage() {
                 to="/history"
                 className="inline-flex items-center gap-2 text-sm font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors"
               >
-                See session-by-session detail
+                {t("profile.activity.history")}
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </Link>
             </div>
@@ -506,9 +539,9 @@ function ProfilePage() {
         {/* ---------- Progress (redesigned) ---------- */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-display text-xl text-sumi font-medium">Progress</CardTitle>
+            <CardTitle className="font-display text-xl text-sumi font-medium">{t("profile.progress.title")}</CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Your kanji journey at a glance.
+              {t("profile.progress.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -523,7 +556,7 @@ function ProfilePage() {
                   {streak}
                 </p>
                 <p className="font-display italic text-sumi/70 text-lg">
-                  day{streak === 1 ? "" : "s"} streak
+                  {streak === 1 ? t("profile.progress.streakLabel.singular") : t("profile.progress.streakLabel.plural")}
                 </p>
               </div>
               <p className="font-display italic text-sumi/70 text-sm sm:text-base mt-3">
@@ -535,7 +568,7 @@ function ProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <MetricCard
                 icon={<CalendarCheck aria-hidden="true" className="h-3.5 w-3.5" />}
-                label="Active days"
+                label={t("profile.metric.activeDays")}
                 value={
                   <>
                     {totals.activeDays}
@@ -544,15 +577,15 @@ function ProfilePage() {
                 }
                 helper={
                   totals.activeDays === 0
-                    ? "No active days yet."
-                    : `${Math.round((totals.activeDays / 365) * 100)}% of the last year.`
+                    ? t("profile.metric.activeDays.empty")
+                    : t("profile.metric.activeDays.helper", { percent: Math.round((totals.activeDays / 365) * 100) })
                 }
-                bar={{ value: totals.activeDays, max: 365, tone: "gold" }}
+                bar={{ value: totals.activeDays, max: 365, tone: "gold", ariaLabel: t("profile.metric.progressLabel", { label: t("profile.metric.activeDays") }) }}
               />
 
               <MetricCard
                 icon={<Target aria-hidden="true" className="h-3.5 w-3.5" />}
-                label="Accuracy"
+                label={t("profile.metric.accuracy")}
                 value={
                   <>
                     {accuracy}
@@ -561,26 +594,26 @@ function ProfilePage() {
                 }
                 helper={
                   hasData
-                    ? `${totals.correct} correct · ${wrong} missed`
-                    : "Take a quiz to see accuracy."
+                    ? t("profile.metric.accuracy.helper", { correct: totals.correct, wrong })
+                    : t("profile.metric.accuracy.empty")
                 }
-                bar={{ value: accuracy, max: 100, tone: "vermilion" }}
+                bar={{ value: accuracy, max: 100, tone: "vermilion", ariaLabel: t("profile.metric.progressLabel", { label: t("profile.metric.accuracy") }) }}
               />
 
               <MetricCard
                 icon={<Zap aria-hidden="true" className="h-3.5 w-3.5" />}
-                label="Answered"
+                label={t("profile.metric.answered")}
                 value={totals.questionsAnswered}
                 helper={
                   hasData
-                    ? `${avgPerActiveDay} per active day on average.`
-                    : "Answer your first question to begin."
+                    ? t("profile.metric.answered.helper", { avg: avgPerActiveDay })
+                    : t("profile.metric.answered.empty")
                 }
               />
 
               <MetricCard
                 icon={<Clock aria-hidden="true" className="h-3.5 w-3.5" />}
-                label="Time studied"
+                label={t("profile.metric.time")}
                 value={duration.primary}
                 helper={duration.helper}
               />
@@ -593,10 +626,10 @@ function ProfilePage() {
           <CardHeader>
             <CardTitle className="font-display text-xl text-sumi font-medium flex items-center gap-2">
               <Share2 aria-hidden="true" className="h-4 w-4 text-vermilion" />
-              Share your progress
+              {t("profile.share.title")}
             </CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Open a pre-filled post on your favorite platform. Your stats live in the post text; the link goes to a public progress card anyone can view.
+              {t("profile.share.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -615,16 +648,16 @@ function ProfilePage() {
         {/* ---------- Backup & import ---------- */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="font-display text-xl text-sumi font-medium">Backup &amp; import</CardTitle>
+            <CardTitle className="font-display text-xl text-sumi font-medium">{t("profile.backup.title")}</CardTitle>
             <CardDescription className="font-display italic text-sumi/70">
-              Move your progress between devices. Backups are gzip-compressed for size.
+              {t("profile.backup.description")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" onClick={handleBackup} disabled={isOperating} className="gap-2">
                 <Download aria-hidden="true" className="h-4 w-4" />
-                Download backup
+                {t("profile.backup.download")}
               </Button>
               <Button
                 variant="outline"
@@ -633,7 +666,7 @@ function ProfilePage() {
                 className="gap-2"
               >
                 <Upload aria-hidden="true" className="h-4 w-4" />
-                Import backup…
+                {t("profile.backup.import")}
               </Button>
               <input
                 ref={fileInputRef}
@@ -641,7 +674,7 @@ function ProfilePage() {
                 accept=".kbi,.gz,.json,application/gzip,application/json"
                 onChange={handleImportFile}
                 className="sr-only"
-                aria-label="Choose backup file"
+                aria-label={t("profile.backup.fileLabel")}
               />
             </div>
 
@@ -649,7 +682,7 @@ function ProfilePage() {
               <div className="rounded-md border border-sumi/15 bg-cream-deep/30 p-3 space-y-2">
                 <div className="flex justify-between items-baseline text-sm font-display italic text-sumi/70">
                   <span aria-live="polite">
-                    {progress.kind === "backup" ? "Backing up" : "Importing"} — {progress.phase}…
+                    {progress.kind === "backup" ? t("profile.backup.backingUp") : t("profile.backup.importing")} — {progress.phase}…
                   </span>
                   <span className="tabular-nums text-sumi">{Math.round(progress.pct)}%</span>
                 </div>
@@ -657,17 +690,23 @@ function ProfilePage() {
                   value={progress.pct}
                   max={100}
                   tone="vermilion"
-                  label={`${progress.kind === "backup" ? "Backup" : "Import"} progress, ${progress.phase}`}
+                  label={t("profile.backup.progressLabel", {
+                    kind: progress.kind === "backup" ? t("profile.backup.kind.backup") : t("profile.backup.kind.import"),
+                    phase: progress.phase,
+                  })}
                 />
               </div>
             )}
 
             {lastBackupSize && !progress && (
               <p className="font-display italic text-xs text-sumi/70">
-                Last backup: {formatBytes(lastBackupSize.compressed)} compressed
+                {t("profile.backup.lastSize", { compressed: formatBytes(lastBackupSize.compressed) })}
                 {lastBackupSize.uncompressed > lastBackupSize.compressed && (
                   <>
-                    {" "}— {Math.round((1 - lastBackupSize.compressed / lastBackupSize.uncompressed) * 100)}% smaller than raw JSON ({formatBytes(lastBackupSize.uncompressed)}).
+                    {t("profile.backup.lastSize.savings", {
+                      percent: Math.round((1 - lastBackupSize.compressed / lastBackupSize.uncompressed) * 100),
+                      uncompressed: formatBytes(lastBackupSize.uncompressed),
+                    })}
                   </>
                 )}
               </p>
@@ -676,14 +715,14 @@ function ProfilePage() {
             {pendingImportFile && !progress && (
               <div role="alert" className="rounded-md border border-amber-300 bg-amber-50/60 p-3 text-sm">
                 <p className="font-display italic text-amber-900 mb-2">
-                  Importing <span className="not-italic font-mono text-xs bg-amber-100 px-1 py-0.5 rounded">{pendingImportFile.name}</span> will <strong className="not-italic font-semibold">replace</strong> all current progress (including your name). This can't be undone.
+                  {t("profile.backup.confirm.body", { filename: pendingImportFile.name })}
                 </p>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={confirmImport} className="bg-amber-700 hover:bg-amber-800 text-white">
-                    Confirm replace
+                    {t("profile.backup.confirm.action")}
                   </Button>
                   <Button size="sm" variant="outline" onClick={cancelImport}>
-                    Cancel
+                    {t("profile.backup.confirm.cancel")}
                   </Button>
                 </div>
               </div>
@@ -704,9 +743,9 @@ function ProfilePage() {
         {/* ---------- Reset ---------- */}
         <Card className="border-red-300/40 bg-red-50/30">
           <CardHeader>
-            <CardTitle className="font-display text-xl text-red-800 font-medium">Reset progress</CardTitle>
+            <CardTitle className="font-display text-xl text-red-800 font-medium">{t("profile.reset.title")}</CardTitle>
             <CardDescription className="font-display italic text-red-800/70">
-              Deletes your name and all stored progress. This can't be undone.
+              {t("profile.reset.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -718,7 +757,7 @@ function ProfilePage() {
               aria-live="polite"
             >
               <Trash2 aria-hidden="true" className="mr-2 h-4 w-4" />
-              {resetArmed ? "Click again to confirm — this deletes everything" : "Reset all progress"}
+              {resetArmed ? t("profile.reset.confirm") : t("profile.reset.action")}
             </Button>
             {resetArmed && (
               <button
@@ -726,7 +765,7 @@ function ProfilePage() {
                 onClick={() => setResetArmed(false)}
                 className="ml-3 text-sm font-display italic text-sumi/70 hover:text-sumi underline underline-offset-2"
               >
-                Cancel
+                {t("profile.reset.cancel")}
               </button>
             )}
           </CardContent>

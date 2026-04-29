@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { kanjiData, type Kanji } from "@/data/kanji-data"
 import { getRadicals } from "@/lib/radicals"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface RadicalBreakdownProps {
   /** The kanji whose components we should surface. */
@@ -28,6 +29,7 @@ const allKanjiByChar: Record<string, Kanji> = (() => {
  * cached lookup).
  */
 export function RadicalBreakdown({ char }: RadicalBreakdownProps) {
+  const { t } = useTranslation()
   const [parts, setParts] = useState<string[] | null>(null)
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export function RadicalBreakdown({ char }: RadicalBreakdownProps) {
     return (
       <p className="text-sm text-sumi/80 italic" role="status">
         <span lang="ja" className="not-italic font-semibold text-sumi">{char}</span>
-        {" "}is itself a radical — a building block other kanji are made from.
+        {t("radical.atomic.suffix")}
       </p>
     )
   }
@@ -58,7 +60,7 @@ export function RadicalBreakdown({ char }: RadicalBreakdownProps) {
   if (parts.length === 0) {
     return (
       <p className="text-sm text-sumi/70 italic" role="status">
-        No component decomposition available for this character.
+        {t("radical.empty")}
       </p>
     )
   }
@@ -69,8 +71,8 @@ export function RadicalBreakdown({ char }: RadicalBreakdownProps) {
         const k = allKanjiByChar[p]
         const labelMeanings = k ? k.meaning.join(", ") : null
         const ariaLabel = labelMeanings
-          ? `Component ${p}, ${labelMeanings}`
-          : `Component ${p}`
+          ? t("radical.aria.withMeaning", { char: p, meaning: labelMeanings })
+          : t("radical.aria.bare", { char: p })
         const inner = (
           <div className="flex items-center gap-2 px-3 py-2 bg-cream-deep rounded-md border border-sumi/5">
             <span lang="ja" className="text-2xl font-bold text-sumi leading-none">

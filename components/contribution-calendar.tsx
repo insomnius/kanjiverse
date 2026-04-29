@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react"
 import type { DailyTotal } from "@/lib/progress/use-progress"
+import { useTranslation, translate } from "@/lib/i18n/use-translation"
+import type { Locale } from "@/lib/progress/store"
 
 interface ContributionCalendarProps {
   /** Map keyed by YYYY-MM-DD local date string */
@@ -51,13 +53,15 @@ const longDateFormatter = new Intl.DateTimeFormat(undefined, {
 
 const monthFormatter = new Intl.DateTimeFormat(undefined, { month: "short" })
 
-function describeCell(cell: Cell): string {
+function describeCell(cell: Cell, locale: Locale): string {
   const dateLong = longDateFormatter.format(new Date(cell.date + "T00:00:00"))
-  if (cell.count === 0) return `No activity on ${dateLong}`
-  return `${cell.count} ${cell.count === 1 ? "answer" : "answers"} on ${dateLong}`
+  if (cell.count === 0) return translate(locale, "calendar.cell.empty", { date: dateLong })
+  if (cell.count === 1) return translate(locale, "calendar.cell.singular", { count: cell.count, date: dateLong })
+  return translate(locale, "calendar.cell.plural", { count: cell.count, date: dateLong })
 }
 
 export function ContributionCalendar({ dailyTotals, daysBack = 364 }: ContributionCalendarProps) {
+  const { t, locale } = useTranslation()
   const [activeCell, setActiveCell] = useState<Cell | null>(null)
 
   const { cells, weekCount, monthLabels, summary } = useMemo(() => {
@@ -109,22 +113,26 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
 
     const weeks = Math.round(daysBack / 7)
     const summaryParts: string[] = [
-      `Activity over the last ${weeks} weeks.`,
+      translate(locale, "calendar.summary.weeks", { weeks }),
       activeDays === 0
-        ? "No active days recorded yet."
-        : `${activeDays} active day${activeDays === 1 ? "" : "s"}, ${totalAnswers} total answer${totalAnswers === 1 ? "" : "s"}.`,
+        ? translate(locale, "calendar.summary.noActive")
+        : activeDays === 1
+          ? translate(locale, "calendar.summary.activeSingular", { days: activeDays, answers: totalAnswers })
+          : translate(locale, "calendar.summary.activePlural", { days: activeDays, answers: totalAnswers }),
       todayCount === 0
-        ? "No activity today."
-        : `${todayCount} answer${todayCount === 1 ? "" : "s"} today.`,
+        ? translate(locale, "calendar.summary.todayEmpty")
+        : todayCount === 1
+          ? translate(locale, "calendar.summary.todaySingular", { count: todayCount })
+          : translate(locale, "calendar.summary.todayPlural", { count: todayCount }),
     ]
     if (bestDay.count > 0) {
       const bestLong = longDateFormatter.format(new Date(bestDay.date + "T00:00:00"))
-      summaryParts.push(`Best day: ${bestDay.count} answers on ${bestLong}.`)
+      summaryParts.push(translate(locale, "calendar.summary.bestDay", { count: bestDay.count, date: bestLong }))
     }
     const summary = summaryParts.join(" ")
 
     return { cells, weekCount: weekIndex + 1, monthLabels, summary }
-  }, [dailyTotals, daysBack])
+  }, [dailyTotals, daysBack, locale])
 
   return (
     <div className="overflow-x-auto pb-2">
@@ -136,7 +144,7 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
             className="grid text-[10px] text-sumi/70 pt-4 select-none"
             style={{ gridTemplateRows: "repeat(7, minmax(0, 1fr))", rowGap: "2px" }}
           >
-            {["", "Mon", "", "Wed", "", "Fri", ""].map((label, i) => (
+            {["", t("calendar.day.mon"), "", t("calendar.day.wed"), "", t("calendar.day.fri"), ""].map((label, i) => (
               <span key={i} className="leading-[12px] h-3 flex items-center">
                 {label}
               </span>
@@ -175,7 +183,7 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
               onMouseLeave={() => setActiveCell(null)}
             >
               {cells.map((cell) => {
-                const label = describeCell(cell)
+                const label = describeCell(cell, locale)
                 const isActive = activeCell?.date === cell.date
                 return (
                   <button
@@ -205,13 +213,13 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
           className="font-display italic text-xs text-sumi/70 mt-3 min-h-[1.5em]"
         >
           {activeCell
-            ? describeCell(activeCell)
-            : "Hover, focus, or tap any cell to see that day's count."}
+            ? describeCell(activeCell, locale)
+            : t("calendar.hint")}
         </p>
 
         {/* Legend */}
         <div className="flex items-center justify-end gap-1.5 mt-2 text-[10px] text-sumi/70 select-none">
-          <span>Less</span>
+          <span>{t("calendar.legend.less")}</span>
           {([0, 1, 2, 3, 4] as const).map((level) => (
             <div
               key={level}
@@ -219,7 +227,7 @@ export function ContributionCalendar({ dailyTotals, daysBack = 364 }: Contributi
               className={`w-3 h-3 rounded-[2px] ${intensityClasses[level]}`}
             />
           ))}
-          <span>More</span>
+          <span>{t("calendar.legend.more")}</span>
         </div>
       </div>
     </div>

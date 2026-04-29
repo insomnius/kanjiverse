@@ -11,9 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VocabListRouteImport } from './routes/vocab-list'
 import { Route as ShareRouteImport } from './routes/share'
+import { Route as ReviewRouteImport } from './routes/review'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as KanjiListRouteImport } from './routes/kanji-list'
+import { Route as KanaWriteQuizRouteImport } from './routes/kana-write-quiz'
+import { Route as KanaWriteRouteImport } from './routes/kana-write'
 import { Route as KanaReferenceRouteImport } from './routes/kana-reference'
 import { Route as KanaQuizRouteImport } from './routes/kana-quiz'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -35,6 +38,11 @@ const ShareRoute = ShareRouteImport.update({
   path: '/share',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizRoute = QuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -48,6 +56,16 @@ const ProfileRoute = ProfileRouteImport.update({
 const KanjiListRoute = KanjiListRouteImport.update({
   id: '/kanji-list',
   path: '/kanji-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KanaWriteQuizRoute = KanaWriteQuizRouteImport.update({
+  id: '/kana-write-quiz',
+  path: '/kana-write-quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KanaWriteRoute = KanaWriteRouteImport.update({
+  id: '/kana-write',
+  path: '/kana-write',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KanaReferenceRoute = KanaReferenceRouteImport.update({
@@ -109,9 +127,12 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
+  '/kana-write': typeof KanaWriteRoute
+  '/kana-write-quiz': typeof KanaWriteQuizRoute
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
   '/kana/$char': typeof KanaCharRoute
@@ -126,9 +147,12 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
+  '/kana-write': typeof KanaWriteRoute
+  '/kana-write-quiz': typeof KanaWriteQuizRoute
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
   '/kana/$char': typeof KanaCharRoute
@@ -144,9 +168,12 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/kana-quiz': typeof KanaQuizRoute
   '/kana-reference': typeof KanaReferenceRoute
+  '/kana-write': typeof KanaWriteRoute
+  '/kana-write-quiz': typeof KanaWriteQuizRoute
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
   '/kana/$char': typeof KanaCharRoute
@@ -163,9 +190,12 @@ export interface FileRouteTypes {
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
+    | '/kana-write'
+    | '/kana-write-quiz'
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/review'
     | '/share'
     | '/vocab-list'
     | '/kana/$char'
@@ -180,9 +210,12 @@ export interface FileRouteTypes {
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
+    | '/kana-write'
+    | '/kana-write-quiz'
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/review'
     | '/share'
     | '/vocab-list'
     | '/kana/$char'
@@ -197,9 +230,12 @@ export interface FileRouteTypes {
     | '/history'
     | '/kana-quiz'
     | '/kana-reference'
+    | '/kana-write'
+    | '/kana-write-quiz'
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/review'
     | '/share'
     | '/vocab-list'
     | '/kana/$char'
@@ -215,9 +251,12 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   KanaQuizRoute: typeof KanaQuizRoute
   KanaReferenceRoute: typeof KanaReferenceRoute
+  KanaWriteRoute: typeof KanaWriteRoute
+  KanaWriteQuizRoute: typeof KanaWriteQuizRoute
   KanjiListRoute: typeof KanjiListRoute
   ProfileRoute: typeof ProfileRoute
   QuizRoute: typeof QuizRoute
+  ReviewRoute: typeof ReviewRoute
   ShareRoute: typeof ShareRoute
   VocabListRoute: typeof VocabListRoute
   KanaCharRoute: typeof KanaCharRoute
@@ -241,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz': {
       id: '/quiz'
       path: '/quiz'
@@ -260,6 +306,20 @@ declare module '@tanstack/react-router' {
       path: '/kanji-list'
       fullPath: '/kanji-list'
       preLoaderRoute: typeof KanjiListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kana-write-quiz': {
+      id: '/kana-write-quiz'
+      path: '/kana-write-quiz'
+      fullPath: '/kana-write-quiz'
+      preLoaderRoute: typeof KanaWriteQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kana-write': {
+      id: '/kana-write'
+      path: '/kana-write'
+      fullPath: '/kana-write'
+      preLoaderRoute: typeof KanaWriteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kana-reference': {
@@ -343,9 +403,12 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   KanaQuizRoute: KanaQuizRoute,
   KanaReferenceRoute: KanaReferenceRoute,
+  KanaWriteRoute: KanaWriteRoute,
+  KanaWriteQuizRoute: KanaWriteQuizRoute,
   KanjiListRoute: KanjiListRoute,
   ProfileRoute: ProfileRoute,
   QuizRoute: QuizRoute,
+  ReviewRoute: ReviewRoute,
   ShareRoute: ShareRoute,
   VocabListRoute: VocabListRoute,
   KanaCharRoute: KanaCharRoute,

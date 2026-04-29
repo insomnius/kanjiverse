@@ -2,6 +2,7 @@
 
 import { Flame, Target, Check } from "lucide-react"
 import { useProgress, getDailyGoal } from "@/lib/progress/use-progress"
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 interface QuizMeterProps {
   /** Correct answers in the current quiz session (resets when level changes). */
@@ -22,6 +23,7 @@ interface QuizMeterProps {
  * the quiz card so the user's eye never has to leave the action.
  */
 export function QuizMeter({ sessionCorrect, sessionTotal }: QuizMeterProps) {
+  const { t } = useTranslation()
   const { hydrated, profile, streak, todayTotal } = useProgress()
   if (!hydrated) return null
 
@@ -40,11 +42,15 @@ export function QuizMeter({ sessionCorrect, sessionTotal }: QuizMeterProps) {
       aria-live="polite"
       aria-atomic="true"
       aria-label={
-        `Session ${sessionCorrect} of ${sessionTotal}` +
-        (sessionPct !== null ? `, ${sessionPct} percent accuracy.` : ".") +
-        ` Today ${todayCorrect} of ${goal} correct toward daily goal` +
-        (goalHit ? " — goal reached." : ".") +
-        (streak > 0 ? ` Current streak ${streak} ${streak === 1 ? "day" : "days"}.` : "")
+        t("quizMeter.aria.session", { correct: sessionCorrect, total: sessionTotal }) +
+        (sessionPct !== null ? t("quizMeter.aria.accuracy", { percent: sessionPct }) : t("quizMeter.aria.period")) +
+        t("quizMeter.aria.todayGoal", { correct: todayCorrect, goal }) +
+        (goalHit ? t("quizMeter.aria.goalHit") : t("quizMeter.aria.period")) +
+        (streak > 0
+          ? streak === 1
+            ? t("quizMeter.aria.streakSingular", { streak })
+            : t("quizMeter.aria.streakPlural", { streak })
+          : "")
       }
       className="mb-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-md bg-cream-deep/50 border border-sumi/10"
     >
@@ -54,13 +60,13 @@ export function QuizMeter({ sessionCorrect, sessionTotal }: QuizMeterProps) {
           <span className="font-semibold text-base sm:text-lg">{sessionCorrect}</span>
           <span className="text-sumi/70">/{sessionTotal}</span>
           <span className="font-display italic text-xs sm:text-sm text-sumi/70 ml-1.5">
-            this session
+            {t("quizMeter.thisSession")}
           </span>
           {sessionPct !== null && (
             <>
               <span aria-hidden="true" className="mx-2 text-sumi/30">·</span>
               <span className="font-display italic text-xs sm:text-sm text-sumi/70">
-                {sessionPct}% accuracy
+                {t("quizMeter.accuracy", { percent: sessionPct })}
               </span>
             </>
           )}
@@ -80,11 +86,11 @@ export function QuizMeter({ sessionCorrect, sessionTotal }: QuizMeterProps) {
             />
             <span className="font-semibold">{streak}</span>
             <span className="italic text-xs text-sumi/70">
-              {streak === 1 ? "day" : "days"}
+              {streak === 1 ? t("quizMeter.day") : t("quizMeter.days")}
             </span>
             {atRisk && (
               <span className="font-display italic text-xs text-vermilion-deep ml-1">
-                at risk
+                {t("quizMeter.atRisk")}
               </span>
             )}
           </span>
@@ -102,12 +108,12 @@ export function QuizMeter({ sessionCorrect, sessionTotal }: QuizMeterProps) {
           <span className="font-semibold">{todayCorrect}</span>
           <span className="text-sumi/70">/{goal}</span>
           <span className="font-display italic text-xs text-sumi/70 ml-0.5 hidden xs:inline sm:inline">
-            {goalHit ? "goal hit today" : "today's goal"}
+            {goalHit ? t("quizMeter.goalHit") : t("quizMeter.todaysGoal")}
           </span>
         </span>
         <div
           role="progressbar"
-          aria-label="Daily goal progress"
+          aria-label={t("quizMeter.goalProgress.aria")}
           aria-valuenow={Math.round(goalPct)}
           aria-valuemin={0}
           aria-valuemax={100}

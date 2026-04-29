@@ -2,9 +2,14 @@
 // All ~80 lines of it — no Dexie, no idb, no library.
 
 const DB_NAME = "kbi-progress"
-const DB_VERSION = 1
+// Version 2 adds the `itemReview` store for SM-2 spaced repetition. The
+// onupgradeneeded handler is forward-compatible: it only creates stores that
+// don't already exist, so a v1 → v2 upgrade just adds itemReview without
+// touching other stores. See docs/BACKUP_SCHEMA.md for the parallel JSON
+// schema bump.
+const DB_VERSION = 2
 
-export type StoreName = "profile" | "sessions" | "answers" | "dailyTotals"
+export type StoreName = "profile" | "sessions" | "answers" | "dailyTotals" | "itemReview"
 
 let dbPromise: Promise<IDBDatabase> | null = null
 
@@ -34,6 +39,10 @@ function openDB(): Promise<IDBDatabase> {
       }
       if (!db.objectStoreNames.contains("dailyTotals")) {
         db.createObjectStore("dailyTotals", { keyPath: "date" })
+      }
+      if (!db.objectStoreNames.contains("itemReview")) {
+        const r = db.createObjectStore("itemReview", { keyPath: "itemKey" })
+        r.createIndex("dueAt", "dueAt")
       }
     }
   })

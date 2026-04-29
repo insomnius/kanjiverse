@@ -8,11 +8,7 @@ import { Search, BookOpen } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import KanaDetail from "@/components/kana-detail"
 import { SegmentedControl, type SegmentedControlItem } from "@/components/segmented-control"
-
-const KANA_SCRIPTS: SegmentedControlItem[] = [
-  { value: "hiragana", label: "Hiragana", description: "Native sounds" },
-  { value: "katakana", label: "Katakana", description: "Loanwords" },
-]
+import { useTranslation } from "@/lib/i18n/use-translation"
 
 type KanaChar = {
   kana: string;
@@ -27,23 +23,31 @@ interface KanaRow {
 
 type Script = "hiragana" | "katakana"
 
-const DetailEmptyState = () => (
-  <Card className="border-dashed border-sumi/20 bg-white/40">
-    <CardContent className="py-20 text-center">
-      <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
-        仮名
-      </p>
-      <p className="font-display italic text-base text-sumi/70 mb-2">
-        Pick a kana to see its counterpart
-      </p>
-      <p className="text-xs text-sumi/70 max-w-[26ch] mx-auto leading-relaxed">
-        Tap any character to see the matching glyph in the other script.
-      </p>
-    </CardContent>
-  </Card>
-)
+function DetailEmptyState() {
+  const { t } = useTranslation()
+  return (
+    <Card className="border-dashed border-sumi/20 bg-white/40">
+      <CardContent className="py-20 text-center">
+        <p lang="ja" aria-hidden="true" className="font-jp text-6xl text-vermilion/30 mb-4 leading-none">
+          仮名
+        </p>
+        <p className="font-display italic text-base text-sumi/70 mb-2">
+          {t("kanaRef.empty.headline")}
+        </p>
+        <p className="text-xs text-sumi/70 max-w-[26ch] mx-auto leading-relaxed">
+          {t("kanaRef.empty.body")}
+        </p>
+      </CardContent>
+    </Card>
+  )
+}
 
 function KanaReferencePage() {
+  const { t } = useTranslation()
+  const KANA_SCRIPTS: SegmentedControlItem[] = [
+    { value: "hiragana", label: t("kanaRef.script.hiragana"), description: t("kanaRef.script.hiragana.description") },
+    { value: "katakana", label: t("kanaRef.script.katakana"), description: t("kanaRef.script.katakana.description") },
+  ]
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedKana, setSelectedKana] = useState<{ kana: string; romaji: string; script: Script; rowLabel: string } | null>(null)
   const [activeScript, setActiveScript] = useState<Script>("hiragana")
@@ -78,73 +82,43 @@ function KanaReferencePage() {
       return null
     }
 
-    // Get row label based on the row type
+    // Row labels: phonetic-prefix rows ("K-row", "SH-row") stay as mnemonic
+    // labels in any locale because they describe the consonant prefix; only the
+    // descriptive ones (vowels / foreign / extended) get translated.
     const getRowLabel = (rowType: string) => {
       switch (rowType) {
-        case "vowels":
-          return "Vowels"
-        case "k":
-          return "K-row"
-        case "s":
-          return "S-row"
-        case "t":
-          return "T-row"
-        case "n":
-          return "N-row"
-        case "h":
-          return "H-row"
-        case "m":
-          return "M-row"
-        case "y":
-          return "Y-row"
-        case "r":
-          return "R-row"
-        case "w":
-          return "W-row"
-        case "g":
-          return "G-row"
-        case "z":
-          return "Z-row"
-        case "d":
-          return "D-row"
-        case "b":
-          return "B-row"
-        case "p":
-          return "P-row"
-        case "ky":
-          return "KY-row"
-        case "sh":
-          return "SH-row"
-        case "ch":
-          return "CH-row"
-        case "ny":
-          return "NY-row"
-        case "hy":
-          return "HY-row"
-        case "my":
-          return "MY-row"
-        case "ry":
-          return "RY-row"
-        case "gy":
-          return "GY-row"
-        case "j":
-          return "J-row"
-        case "by":
-          return "BY-row"
-        case "py":
-          return "PY-row"
-        case "f":
-          return "F-row"
-        case "w-ext":
-          return "W-extended"
-        case "v":
-          return "V-row"
-        case "foreign":
-          return "Foreign sounds"
-        case "foreign2":
-          return "More foreign sounds"
-        default:
-          return rowType.toUpperCase()
+        case "vowels": return t("kanaRef.row.vowels")
+        case "w-ext": return t("kanaRef.row.wExt")
+        case "foreign": return t("kanaRef.row.foreign")
+        case "foreign2": return t("kanaRef.row.foreign2")
+        case "k": return "K-row"
+        case "s": return "S-row"
+        case "t": return "T-row"
+        case "n": return "N-row"
+        case "h": return "H-row"
+        case "m": return "M-row"
+        case "y": return "Y-row"
+        case "r": return "R-row"
+        case "w": return "W-row"
+        case "g": return "G-row"
+        case "z": return "Z-row"
+        case "d": return "D-row"
+        case "b": return "B-row"
+        case "p": return "P-row"
+        case "ky": return "KY-row"
+        case "sh": return "SH-row"
+        case "ch": return "CH-row"
+        case "ny": return "NY-row"
+        case "hy": return "HY-row"
+        case "my": return "MY-row"
+        case "ry": return "RY-row"
+        case "gy": return "GY-row"
+        case "j": return "J-row"
+        case "by": return "BY-row"
+        case "py": return "PY-row"
+        case "f": return "F-row"
+        case "v": return "V-row"
+        default: return rowType.toUpperCase()
       }
     }
 
@@ -174,7 +148,11 @@ function KanaReferencePage() {
               <button
                 type="button"
                 key={charIndex}
-                aria-label={`${char.kana}, ${char.romaji}. ${isSelected ? 'Hide details.' : 'View details.'}`}
+                aria-label={t("kanaRef.card.aria", {
+                  kana: char.kana,
+                  romaji: char.romaji,
+                  action: isSelected ? t("kanaRef.card.hideDetails") : t("kanaRef.card.viewDetails"),
+                })}
                 aria-expanded={isSelected}
                 className={`flex flex-col items-center justify-center border rounded-lg p-3 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 ${
                   isSelected
@@ -216,8 +194,8 @@ function KanaReferencePage() {
 
   const EmptyState = () => (
     <div className="py-16 text-center" role="status">
-      <p className="font-display italic text-lg text-sumi/70 mb-2">No kana match “{searchTerm}”</p>
-      <p className="text-sm text-sumi/70">Try the other script, or clear the search.</p>
+      <p className="font-display italic text-lg text-sumi/70 mb-2">{t("kanaRef.results.noMatches", { term: searchTerm })}</p>
+      <p className="text-sm text-sumi/70">{t("kanaRef.results.tryHint")}</p>
     </div>
   )
 
@@ -266,15 +244,15 @@ function KanaReferencePage() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-6 sm:mb-8">
           <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight mb-1">
-            Hiragana &amp; Katakana
+            {t("kanaRef.title")}
           </h1>
           <p className="font-display italic text-sumi/70 text-base">
-            The two phonetic syllabaries — gojūon, dakuten, yōon, and the extended foreign-sound rows.
+            {t("kanaRef.subtitle")}
           </p>
-          <nav aria-label="Related actions" className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
+          <nav aria-label={t("kanjiList.related.aria")} className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm font-display italic">
             <Link to="/kana-quiz" className="inline-flex items-center gap-1.5 text-sumi/80 hover:text-vermilion-deep transition-colors motion-reduce:transition-none">
               <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-              Quiz me on these
+              {t("kanaRef.related.quiz")}
             </Link>
           </nav>
         </header>
@@ -283,8 +261,8 @@ function KanaReferencePage() {
           <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sumi/70" />
           <Input
             type="search"
-            aria-label="Search kana characters or romaji"
-            placeholder="Search kana or romaji…"
+            aria-label={t("kanaRef.search.aria")}
+            placeholder={t("kanaRef.search.placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 bg-white/70 border-sumi/15"
@@ -299,7 +277,7 @@ function KanaReferencePage() {
               setActiveScript(v as Script)
               setSelectedKana(null)
             }}
-            ariaLabel="Kana script"
+            ariaLabel={t("kanaRef.script.aria")}
           />
         </div>
 
@@ -311,20 +289,20 @@ function KanaReferencePage() {
               ) : (
                 <div className="space-y-8">
                   {renderKanaSection(
-                    "Basic Hiragana",
-                    "The basic hiragana characters represent the core sounds in Japanese.",
+                    t("kanaRef.section.hiragana.basic.title"),
+                    t("kanaRef.section.hiragana.basic.description"),
                     kanaData.hiragana.basic,
                     "hiragana",
                   )}
                   {renderKanaSection(
-                    "Dakuten & Handakuten Hiragana",
-                    "These are modifications of the basic hiragana with diacritical marks.",
+                    t("kanaRef.section.hiragana.dakuten.title"),
+                    t("kanaRef.section.hiragana.dakuten.description"),
                     kanaData.hiragana.dakuten,
                     "hiragana",
                   )}
                   {renderKanaSection(
-                    "Combination Hiragana",
-                    "These are combinations of hiragana that create new sounds.",
+                    t("kanaRef.section.hiragana.combinations.title"),
+                    t("kanaRef.section.hiragana.combinations.description"),
                     kanaData.hiragana.combinations,
                     "hiragana",
                   )}
@@ -341,26 +319,26 @@ function KanaReferencePage() {
               ) : (
                 <div className="space-y-8">
                   {renderKanaSection(
-                    "Basic Katakana",
-                    "Katakana is primarily used for foreign words, loanwords, and emphasis.",
+                    t("kanaRef.section.katakana.basic.title"),
+                    t("kanaRef.section.katakana.basic.description"),
                     kanaData.katakana.basic,
                     "katakana",
                   )}
                   {renderKanaSection(
-                    "Dakuten & Handakuten Katakana",
-                    "Modified katakana with diacritical marks.",
+                    t("kanaRef.section.katakana.dakuten.title"),
+                    t("kanaRef.section.katakana.dakuten.description"),
                     kanaData.katakana.dakuten,
                     "katakana",
                   )}
                   {renderKanaSection(
-                    "Combination Katakana",
-                    "Combinations of katakana that create new sounds.",
+                    t("kanaRef.section.katakana.combinations.title"),
+                    t("kanaRef.section.katakana.combinations.description"),
                     kanaData.katakana.combinations,
                     "katakana",
                   )}
                   {renderKanaSection(
-                    "Extended Katakana",
-                    "Special katakana used for foreign sounds not native to Japanese.",
+                    t("kanaRef.section.katakana.extended.title"),
+                    t("kanaRef.section.katakana.extended.description"),
                     kanaData.katakana.extended,
                     "katakana",
                   )}

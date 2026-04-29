@@ -1,4 +1,21 @@
-export const vocabularyData = {
+import idN5 from "./i18n/vocab-id-N5.json"
+import idN4 from "./i18n/vocab-id-N4.json"
+import idN3 from "./i18n/vocab-id-N3.json"
+import idN2 from "./i18n/vocab-id-N2.json"
+import idN1 from "./i18n/vocab-id-N1.json"
+import type { Locale } from "@/lib/progress/store"
+
+export interface VocabItem {
+  word: string
+  /** English meaning. Always present. */
+  meaning: string
+  /** Indonesian meaning. Optional — falls back to English when missing.
+   *  Populated at module load from the per-level sidecar JSONs in data/i18n/. */
+  meaningId?: string
+  romaji: string
+}
+
+export const vocabularyData: Record<string, VocabItem[]> = {
   N5: [
     { word: "こんにちは", meaning: "hello", romaji: "konnichiwa" },
     { word: "ありがとう", meaning: "thank you", romaji: "arigatou" },
@@ -10271,4 +10288,26 @@ export const vocabularyData = {
     { word: "びり", meaning: "last on the list, at the bottom", romaji: "biri" },
     { word: "比率", meaning: "ratio, proportion, percentage", romaji: "hiritsu" }
   ],
+}
+
+// Merge per-level Indonesian sidecars into items in place. Missing entries
+// silently fall back to English at read time via getVocabMeaning().
+const _idVocabSidecar: Record<string, string> = {
+  ...(idN5 as Record<string, string>),
+  ...(idN4 as Record<string, string>),
+  ...(idN3 as Record<string, string>),
+  ...(idN2 as Record<string, string>),
+  ...(idN1 as Record<string, string>),
+}
+for (const level of Object.values(vocabularyData)) {
+  for (const item of level) {
+    const id = _idVocabSidecar[item.word]
+    if (id) item.meaningId = id
+  }
+}
+
+/** Get vocab meaning in active locale, falling back to English. */
+export function getVocabMeaning(item: VocabItem, locale: Locale): string {
+  if (locale === "id" && item.meaningId) return item.meaningId
+  return item.meaning
 }

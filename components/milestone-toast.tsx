@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react"
 import { Flame, Sparkles, X } from "lucide-react"
 import { useProgress, dismissMilestone, isSoundEnabled } from "@/lib/progress/use-progress"
 import { playMilestone } from "@/lib/sounds"
+import { useTranslation, translate } from "@/lib/i18n/use-translation"
+import type { Locale } from "@/lib/progress/store"
 
 const AUTO_DISMISS_MS = 6000
 
@@ -12,26 +14,26 @@ interface ToastCopy {
   body: string
 }
 
-function copyFor(kind: "streak" | "answered", value: number): ToastCopy {
+function copyFor(kind: "streak" | "answered", value: number, locale: Locale): ToastCopy {
   if (kind === "streak") {
     return {
-      heading: `${value}-day streak`,
+      heading: translate(locale, "milestone.streak.heading", { value }),
       body:
         value >= 100
-          ? "Three-digit streak. Keep going."
+          ? translate(locale, "milestone.streak.body.high")
           : value >= 30
-            ? "A month of daily practice — that's habit territory."
-            : "Daily practice is the path. One more answer tomorrow keeps it alive.",
+            ? translate(locale, "milestone.streak.body.mid")
+            : translate(locale, "milestone.streak.body.low"),
     }
   }
   return {
-    heading: `${value.toLocaleString()} answers`,
+    heading: translate(locale, "milestone.answered.heading", { value: value.toLocaleString() }),
     body:
       value >= 1000
-        ? "Four digits answered. The kanji are starting to know you back."
+        ? translate(locale, "milestone.answered.body.high")
         : value >= 100
-          ? "Three digits in. The shapes are becoming familiar."
-          : "First milestone — keep going.",
+          ? translate(locale, "milestone.answered.body.mid")
+          : translate(locale, "milestone.answered.body.low"),
   }
 }
 
@@ -45,6 +47,7 @@ function copyFor(kind: "streak" | "answered", value: number): ToastCopy {
  * is the reward.
  */
 export function MilestoneToast() {
+  const { t, locale } = useTranslation()
   const { pendingMilestone, profile } = useProgress()
   // Track which milestone we've already chimed for so React strict-mode double-render
   // doesn't double-play the sound.
@@ -62,7 +65,7 @@ export function MilestoneToast() {
 
   if (!pendingMilestone) return null
 
-  const copy = copyFor(pendingMilestone.kind, pendingMilestone.value)
+  const copy = copyFor(pendingMilestone.kind, pendingMilestone.value, locale)
   const Icon = pendingMilestone.kind === "streak" ? Flame : Sparkles
 
   return (
@@ -92,7 +95,7 @@ export function MilestoneToast() {
         <button
           type="button"
           onClick={() => dismissMilestone()}
-          aria-label="Dismiss milestone"
+          aria-label={t("milestone.dismiss.aria")}
           className="absolute top-2 right-2 p-1.5 rounded-md text-sumi/55 hover:text-sumi hover:bg-cream-deep/60 transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermilion"
         >
           <X aria-hidden="true" className="h-3.5 w-3.5" />
