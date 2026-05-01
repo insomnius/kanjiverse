@@ -18,40 +18,68 @@
  * on Profile. Always degrades silently — Web Speech failures never throw.
  */
 
-const SUPPORTED = typeof window !== "undefined" && "speechSynthesis" in window
-
-let cachedVoices: SpeechSynthesisVoice[] = []
-const voiceListeners = new Set<() => void>()
-
-function refreshVoices(): void {
-  if (!SUPPORTED) return
-  const next = window.speechSynthesis.getVoices()
-  if (next.length > 0) {
-    cachedVoices = next
-    voiceListeners.forEach((fn) => fn())
+// Why fully lazy: Safari (especially iOS and private browsing) crashes or
+// throws when speechSynthesis is touched at module-evaluation time. Every API
+// access is wrapped in try/catch and deferred until first call from a user
+// gesture, where Safari is most permissive.
+function getSynth(): SpeechSynthesis | null {
+  if (typeof window === "undefined") return null
+  try {
+    return "speechSynthesis" in window ? window.speechSynthesis : null
+  } catch {
+    return null
   }
 }
 
-if (SUPPORTED) {
-  refreshVoices()
-  // Chrome populates voices asynchronously; the event fires when they're ready.
-  window.speechSynthesis.addEventListener("voiceschanged", refreshVoices)
+let cachedVoices: SpeechSynthesisVoice[] = []
+let initialized = false
+const voiceListeners = new Set<() => void>()
+
+function refreshVoices(): void {
+  const synth = getSynth()
+  if (!synth) return
+  try {
+    const next = synth.getVoices()
+    if (next.length > 0) {
+      cachedVoices = next
+      voiceListeners.forEach((fn) => fn())
+    }
+  } catch {
+    /* Safari content-blocker / private-mode quirk — swallow */
+  }
+}
+
+function ensureInit(): void {
+  if (initialized) return
+  initialized = true
+  const synth = getSynth()
+  if (!synth) return
+  try {
+    refreshVoices()
+    // Chrome populates voices asynchronously; the event fires when ready.
+    // Safari sometimes throws when adding this listener — guard the call.
+    synth.addEventListener?.("voiceschanged", refreshVoices)
+  } catch {
+    /* swallow — degrade silently */
+  }
 }
 
 /** Subscribe to voice-list changes. Returns an unsubscribe fn. Useful for components
  *  that need to hide/show their TTS button once we know whether a JP voice exists. */
 export function subscribeVoices(fn: () => void): () => void {
+  ensureInit()
   voiceListeners.add(fn)
   return () => voiceListeners.delete(fn)
 }
 
 export function isTtsSupported(): boolean {
-  return SUPPORTED
+  return getSynth() !== null
 }
 
 /** Pick the best Japanese voice we can find. Returns null if none is installed. */
 export function getJapaneseVoice(): SpeechSynthesisVoice | null {
-  if (!SUPPORTED) return null
+  ensureInit()
+  if (cachedVoices.length === 0) refreshVoices()
   // Exact ja-JP first, then any ja* (covers some platforms that report just "ja").
   return (
     cachedVoices.find((v) => v.lang === "ja-JP") ??
@@ -92,29 +120,34 @@ export interface SpeakOptions {
  * Must be called from a user gesture (click/tap handler) — browsers reject autoplay.
  */
 export function speakJapanese(text: string, opts: SpeakOptions = {}): void {
-  if (!SUPPORTED) return
+  const synth = getSynth()
+  if (!synth) return
   if (shouldRespectReducedMotion()) return
   if (!text) return
+  // Safari hard-crashes on very long utterances. The longest legitimate caller
+  // (vocab examples) sits well under this; truncate defensively.
+  const safeText = text.length > 200 ? text.slice(0, 200) : text
 
   const voice = getJapaneseVoice()
   if (!voice) return
 
   // Chrome occasionally locks up speechSynthesis if a previous utterance is still
-  // pending — a defensive cancel keeps the queue clean.
+  // pending — a defensive cancel keeps the queue clean. Safari crashes if cancel
+  // is called while nothing is speaking on some versions, so guard on speaking.
   try {
-    window.speechSynthesis.cancel()
+    if (synth.speaking || synth.pending) synth.cancel()
   } catch {
     /* ignore */
   }
 
   try {
-    const utterance = new SpeechSynthesisUtterance(text)
+    const utterance = new SpeechSynthesisUtterance(safeText)
     utterance.lang = "ja-JP"
     utterance.voice = voice
     utterance.rate = opts.rate ?? 0.9
     utterance.pitch = opts.pitch ?? 1
     utterance.volume = opts.volume ?? 1
-    window.speechSynthesis.speak(utterance)
+    synth.speak(utterance)
   } catch {
     /* swallow — TTS is a nicety, not load-bearing */
   }
