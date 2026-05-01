@@ -68,13 +68,16 @@
       "attribution": "Kanji by Insomnius project authors"
     },
     {
-      "id": "kanjivg-kana-strokes",
-      "description": "Hiragana + katakana stroke order paths (~154 glyphs) derived from KanjiVG SVGs. Bundled into the app for the kana writing practice and writing quiz.",
-      "license": "CC-BY-SA-3.0",
-      "url": "https://github.com/KanjiVG/kanjivg",
+      "id": "animcjk-kana-strokes",
+      "description": "Hiragana + katakana stroke data (154 glyphs) derived from animCJK's graphicsJaKana.txt. Bundled into the app for the kana writing practice and writing quiz.",
+      "license": "LGPL-3.0-or-later",
+      "url": "https://github.com/parsimonhi/animCJK",
       "redistributedAs": "data/kana-stroke-data.json",
-      "attribution": "Copyright © 2009–2011 Ulrich Apel and KanjiVG contributors — https://kanjivg.tagaini.net/",
-      "note": "Fetched at build time via scripts/extract-kanjivg-kana.ts; the JSON output carries an SPDX header. CC BY-SA 3.0 requires visible attribution and that downstream redistributions of the data file remain under the same license — surfaced on the /credits page."
+      "attribution": "Copyright © 2016–2026 FM-SH and animCJK contributors — https://github.com/parsimonhi/animCJK",
+      "note": "Fetched at build time via scripts/extract-kana-from-animcjk.ts; the JSON output carries a provenance header. animCJK's README explicitly designates kana SVGs as redistributable under the GNU LGPL (the kana set is not derived from Arphic fonts). Attribution is surfaced on the /credits page.",
+      "manualOverride": {
+        "reason": "LGPL-3.0-or-later is on the npm-package denylist because copyleft on linked code would force us to publish the entire app source. That concern doesn't apply here: the kana stroke data is a static JSON asset, not code we link against. LGPL on data only requires (a) shipping the license text alongside the data, (b) attributing the source, and (c) allowing downstream modification — all satisfied via the JSON's SPDX-style provenance header, this manifest entry, and the /credits page. We previously used KanjiVG (CC-BY-SA-3.0) for this slot, which is similarly copyleft-flavored on data; switching to animCJK is a strict net upgrade because animCJK ships closed filled stroke outlines that match hanzi-writer's CharacterData shape, while KanjiVG ships centerline-only paths that hanzi-writer can't render correctly."
+      }
     },
     {
       "id": "insomnius-logo",
