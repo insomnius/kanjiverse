@@ -93,10 +93,10 @@ function DrawPage() {
   }
 
   return (
-    <div className="py-8 px-4">
+    <div className="pt-4 pb-8 sm:pt-8 px-4">
       <div className="max-w-3xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-          <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-8 gap-1 sm:gap-4">
+          <h1 className="font-display text-2xl sm:text-4xl font-medium text-sumi tracking-tight">
             {t("draw.page.heading")}
           </h1>
           <p className="font-display italic text-sm text-sumi/70" role="status" aria-live="polite" aria-atomic="true">
@@ -104,14 +104,14 @@ function DrawPage() {
           </p>
         </div>
 
-        <p className="font-display italic text-base text-sumi/70 mb-6 max-w-xl">
+        <p className="hidden sm:block font-display italic text-base text-sumi/70 mb-6 max-w-xl">
           {t("draw.page.intro")}
         </p>
 
-        <Card className="mb-6">
-          <CardContent className="pt-6">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="pt-4 sm:pt-6">
             <fieldset>
-              <legend className="font-display italic text-base text-sumi/70 mb-4 text-center w-full tracking-wide">
+              <legend className="font-display italic text-sm sm:text-base text-sumi/70 mb-2 sm:mb-4 text-center w-full tracking-wide">
                 {t("level.legend")}
               </legend>
               <ToggleGroup

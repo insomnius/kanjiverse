@@ -124,24 +124,24 @@ function KanaWritePage() {
   }
 
   return (
-    <div className="py-8 px-4">
+    <div className="pt-4 pb-8 sm:pt-8 px-4">
       <div className="max-w-3xl mx-auto">
-        <header className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-3">
-            <h1 className="font-display text-3xl sm:text-4xl font-medium text-sumi tracking-tight">
+        <header className="mb-3 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-baseline justify-between gap-1 sm:gap-3">
+            <h1 className="font-display text-2xl sm:text-4xl font-medium text-sumi tracking-tight">
               {t("kanaWrite.title")}
             </h1>
             <p className="font-display italic text-sm text-sumi/70" role="status" aria-live="polite" aria-atomic="true">
               <span className="font-semibold not-italic text-sumi">{seen}</span> {t("draw.page.sessionCount")}
             </p>
           </div>
-          <p className="font-display italic text-base text-sumi/70 mt-2 max-w-xl">
+          <p className="hidden sm:block font-display italic text-base text-sumi/70 mt-2 max-w-xl">
             {t("kanaWrite.subtitle")}
           </p>
         </header>
 
-        <Card className="mb-6">
-          <CardContent className="pt-6 space-y-4">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="pt-4 sm:pt-6 space-y-3 sm:space-y-4">
             <SegmentedControl
               items={scriptItems}
               value={script}
