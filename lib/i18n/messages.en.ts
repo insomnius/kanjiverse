@@ -713,7 +713,7 @@ export const enMessages = {
   // /kana-write-quiz — recall a kana from romaji and draw it from memory.
   "navItem.kanaWriteQuiz": "Kana Write Quiz",
   "kanaWriteQuiz.title": "Kana Writing Quiz",
-  "kanaWriteQuiz.subtitle": "Read the romaji, then draw the kana from memory. Stroke order is graded against KanjiVG.",
+  "kanaWriteQuiz.subtitle": "Read the romaji, then draw the kana from memory. Stroke order is graded against animCJK reference data.",
   "kanaWriteQuiz.prompt": "Draw the kana for: {romaji}",
   "kanaWriteQuiz.showAnswer": "Show me the answer",
   "kanaWriteQuiz.feedback.correct": "Correct",
@@ -721,4 +721,3 @@ export const enMessages = {
 } as const
 
 export type MessageKey = keyof typeof enMessages
-export type Messages = typeof enMessages

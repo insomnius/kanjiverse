@@ -669,7 +669,7 @@ export const idMessages: Partial<Record<MessageKey, string>> = {
   // /kana-write-quiz — ingat kana dari romaji dan gambar dari memori.
   "navItem.kanaWriteQuiz": "Kuis Tulis Kana",
   "kanaWriteQuiz.title": "Kuis Menulis Kana",
-  "kanaWriteQuiz.subtitle": "Baca romaji-nya, lalu gambar kana dari ingatan. Urutan goresan dinilai berdasarkan KanjiVG.",
+  "kanaWriteQuiz.subtitle": "Baca romaji-nya, lalu gambar kana dari ingatan. Urutan goresan dinilai berdasarkan data referensi animCJK.",
   "kanaWriteQuiz.prompt": "Gambar kana untuk: {romaji}",
   "kanaWriteQuiz.showAnswer": "Tampilkan jawabannya",
   "kanaWriteQuiz.feedback.correct": "Benar",

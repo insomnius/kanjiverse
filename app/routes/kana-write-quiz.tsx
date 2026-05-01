@@ -270,7 +270,7 @@ function KanaWriteQuizPage() {
 
 const PAGE_TITLE = "Kana Writing Quiz — Recall & Draw · Kanji by Insomnius"
 const PAGE_DESCRIPTION =
-  "Recall a kana from its romaji and draw it from memory. Stroke order is graded against KanjiVG, and your performance feeds the same SRS schedule as the rest of the app."
+  "Recall a kana from its romaji and draw it from memory. Stroke order is graded against animCJK reference data, and your performance feeds the same SRS schedule as the rest of the app."
 
 export const Route = createFileRoute("/kana-write-quiz")({
   validateSearch: (search: Record<string, unknown>): KanaWriteQuizSearch => ({
