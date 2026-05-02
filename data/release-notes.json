@@ -1,10 +1,17 @@
 {
   "_": {
     "source": "https://github.com/insomnius/kanjiverse/releases",
-    "generatedAt": "2026-05-01T14:27:10.991Z",
+    "generatedAt": "2026-05-02T08:49:27.638Z",
     "generatedBy": "scripts/fetch-release-notes.ts"
   },
   "releases": [
+    {
+      "tag": "v0.3.2",
+      "title": "v0.3.2 — release-notes page + onboarding tours",
+      "publishedAt": "2026-05-02T08:49:11Z",
+      "body": "## What's new in v0.3.2\n\nA small minor release that closes the loop on the writing-practice surfaces and puts the project's changelog inside the app itself.\n\n### 📝 Release notes inside the app\n\nThe `/release-notes` route renders every shipped version with title, tag, date, and the rendered markdown body. Source of truth is the project's GitHub Releases — content is baked into the bundle at build time via `scripts/fetch-release-notes.ts` rather than fetched from the GitHub API at runtime, because:\n\n- GitHub's unauthenticated API caps at 60 requests/hour per IP. Behind a CDN that's a single shared bucket; one heavy day on `/release-notes` could throttle the whole site.\n- The app is local-first and PWA-cached; runtime fetches break offline.\n- Release notes change once per release, not per page load — fresh data is exactly as fresh as the last deploy, which is what users expect.\n\nThe markdown renderer is a small hand-rolled component covering the GFM subset our release bodies use (`##`/`###` headings, `**bold**`, `*italic*`, `` `code` ``, fenced code blocks, `[links](url)`, `---` separators, bullet lists). No `dangerouslySetInnerHTML` anywhere — every node is React-emitted, so we don't depend on a third-party HTML sanitiser. Footer now links to `/release-notes` alongside `/credits`.\n\n### 🧭 First-run onboarding for /draw and /kana-write\n\nA guided three-step walkthrough — pulse ring + floating callout — fires the first time a user lands on either writing-practice page, anchored to the level / script-section selector, the stroke preview, and the next-glyph button. Mirrors the existing `/quiz` tour pattern, persisted via the same `Profile.onboardingsSeen` IDB field. Skip / Esc dismisses, and dismissal is per-tour-id so the kana-write tour and the draw tour are separate first-run experiences.\n\nA new `FeatureTour` component generalises the mechanics so adding a fourth or fifth onboarding later is just a matter of supplying step refs + i18n keys.\n\n---\n\n### Verification\n\n- `bun run build` — strict TypeScript + Vite, gating deploys\n- `bun run a11y` — Playwright + axe-core across **16 routes** (added `/release-notes`), 674 passes, 0 violations\n- `bun run check:licenses` — npm production tree allowlist + bundled-data manifest, both clean\n- `bun run check:unused` — only the 3 intentional shadcn library-surface exports remain\n- i18n parity — 645 EN keys + 645 ID keys, full key-set match (24 new keys this release: 12 onboarding + 9 release-notes + footer + Messages-type cleanup)\n- Visual verification of both onboarding tours stepping cleanly through their 3 anchors\n\n---\n\n### Commits\n\n- `29d0966` — feat(kanjiverse): add /release-notes page sourced from GitHub Releases\n- `202f4ae` — feat(kanjiverse): first-run onboarding tour for /draw and /kana-write\n\n---\n\n### How to refresh release notes\n\nAfter cutting a new release via `gh release create`, run `bun run fetch:release-notes` and commit the regenerated `data/release-notes.json`. Honors `GITHUB_TOKEN` env if you want to avoid the 60-req/hr unauthenticated API cap during iteration.\n",
+      "htmlUrl": "https://github.com/insomnius/kanjiverse/releases/tag/v0.3.2"
+    },
     {
       "tag": "v0.3.1",
       "title": "v0.3.1 — kana rendering fix + Safari hardening",
