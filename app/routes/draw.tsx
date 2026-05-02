@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { ArrowRight, ExternalLink, Shuffle } from "lucide-react"
 import KanjiStrokeOrder from "@/components/kanji-stroke-order"
+import { FeatureTour, type FeatureTourStep } from "@/components/feature-tour"
 import { kanjiData, getKanjiMeaning } from "@/data/kanji-data"
 import {
   getItemReviewMap,
@@ -46,6 +47,10 @@ function DrawPage() {
   /** Focused mode locks the page to one kanji until user hits "Random" or changes level. */
   const [focusLocked, setFocusLocked] = useState<boolean>(focusLocation !== null)
   const reviewsRef = useRef<Map<string, ItemReview>>(new Map())
+  // Anchors for the first-run /draw onboarding (FeatureTour).
+  const levelAnchorRef = useRef<HTMLDivElement | null>(null)
+  const previewAnchorRef = useRef<HTMLDivElement | null>(null)
+  const nextAnchorRef = useRef<HTMLDivElement | null>(null)
 
   const levelKanji = kanjiData[level]
   const current = levelKanji[currentIndex]
@@ -108,7 +113,7 @@ function DrawPage() {
           {t("draw.page.intro")}
         </p>
 
-        <Card className="mb-4 sm:mb-6">
+        <Card className="mb-4 sm:mb-6" ref={levelAnchorRef}>
           <CardContent className="pt-4 sm:pt-6">
             <fieldset>
               <legend className="font-display italic text-sm sm:text-base text-sumi/70 mb-2 sm:mb-4 text-center w-full tracking-wide">
@@ -195,8 +200,10 @@ function DrawPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <Separator />
-              <KanjiStrokeOrder character={current.kanji} />
-              <div className="flex justify-center gap-2 flex-wrap">
+              <div ref={previewAnchorRef}>
+                <KanjiStrokeOrder character={current.kanji} />
+              </div>
+              <div ref={nextAnchorRef} className="flex justify-center gap-2 flex-wrap">
                 <Button onClick={handleNext} className="gap-2 min-w-[12rem]">
                   {focusLocked ? (
                     <>
@@ -215,6 +222,14 @@ function DrawPage() {
           </Card>
         )}
       </div>
+      <FeatureTour
+        id="draw-tour-v1"
+        steps={[
+          { id: "level", ref: levelAnchorRef, titleKey: "tour.draw.level.title", bodyKey: "tour.draw.level.body" },
+          { id: "preview", ref: previewAnchorRef, titleKey: "tour.draw.preview.title", bodyKey: "tour.draw.preview.body" },
+          { id: "next", ref: nextAnchorRef, titleKey: "tour.draw.next.title", bodyKey: "tour.draw.next.body" },
+        ] satisfies FeatureTourStep[]}
+      />
     </div>
   )
 }

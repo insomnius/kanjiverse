@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowRight, ExternalLink, Shuffle } from "lucide-react"
 import KanaStrokeOrder from "@/components/kana-stroke-order"
+import { FeatureTour, type FeatureTourStep } from "@/components/feature-tour"
 import { SegmentedControl, type SegmentedControlItem } from "@/components/segmented-control"
 import { kanaData } from "@/data/kana-data"
 import {
@@ -69,6 +70,10 @@ function KanaWritePage() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [seen, setSeen] = useState(0)
   const reviewsRef = useRef<Map<string, ItemReview>>(new Map())
+  // Anchors for the first-run /kana-write onboarding (FeatureTour).
+  const scriptAnchorRef = useRef<HTMLDivElement | null>(null)
+  const previewAnchorRef = useRef<HTMLDivElement | null>(null)
+  const nextAnchorRef = useRef<HTMLDivElement | null>(null)
 
   const current = items[currentIndex]
 
@@ -140,7 +145,7 @@ function KanaWritePage() {
           </p>
         </header>
 
-        <Card className="mb-4 sm:mb-6">
+        <Card className="mb-4 sm:mb-6" ref={scriptAnchorRef}>
           <CardContent className="pt-4 sm:pt-6 space-y-3 sm:space-y-4">
             <SegmentedControl
               items={scriptItems}
@@ -194,8 +199,10 @@ function KanaWritePage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <Separator />
-              <KanaStrokeOrder character={current.glyph} onQuizComplete={handleQuizComplete} />
-              <div className="flex justify-center gap-2 flex-wrap">
+              <div ref={previewAnchorRef}>
+                <KanaStrokeOrder character={current.glyph} onQuizComplete={handleQuizComplete} />
+              </div>
+              <div ref={nextAnchorRef} className="flex justify-center gap-2 flex-wrap">
                 <Button onClick={handleNext} className="gap-2 min-w-[12rem]">
                   {seen === 0 ? (
                     <>
@@ -218,6 +225,14 @@ function KanaWritePage() {
           </div>
         )}
       </div>
+      <FeatureTour
+        id="kana-write-tour-v1"
+        steps={[
+          { id: "script", ref: scriptAnchorRef, titleKey: "tour.kanaWrite.script.title", bodyKey: "tour.kanaWrite.script.body" },
+          { id: "preview", ref: previewAnchorRef, titleKey: "tour.kanaWrite.preview.title", bodyKey: "tour.kanaWrite.preview.body" },
+          { id: "next", ref: nextAnchorRef, titleKey: "tour.kanaWrite.next.title", bodyKey: "tour.kanaWrite.next.body" },
+        ] satisfies FeatureTourStep[]}
+      />
     </div>
   )
 }

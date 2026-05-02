@@ -122,6 +122,18 @@ export const enMessages = {
   "tour.tabs.body": "Kanji asks for the meaning. Vocabulary tests whole words. Same level on both.",
   "tour.speak.title": "Hear it pronounced",
   "tour.speak.body": "Tap the speaker to hear how the kanji sounds in Japanese — your device's voice does the talking.",
+  "tour.draw.level.title": "Pick a JLPT level",
+  "tour.draw.level.body": "Start with N5 — the easiest characters — and work up. Switching levels reshuffles the deck.",
+  "tour.draw.preview.title": "Watch then trace",
+  "tour.draw.preview.body": "The strokes animate in order. Tap Practice when you're ready to draw it yourself — the canvas guides each stroke.",
+  "tour.draw.next.title": "Move on when you're ready",
+  "tour.draw.next.body": "Hit Next to pull another kanji. The picker prefers ones you haven't seen recently or are scheduled for review.",
+  "tour.kanaWrite.script.title": "Hiragana or katakana",
+  "tour.kanaWrite.script.body": "Pick the script first, then drill down by row — basic, dakuten (voiced), or combinations like きゃ.",
+  "tour.kanaWrite.preview.title": "Watch then trace",
+  "tour.kanaWrite.preview.body": "Stroke order animates in. Tap Practice to draw it yourself — every successful trace counts toward your daily goal.",
+  "tour.kanaWrite.next.title": "Random kana, anytime",
+  "tour.kanaWrite.next.body": "Hit the shuffle button to jump to another kana in the same script + set. Skipped ones come back later.",
 
   // ─── JP TTS install card
   "install.title": "Add a Japanese voice to hear pronunciation",
