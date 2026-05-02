@@ -43,6 +43,7 @@ export default defineConfig(async () => {
         { loc: "/vocab-list", changefreq: "monthly", priority: 0.8 },
         { loc: "/kana-reference", changefreq: "monthly", priority: 0.7 },
         { loc: "/credits", changefreq: "monthly", priority: 0.3 },
+        { loc: "/release-notes", changefreq: "weekly", priority: 0.4 },
       ],
       dynamicRoutes: async () => {
         const [{ kanjiData }, { vocabularyData }, { kanaData }] = await Promise.all([

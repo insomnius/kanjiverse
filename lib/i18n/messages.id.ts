@@ -36,6 +36,7 @@ export const idMessages: Partial<Record<MessageKey, string>> = {
   "footer.builtBy.aria": "Dibuat oleh Insomnius — kunjungi insomnius.dev (buka di tab baru)",
   "footer.tagline": "Gratis · Tanpa pelacakan · Berjalan di browser Anda",
   "footer.credits": "Kredit & sumber data",
+  "footer.releaseNotes": "Catatan rilis",
 
   "level.legend": "Pilih level Anda",
   "level.aria": "Level JLPT",
@@ -380,6 +381,15 @@ export const idMessages: Partial<Record<MessageKey, string>> = {
   "credits.about.body.before": "Situs ini membundel atau mengambil saat runtime setiap sumber data di atas. Lisensi permisif (MIT, ISC, Apache, BSD, OFL, CC0, CC BY) hanya mewajibkan atribusi, yang disediakan halaman ini. Lisensi share-alike (CC BY-SA) selain itu mewajibkan setiap turunan file data yang didistribusikan ulang tetap di bawah lisensi yang sama — file kami",
   "credits.about.body.after": "tetap CC BY-SA 4.0.",
   "credits.about.note": "Sumber situs ini sendiri bersifat privat; halaman ini ada untuk memenuhi kewajiban atribusi dan menjawab “dari mana data ini berasal?” bagi pengguna yang penasaran.",
+
+  "releaseNotes.title": "Catatan rilis",
+  "releaseNotes.subtitle": "Setiap versi yang dirilis berikut perubahan dan alasannya.",
+  "releaseNotes.empty": "Belum ada rilis — masih segar dari oven.",
+  "releaseNotes.latest": "Terbaru",
+  "releaseNotes.source.label": "Lihat di GitHub",
+  "releaseNotes.source.aria": "Buka rilis {tag} di GitHub (terbuka di tab baru)",
+  "releaseNotes.fromGitHub": "Diambil dari rilis GitHub proyek.",
+  "releaseNotes.lastSynced": "tersinkron terakhir {when}",
 
   "share.eyebrow": "Progres yang dibagikan",
   "share.hero.named": "Streak belajar bahasa Jepang milik {name}",

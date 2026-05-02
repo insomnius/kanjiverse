@@ -40,6 +40,7 @@ export const enMessages = {
   "footer.builtBy.aria": "Built by Insomnius — visit insomnius.dev (opens in new tab)",
   "footer.tagline": "Free · No tracking · Lives in your browser",
   "footer.credits": "Credits & data sources",
+  "footer.releaseNotes": "Release notes",
 
   // ─── JLPT levels
   "level.legend": "Select your level",
@@ -408,6 +409,16 @@ export const enMessages = {
   "credits.about.body.before": "This site bundles or runtime-fetches each of the data sources above. Permissive licenses (MIT, ISC, Apache, BSD, OFL, CC0, CC BY) only require attribution, which this page provides. Share-alike licenses (CC BY-SA) additionally require that any redistributed derivative of the data file remain under the same license — our shipped",
   "credits.about.body.after": "stays CC BY-SA 4.0.",
   "credits.about.note": "The site source itself is private; this page exists to satisfy attribution obligations and answer “where did this data come from?” for curious users.",
+
+  // ─── Release notes page
+  "releaseNotes.title": "Release notes",
+  "releaseNotes.subtitle": "Every shipped version with what changed and why.",
+  "releaseNotes.empty": "No releases yet — fresh out of the oven.",
+  "releaseNotes.latest": "Latest",
+  "releaseNotes.source.label": "View on GitHub",
+  "releaseNotes.source.aria": "Open release {tag} on GitHub (opens in new tab)",
+  "releaseNotes.fromGitHub": "Pulled from the project's GitHub releases.",
+  "releaseNotes.lastSynced": "last synced {when}",
 
   // ─── Share page
   "share.eyebrow": "Shared progress",

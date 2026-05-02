@@ -109,12 +109,21 @@ function RootComponent() {
             <p className="font-display italic text-xs text-sumi/70 text-center sm:text-right">
               {t("footer.tagline")}
             </p>
-            <Link
-              to="/credits"
-              className="font-display italic text-xs text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
-            >
-              {t("footer.credits")}
-            </Link>
+            <div className="flex items-center gap-3 text-xs">
+              <Link
+                to="/release-notes"
+                className="font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
+              >
+                {t("footer.releaseNotes")}
+              </Link>
+              <span aria-hidden="true" className="text-sumi/30">·</span>
+              <Link
+                to="/credits"
+                className="font-display italic text-sumi/70 hover:text-vermilion-deep transition-colors motion-reduce:transition-none outline-none focus-visible:ring-2 focus-visible:ring-vermilion focus-visible:ring-offset-2 focus-visible:rounded-sm"
+              >
+                {t("footer.credits")}
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

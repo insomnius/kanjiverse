@@ -11,6 +11,7 @@
     "check:unused": "knip",
     "check:unused:fix": "knip --fix",
     "check:licenses": "bun run scripts/check-licenses.ts",
+    "fetch:release-notes": "bun run scripts/fetch-release-notes.ts",
     "check:bundle": "ANALYZE=1 bun run build",
     "check:lighthouse": "lhci autorun"
   },

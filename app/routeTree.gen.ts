@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VocabListRouteImport } from './routes/vocab-list'
 import { Route as ShareRouteImport } from './routes/share'
 import { Route as ReviewRouteImport } from './routes/review'
+import { Route as ReleaseNotesRouteImport } from './routes/release-notes'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as KanjiListRouteImport } from './routes/kanji-list'
@@ -41,6 +42,11 @@ const ShareRoute = ShareRouteImport.update({
 const ReviewRoute = ReviewRouteImport.update({
   id: '/review',
   path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReleaseNotesRoute = ReleaseNotesRouteImport.update({
+  id: '/release-notes',
+  path: '/release-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuizRoute = QuizRouteImport.update({
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/release-notes': typeof ReleaseNotesRoute
   '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/release-notes': typeof ReleaseNotesRoute
   '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/kanji-list': typeof KanjiListRoute
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
+  '/release-notes': typeof ReleaseNotesRoute
   '/review': typeof ReviewRoute
   '/share': typeof ShareRoute
   '/vocab-list': typeof VocabListRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/release-notes'
     | '/review'
     | '/share'
     | '/vocab-list'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/release-notes'
     | '/review'
     | '/share'
     | '/vocab-list'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/kanji-list'
     | '/profile'
     | '/quiz'
+    | '/release-notes'
     | '/review'
     | '/share'
     | '/vocab-list'
@@ -256,6 +268,7 @@ export interface RootRouteChildren {
   KanjiListRoute: typeof KanjiListRoute
   ProfileRoute: typeof ProfileRoute
   QuizRoute: typeof QuizRoute
+  ReleaseNotesRoute: typeof ReleaseNotesRoute
   ReviewRoute: typeof ReviewRoute
   ShareRoute: typeof ShareRoute
   VocabListRoute: typeof VocabListRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/review'
       fullPath: '/review'
       preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/release-notes': {
+      id: '/release-notes'
+      path: '/release-notes'
+      fullPath: '/release-notes'
+      preLoaderRoute: typeof ReleaseNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quiz': {
@@ -408,6 +428,7 @@ const rootRouteChildren: RootRouteChildren = {
   KanjiListRoute: KanjiListRoute,
   ProfileRoute: ProfileRoute,
   QuizRoute: QuizRoute,
+  ReleaseNotesRoute: ReleaseNotesRoute,
   ReviewRoute: ReviewRoute,
   ShareRoute: ShareRoute,
   VocabListRoute: VocabListRoute,

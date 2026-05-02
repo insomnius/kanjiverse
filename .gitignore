@@ -45,3 +45,4 @@ next-env.d.ts
 /.lighthouseci
 # vite-plugin-pwa's dev-mode service-worker output (devOptions.enabled: true)
 /dev-dist
+.tanstack/

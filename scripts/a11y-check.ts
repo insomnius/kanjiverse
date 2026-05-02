@@ -42,6 +42,7 @@ const STATIC_ROUTES: RouteSpec[] = [
   { path: "/history", name: "History", ready: "main h1" },
   { path: "/share", name: "Public share card", ready: "main h1" },
   { path: "/credits", name: "Credits", ready: "main h1" },
+  { path: "/release-notes", name: "Release notes", ready: "main h1" },
 ]
 
 // A small per-character sample so we exercise the dynamic head() / JSON-LD paths
